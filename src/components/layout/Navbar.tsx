@@ -36,20 +36,23 @@ export function Navbar() {
           : "bg-transparent py-8"
       )}
     >
-      <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
-            < GraduationCap className="h-6 w-6 text-white" />
-          </div>
-          <span className={cn(
-            "text-2xl font-headline font-bold tracking-tight transition-colors",
-            !scrolled && pathname === "/" ? "text-white" : "text-slate-900"
-          )}>
-            Ideal Study Point
-          </span>
-        </Link>
+      <div className="container mx-auto px-6 flex items-center">
+        {/* Logo Section - Left balanced */}
+        <div className="flex-1">
+          <Link href="/" className="flex items-center gap-2 group w-fit">
+            <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+              < GraduationCap className="h-6 w-6 text-white" />
+            </div>
+            <span className={cn(
+              "text-2xl font-headline font-bold tracking-tight transition-colors",
+              !scrolled && pathname === "/" ? "text-white" : "text-slate-900"
+            )}>
+              Ideal Study Point
+            </span>
+          </Link>
+        </div>
 
-        {/* Desktop Menu */}
+        {/* Desktop Menu Section - Centered */}
         <div className={cn(
           "hidden md:flex items-center gap-2 p-1 rounded-full border transition-all",
           scrolled 
@@ -75,16 +78,18 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Mobile Menu Trigger */}
-        <button
-          className={cn(
-            "md:hidden p-2 transition-colors",
-            !scrolled && pathname === "/" ? "text-white" : "text-slate-600"
-          )}
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        {/* Mobile Menu Trigger Section - Right balanced */}
+        <div className="flex-1 flex justify-end">
+          <button
+            className={cn(
+              "md:hidden p-2 transition-colors",
+              !scrolled && pathname === "/" ? "text-white" : "text-slate-600"
+            )}
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay */}
