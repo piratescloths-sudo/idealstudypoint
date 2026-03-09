@@ -220,7 +220,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section - Removed negative margin to add space between hero and content */}
+        {/* Stats Section - Added margin top for spacing instead of negative overlap */}
         <div className="relative z-20 mt-16 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
@@ -360,9 +360,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section (Redesigned Style) */}
+        {/* Testimonials Section */}
         <section className="py-32 bg-[#F8FAFC] relative overflow-hidden">
-          {/* Background Accents */}
           <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl opacity-50" />
           <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-100/50 rounded-full blur-3xl opacity-50" />
           
