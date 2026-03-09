@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Shield, Globe, Info, Loader2, MessageSquare, Map as MapIcon, Image as ImageIcon } from "lucide-react";
+import { Save, Globe, Info, Loader2, MessageSquare, Map as MapIcon, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,7 @@ export default function AdminSettingsPage() {
   }, [firestore]);
 
   const { data: settings, isLoading } = useDoc(settingsRef);
+  
   const [formData, setFormData] = useState({
     siteName: "Ideal Study Point",
     logoUrl: "",
@@ -38,21 +39,22 @@ export default function AdminSettingsPage() {
 
   useEffect(() => {
     if (settings) {
-      setFormData({
-        siteName: settings.siteName || "Ideal Study Point",
+      setFormData(prev => ({
+        ...prev,
+        siteName: settings.siteName || prev.siteName,
         logoUrl: settings.logoUrl || "",
         faviconUrl: settings.faviconUrl || "",
-        mainEmail: settings.mainEmail || "info@idealstudypoint.edu",
-        mainPhone: settings.mainPhone || "+1 (234) 567-890",
-        address: settings.address || "123 Education Ave, Knowledge City, ED 56789",
+        mainEmail: settings.mainEmail || prev.mainEmail,
+        mainPhone: settings.mainPhone || prev.mainPhone,
+        address: settings.address || prev.address,
         facebookUrl: settings.facebookUrl || "",
         instagramUrl: settings.instagramUrl || "",
         linkedinUrl: settings.linkedinUrl || "",
-        contactHeadline: settings.contactHeadline || "Connect With Us",
-        contactDescription: settings.contactDescription || "Have questions about our campus or programs? We're here to help you navigate your academic future.",
-        officeHours: settings.officeHours || "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed",
+        contactHeadline: settings.contactHeadline || prev.contactHeadline,
+        contactDescription: settings.contactDescription || prev.contactDescription,
+        officeHours: settings.officeHours || prev.officeHours,
         googleMapEmbedUrl: settings.googleMapEmbedUrl || ""
-      });
+      }));
     }
   }, [settings]);
 
@@ -75,7 +77,7 @@ export default function AdminSettingsPage() {
       <div className="flex justify-between items-center">
         <div className="space-y-1">
           <h1 className="text-3xl font-headline font-bold text-slate-900">General Settings</h1>
-          <p className="text-muted-foreground">Manage site-wide configuration and contact details.</p>
+          <p className="text-muted-foreground">Manage site-wide configuration and branding.</p>
         </div>
         <Button className="h-12 px-8 rounded-2xl gap-2 font-bold shadow-xl shadow-primary/20" onClick={handleSave}>
           <Save className="h-5 w-5" /> Save System Settings
@@ -121,13 +123,13 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Campus Address Box */}
+        {/* Campus Contact Box */}
         <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
           <CardHeader className="flex flex-row items-center gap-4 border-b pb-6 p-8">
             <div className="h-12 w-12 bg-emerald-50 rounded-2xl flex items-center justify-center">
               <MapIcon className="h-6 w-6 text-emerald-600" />
             </div>
-            <CardTitle className="text-2xl font-bold text-slate-900">Campus Address</CardTitle>
+            <CardTitle className="text-2xl font-bold text-slate-900">Campus Contact</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8 p-8">
             <div className="space-y-3">
@@ -159,13 +161,13 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Contact Page Content Box */}
+        {/* Messaging & Map Box */}
         <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
           <CardHeader className="flex flex-row items-center gap-4 border-b pb-6 p-8">
             <div className="h-12 w-12 bg-amber-50 rounded-2xl flex items-center justify-center">
               <MessageSquare className="h-6 w-6 text-amber-600" />
             </div>
-            <CardTitle className="text-2xl font-bold text-slate-900">Contact Page Content</CardTitle>
+            <CardTitle className="text-2xl font-bold text-slate-900">Messaging & Map</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8 p-8">
             <div className="space-y-3">
@@ -198,13 +200,13 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Social Media Links Box */}
+        {/* Social Presence Box */}
         <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
           <CardHeader className="flex flex-row items-center gap-4 border-b pb-6 p-8">
             <div className="h-12 w-12 bg-blue-50 rounded-2xl flex items-center justify-center">
               <Globe className="h-6 w-6 text-blue-600" />
             </div>
-            <CardTitle className="text-2xl font-bold text-slate-900">Social Media Links</CardTitle>
+            <CardTitle className="text-2xl font-bold text-slate-900">Social Presence</CardTitle>
           </CardHeader>
           <CardContent className="space-y-8 p-8">
             <div className="space-y-3">
