@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   description: 'Empowering students with world-class education and resources.',
   icons: {
     icon: LOGO_URL,
+    shortcut: LOGO_URL,
     apple: LOGO_URL,
   }
 };
