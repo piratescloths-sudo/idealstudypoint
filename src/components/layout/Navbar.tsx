@@ -33,8 +33,8 @@ export function Navbar() {
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300",
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.03)] py-3"
-          : "bg-white py-5"
+          ? "bg-white/95 backdrop-blur-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] py-4"
+          : "bg-transparent py-8"
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
@@ -42,13 +42,21 @@ export function Navbar() {
           <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
             <GraduationCap className="h-6 w-6 text-white" />
           </div>
-          <span className="text-2xl font-headline font-bold text-slate-900 tracking-tight">
+          <span className={cn(
+            "text-2xl font-headline font-bold tracking-tight transition-colors",
+            !scrolled && pathname === "/" ? "text-white" : "text-slate-900"
+          )}>
             EduVista
           </span>
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-2 bg-slate-50/50 p-1 rounded-full border border-slate-100">
+        <div className={cn(
+          "hidden md:flex items-center gap-2 p-1 rounded-full border transition-all",
+          scrolled 
+            ? "bg-white/50 border-slate-100" 
+            : "bg-white/10 backdrop-blur-md border-white/20"
+        )}>
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -56,8 +64,11 @@ export function Navbar() {
               className={cn(
                 "text-sm font-bold px-6 py-2.5 rounded-full transition-all",
                 pathname === link.href 
-                  ? "bg-indigo-600 text-white shadow-md" 
-                  : "text-slate-500 hover:text-indigo-600"
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" 
+                  : cn(
+                      "hover:text-indigo-600",
+                      !scrolled && pathname === "/" ? "text-slate-200 hover:text-white" : "text-slate-600"
+                    )
               )}
             >
               {link.name}
@@ -66,7 +77,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:block">
-          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-11 border-none shadow-lg shadow-indigo-500/10 transition-all hover:translate-y-[-2px]">
+          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-12 border-none shadow-xl shadow-indigo-500/20 transition-all hover:translate-y-[-2px] font-bold">
             <Link href="/admin/login">
               <LogIn className="h-4 w-4" />
               Admin Panel
@@ -76,7 +87,10 @@ export function Navbar() {
 
         {/* Mobile Menu Trigger */}
         <button
-          className="md:hidden p-2 text-slate-600"
+          className={cn(
+            "md:hidden p-2 transition-colors",
+            !scrolled && pathname === "/" ? "text-white" : "text-slate-600"
+          )}
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
