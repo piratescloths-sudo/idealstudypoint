@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -70,71 +69,71 @@ export default function EventsPage() {
         <div className="container mx-auto px-8 md:px-12 lg:px-24">
           
           {/* Centered Heading Section */}
-          <div className="text-center mb-20 space-y-4 max-w-3xl mx-auto">
+          <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto">
              <div className="inline-flex items-center gap-2 px-5 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-wider mx-auto">
               <span>Events</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tight leading-tight">Upcoming Events</h1>
             <p className="text-xl text-slate-500 font-medium">
-              Stay connected with our vibrant community. From guest lectures to cultural fests, there&apos;s always something happening.
+              Stay connected with our vibrant community.
             </p>
           </div>
 
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {mockEvents.map((event) => (
-                <Card key={event.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
-                  <div className="relative h-64 w-full">
+                <Card key={event.id} className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-500 rounded-[2rem] bg-white">
+                  <div className="relative h-52 w-full">
                     <Image
                       src={event.image || ""}
                       alt={event.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute top-6 right-6">
-                      <span className="bg-secondary text-white text-[10px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full shadow-lg">Upcoming</span>
+                    <div className="absolute top-4 right-4">
+                      <span className="bg-secondary text-white text-[9px] font-black uppercase tracking-[0.15em] px-3 py-1.5 rounded-full shadow-md">Upcoming</span>
                     </div>
-                    <div className="absolute bottom-6 left-6 bg-white rounded-2xl p-4 shadow-xl flex flex-col items-center justify-center min-w-[70px]">
-                      <span className="text-2xl font-black text-indigo-600 leading-none">{event.day}</span>
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{event.month}</span>
+                    <div className="absolute bottom-4 left-4 bg-white rounded-xl p-3 shadow-lg flex flex-col items-center justify-center min-w-[55px]">
+                      <span className="text-xl font-black text-indigo-600 leading-none">{event.day}</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{event.month}</span>
                     </div>
                   </div>
-                  <CardContent className="p-8 space-y-4">
-                    <h3 className="text-xl font-headline font-bold text-indigo-600 leading-tight">
+                  <CardContent className="p-6 space-y-3">
+                    <h3 className="text-lg font-headline font-bold text-indigo-600 leading-tight">
                       {event.title}
                     </h3>
-                    <p className="text-slate-500 font-medium leading-relaxed line-clamp-3">
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed line-clamp-2">
                       {event.description}
                     </p>
-                    <div className="space-y-3 pt-4 border-t border-slate-50 text-[13px] font-bold text-slate-400">
-                      <div className="flex items-center gap-3">
-                        <CalendarIcon className="h-4 w-4 text-indigo-400" />
+                    <div className="space-y-2 pt-3 border-t border-slate-50 text-[11px] font-bold text-slate-400">
+                      <div className="flex items-center gap-2.5">
+                        <CalendarIcon className="h-3.5 w-3.5 text-indigo-400" />
                         <span>{event.date} • {event.time}</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <MapPin className="h-4 w-4 text-indigo-400" />
+                      <div className="flex items-center gap-2.5">
+                        <MapPin className="h-3.5 w-3.5 text-indigo-400" />
                         <span className="line-clamp-1">{event.location}</span>
                       </div>
                     </div>
-                    <Button className="w-full h-12 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-sm shadow-lg transition-all gap-2 group mt-2">
-                      Register Now <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    <Button className="w-full h-10 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs shadow-md transition-all gap-2 group mt-2">
+                      Register Now <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                     </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            {/* Pagination / View More */}
-            <div className="mt-20 flex justify-center">
-              <div className="flex gap-3">
+            {/* Pagination */}
+            <div className="mt-16 flex justify-center">
+              <div className="flex gap-2">
                 {[1, 2, 3].map(n => (
                   <Button 
                     key={n} 
                     variant={n === 1 ? "default" : "outline"} 
                     className={cn(
-                      "w-12 h-12 p-0 rounded-2xl font-bold transition-all",
+                      "w-10 h-10 p-0 rounded-xl font-bold transition-all",
                       n === 1 
-                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 border-none" 
+                        ? "bg-indigo-600 text-white shadow-md border-none" 
                         : "bg-white border-slate-200 text-slate-400 hover:text-indigo-600"
                     )}
                   >

@@ -80,13 +80,13 @@ export default function CoursesPage() {
             </p>
           </div>
 
-          {/* Alignment and Spacing adjustments for Grid */}
+          {/* Grid with reduced card sizes */}
           <div className="max-w-7xl mx-auto">
             {filteredCourses.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {filteredCourses.map((course) => (
-                  <Card key={course.id} className="group overflow-hidden border-none shadow-[0_15px_35px_rgba(0,0,0,0.05)] hover:shadow-[0_25px_50px_rgba(0,0,0,0.1)] transition-all duration-500 rounded-[2rem] bg-white">
-                    <div className="relative h-60 w-full overflow-hidden">
+                  <Card key={course.id} className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-500 rounded-[2rem] bg-white">
+                    <div className="relative h-48 w-full overflow-hidden">
                       <Image
                         src={course.image || ""}
                         alt={course.title}
@@ -94,40 +94,37 @@ export default function CoursesPage() {
                         className="object-cover group-hover:scale-105 transition-transform duration-700"
                         priority
                       />
-                      {/* Category Badge - Top Left */}
                       <div className="absolute top-4 left-4">
-                        <span className="bg-indigo-600 text-white text-[10px] font-bold px-4 py-1.5 rounded-full shadow-md">
+                        <span className="bg-indigo-600 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-md">
                           {course.category}
                         </span>
                       </div>
-                      {/* Price Badge - Bottom Right */}
                       <div className="absolute bottom-4 right-4">
-                        <span className="bg-slate-900/90 backdrop-blur-sm text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-lg">
+                        <span className="bg-slate-900/90 backdrop-blur-sm text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg">
                           {course.price}
                         </span>
                       </div>
                     </div>
-                    <CardContent className="p-8 space-y-5">
-                      <h3 className="text-xl font-headline font-bold text-slate-900 leading-tight">
+                    <CardContent className="p-6 space-y-4">
+                      <h3 className="text-lg font-headline font-bold text-slate-900 leading-tight">
                         {course.title}
                       </h3>
-                      <p className="text-slate-400 text-sm font-medium line-clamp-2 leading-relaxed">
+                      <p className="text-slate-400 text-xs font-medium line-clamp-2 leading-relaxed">
                         {course.description}
                       </p>
                       
-                      {/* Metadata Row */}
-                      <div className="flex items-center gap-6 text-[13px] font-bold text-slate-400 pt-1">
+                      <div className="flex items-center gap-5 text-[12px] font-bold text-slate-400 pt-1">
                         <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-slate-300" />
+                          <User className="h-3.5 w-3.5 text-slate-300" />
                           <span>{course.instructor}</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-slate-300" />
+                          <Clock className="h-3.5 w-3.5 text-slate-300" />
                           <span>{course.duration}</span>
                         </div>
                       </div>
 
-                      <Button asChild className="w-full h-12 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold text-sm text-white shadow-lg shadow-indigo-600/20 transition-all">
+                      <Button asChild className="w-full h-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold text-xs text-white shadow-md transition-all">
                         <Link href="/admission">Enroll Now</Link>
                       </Button>
                     </CardContent>
