@@ -11,16 +11,18 @@ import {
   Loader2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
 import { collection, query, orderBy, limit } from "firebase/firestore";
 
 export default function AdminDashboard() {
   const firestore = useFirestore();
+  const { user } = useUser();
 
-  const coursesQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'courses')) : null, [firestore]);
-  const inquiriesQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'admissionInquiries'), orderBy('submissionDate', 'desc'), limit(5)) : null, [firestore]);
-  const messagesQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'contactMessages')) : null, [firestore]);
-  const eventsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'events')) : null, [firestore]);
+  // We only run these queries if the user is authenticated to prevent permission errors
+  const coursesQuery = useMemoFirebase(() => (firestore && user) ? query(collection(firestore, 'courses')) : null, [firestore, user]);
+  const inquiriesQuery = useMemoFirebase(() => (firestore && user) ? query(collection(firestore, 'admissionInquiries'), orderBy('submissionDate', 'desc'), limit(5)) : null, [firestore, user]);
+  const messagesQuery = useMemoFirebase(() => (firestore && user) ? query(collection(firestore, 'contactMessages')) : null, [firestore, user]);
+  const eventsQuery = useMemoFirebase(() => (firestore && user) ? query(collection(firestore, 'events')) : null, [firestore, user]);
 
   const { data: courses } = useCollection(coursesQuery);
   const { data: recentInquiries, isLoading: loadingInquiries } = useCollection(inquiriesQuery);
@@ -68,6 +70,9 @@ export default function AdminDashboard() {
           <CardContent className="pt-6">
             <div className="space-y-6">
               {loadingInquiries && <Loader2 className="animate-spin" />}
+              {!loadingInquiries && (!recentInquiries || recentInquiries.length === 0) && (
+                <p className="text-sm text-muted-foreground italic py-4">No recent inquiries found.</p>
+              )}
               {recentInquiries?.map((sub) => (
                 <div key={sub.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
                   <div className="flex items-center gap-4">

@@ -5,15 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { useCollection, useFirestore, useMemoFirebase, deleteDocumentNonBlocking } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, deleteDocumentNonBlocking, useUser } from "@/firebase";
 import { collection, query, orderBy, doc } from "firebase/firestore";
 
 export default function AdminMessagesPage() {
   const firestore = useFirestore();
+  const { user } = useUser();
+  
   const messagesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || !user) return null;
     return query(collection(firestore, 'contactMessages'), orderBy('submissionDate', 'desc'));
-  }, [firestore]);
+  }, [firestore, user]);
+  
   const { data: messages, isLoading } = useCollection(messagesQuery);
 
   const handleDelete = (id: string) => {
@@ -44,6 +47,11 @@ export default function AdminMessagesPage() {
             {isLoading && (
               <TableRow>
                 <TableCell colSpan={5} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+              </TableRow>
+            )}
+            {!isLoading && (!messages || messages.length === 0) && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-10 text-muted-foreground">No contact messages found.</TableCell>
               </TableRow>
             )}
             {messages?.map((msg) => (

@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
+import { useAuth } from "@/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
@@ -17,20 +19,27 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const auth = useAuth();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulation of authentication
-    setTimeout(() => {
+
+    try {
+      // Using real Firebase Authentication
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/admin/dashboard");
+      toast({ title: "Welcome back!", description: "Successfully logged into dashboard." });
+    } catch (err: any) {
+      console.error("Login error:", err);
+      toast({ 
+        variant: "destructive", 
+        title: "Authentication Failed", 
+        description: "Invalid credentials or account not found. Please ensure your admin account is set up in Firebase Console." 
+      });
+    } finally {
       setLoading(false);
-      if (email === "kanhucharanideal@gmail.com" && password === "Kanhu@12365") {
-        router.push("/admin/dashboard");
-        toast({ title: "Welcome back!", description: "Successfully logged into dashboard." });
-      } else {
-        toast({ variant: "destructive", title: "Error", description: "Invalid credentials. Please check your email and password." });
-      }
-    }, 1500);
+    }
   };
 
   return (

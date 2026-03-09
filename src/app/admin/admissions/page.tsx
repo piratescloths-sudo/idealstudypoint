@@ -5,15 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
 
 export default function AdminAdmissionsPage() {
   const firestore = useFirestore();
+  const { user } = useUser();
+  
   const inquiriesQuery = useMemoFirebase(() => {
-    if (!firestore) return null;
+    if (!firestore || !user) return null;
     return query(collection(firestore, 'admissionInquiries'), orderBy('submissionDate', 'desc'));
-  }, [firestore]);
+  }, [firestore, user]);
+  
   const { data: submissions, isLoading } = useCollection(inquiriesQuery);
 
   return (
@@ -37,6 +40,11 @@ export default function AdminAdmissionsPage() {
             {isLoading && (
               <TableRow>
                 <TableCell colSpan={4} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+              </TableRow>
+            )}
+            {!isLoading && (!submissions || submissions.length === 0) && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">No admission inquiries found.</TableCell>
               </TableRow>
             )}
             {submissions?.map((sub) => (
