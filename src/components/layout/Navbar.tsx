@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -34,11 +33,11 @@ export function Navbar() {
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300",
         scrolled
-          ? "bg-white/90 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.03)] py-4"
-          : "bg-white/80 backdrop-blur-sm py-6"
+          ? "bg-white/95 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.03)] py-3"
+          : "bg-white py-5"
       )}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
+      <div className="container mx-auto px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
             <GraduationCap className="h-6 w-6 text-white" />
@@ -49,16 +48,16 @@ export function Navbar() {
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-1 p-1 rounded-full">
+        <div className="hidden md:flex items-center gap-2 bg-slate-50/50 p-1 rounded-full border border-slate-100">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
               className={cn(
-                "text-sm font-bold px-6 py-2 rounded-full transition-all",
+                "text-sm font-bold px-6 py-2.5 rounded-full transition-all",
                 pathname === link.href 
                   ? "bg-indigo-600 text-white shadow-md" 
-                  : "text-slate-500 hover:text-indigo-600 hover:bg-slate-50"
+                  : "text-slate-500 hover:text-indigo-600"
               )}
             >
               {link.name}
@@ -67,7 +66,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:block">
-          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-11 border-none shadow-lg shadow-indigo-500/10">
+          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-11 border-none shadow-lg shadow-indigo-500/10 transition-all hover:translate-y-[-2px]">
             <Link href="/admin/login">
               <LogIn className="h-4 w-4" />
               Admin Panel
