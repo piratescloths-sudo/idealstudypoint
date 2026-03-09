@@ -47,7 +47,7 @@ export default function Home() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative min-h-[60vh] flex flex-col items-center justify-center pt-24 pb-32 overflow-hidden">
+        <section className="relative min-h-[50vh] flex flex-col items-center justify-center pt-24 pb-24 overflow-hidden">
           {/* Background with Gradient Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -68,11 +68,11 @@ export default function Home() {
                 <span>Welcome to EduVista Academy</span>
               </div>
               
-              <h1 className="text-4xl md:text-7xl font-headline font-bold text-white leading-[1.1] tracking-tight text-center">
+              <h1 className="text-4xl md:text-6xl font-headline font-bold text-white leading-[1.1] tracking-tight text-center">
                 Shape Your Future <br /> with World-Class <br /> Education
               </h1>
               
-              <p className="text-base md:text-lg text-slate-400 max-w-xl mx-auto leading-relaxed font-medium text-center">
+              <p className="text-base text-slate-400 max-w-lg mx-auto leading-relaxed font-medium text-center">
                 Empowering learners with innovative programs, expert faculty, and a supportive community. Start your journey to success today.
               </p>
               
@@ -86,30 +86,30 @@ export default function Home() {
               </div>
             </div>
           </div>
-
-          {/* Floating Stats Bar */}
-          <div className="container mx-auto px-4 mt-16 relative z-20 max-w-4xl">
-            <div className="bg-white rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-10 px-10 md:px-14 gap-8 border border-white/50">
-              {stats.map((stat, i) => (
-                <div key={i} className="flex flex-col items-center justify-center text-center px-4 space-y-1 border-r last:border-0 border-slate-100">
-                  <div className={cn("mb-1", stat.color)}>
-                    <stat.icon className="h-5 w-5 opacity-80" />
-                  </div>
-                  <div className="text-xl md:text-2xl font-headline font-bold text-slate-900 tracking-tighter">{stat.value}</div>
-                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
         </section>
 
+        {/* Floating Stats Bar - Positioned between sections */}
+        <div className="relative z-20 -mt-16 container mx-auto px-4 max-w-4xl">
+          <div className="bg-white rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-10 px-10 md:px-14 gap-8 border border-white/50">
+            {stats.map((stat, i) => (
+              <div key={i} className="flex flex-col items-center justify-center text-center px-4 space-y-1 border-r last:border-0 border-slate-100">
+                <div className={cn("mb-1", stat.color)}>
+                  <stat.icon className="h-5 w-5 opacity-80" />
+                </div>
+                <div className="text-xl md:text-2xl font-headline font-bold text-slate-900 tracking-tighter">{stat.value}</div>
+                <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* About Us Section */}
-        <section className="py-24 bg-white">
+        <section className="py-20 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               {/* Left Column: Image */}
               <div className="relative">
-                <div className="relative h-[450px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
+                <div className="relative h-[400px] w-full rounded-[2.5rem] overflow-hidden shadow-2xl">
                   <Image
                     src={aboutImg?.imageUrl || ""}
                     alt="Why Choose Us"
@@ -131,12 +131,12 @@ export default function Home() {
                   <span>About Us</span>
                 </div>
                 
-                <h2 className="text-4xl md:text-5xl font-headline font-bold text-slate-900 tracking-tight leading-tight">
+                <h2 className="text-3xl md:text-5xl font-headline font-bold text-slate-900 tracking-tight leading-tight">
                   Why Choose EduVista Academy?
                 </h2>
                 
                 <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                  For over 25 years, EduVista Academy has been at the forefront of education, blending traditional teaching methods with modern technology. Our diverse programs, experienced faculty, and state-of-the-art facilities create an environment where students thrive and grow into tomorrow's leaders.
+                  For over 25 years, EduVista Academy has been at the forefront of education, blending traditional teaching methods with modern technology. Our diverse programs, experienced faculty, and state-of-the-art facilities create an environment where students thrive.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
@@ -158,8 +158,8 @@ export default function Home() {
         </section>
 
         {/* Featured Courses Section */}
-        <section className="py-20 bg-[#F8FAFC]">
-          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
+        <section className="py-16 bg-[#F8FAFC]">
+          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-5xl">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
               <div className="space-y-3">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[9px] uppercase tracking-[0.2em]">
@@ -176,26 +176,26 @@ export default function Home() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredCourses.map((course, idx) => (
-                <Card key={idx} className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-500 rounded-[2.5rem] bg-white border border-slate-50">
-                  <div className="relative h-56 w-full overflow-hidden">
+                <Card key={idx} className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-500 rounded-[2rem] bg-white border border-slate-50">
+                  <div className="relative h-48 w-full overflow-hidden">
                     <Image
                       src={course.img || ""}
                       alt={course.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute top-5 left-5">
+                    <div className="absolute top-4 left-4">
                       <span className="bg-indigo-600 text-white text-[8px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full shadow-lg">Trending</span>
                     </div>
                   </div>
-                  <CardContent className="p-8 space-y-5">
+                  <CardContent className="p-6 space-y-4">
                     <h3 className="text-lg font-headline font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight">{course.title}</h3>
                     <div className="flex items-center gap-2.5 text-slate-500 font-bold text-[11px] bg-slate-50 w-fit px-4 py-1.5 rounded-lg">
                       <Users className="h-3 w-3 text-indigo-600" />
                       <span>{course.instructor}</span>
                     </div>
-                    <div className="flex justify-between items-center pt-6 border-t border-slate-50">
-                      <span className="text-2xl font-black text-indigo-600 tracking-tighter">{course.price}</span>
+                    <div className="flex justify-between items-center pt-4 border-t border-slate-50">
+                      <span className="text-xl font-black text-indigo-600 tracking-tighter">{course.price}</span>
                       <Button asChild className="rounded-xl h-10 px-6 text-xs font-bold bg-slate-900 hover:bg-indigo-600 text-white transition-all shadow-md">
                         <Link href="/admission">Enroll Now</Link>
                       </Button>
