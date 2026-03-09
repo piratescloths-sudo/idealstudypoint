@@ -4,25 +4,68 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Award, Globe, Users, Quote, Star, Calendar, Loader2 } from "lucide-react";
+import { 
+  ArrowRight, 
+  BookOpen, 
+  Award, 
+  Globe, 
+  Users, 
+  Quote, 
+  Star, 
+  Calendar, 
+  Loader2, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Send, 
+  MessageSquare,
+  CheckCircle2,
+  Sparkles
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useCollection, useFirestore, useMemoFirebase, useDoc } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, useDoc, setDocumentNonBlocking, useAuth, useUser } from "@/firebase";
 import { collection, query, limit, where, doc } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
+import { toast } from "@/hooks/use-toast";
 
 export default function Home() {
   const firestore = useFirestore();
+  const auth = useAuth();
+  const { user } = useUser();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  // Contact form state
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: ""
+  });
 
   const settingsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return doc(firestore, 'websiteSettings', 'main');
   }, [firestore]);
   const { data: settings } = useDoc(settingsQuery);
+
+  // Ensure user is signed in anonymously to submit messages securely
+  useEffect(() => {
+    if (!user && auth) {
+      signInAnonymously(auth).catch(console.error);
+    }
+  }, [user, auth]);
 
   const heroImages = (settings?.heroImages?.filter((url: string) => url && url.trim() !== "")?.length > 0)
     ? settings.heroImages.filter((url: string) => url && url.trim() !== "")
@@ -65,11 +108,44 @@ export default function Home() {
     { label: "Countries", value: "50+", icon: Globe, color: "text-indigo-600" },
   ];
 
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!firestore || !user) {
+      toast({ variant: "destructive", title: "Connection Error", description: "Please wait for connection to stabilize." });
+      return;
+    }
+    setLoading(true);
+
+    const colRef = collection(firestore, 'contactMessages');
+    const newDocId = doc(colRef).id;
+    const messageRef = doc(firestore, 'contactMessages', newDocId);
+
+    setDocumentNonBlocking(messageRef, {
+      id: newDocId,
+      name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      phone: formData.phone,
+      subject: formData.subject,
+      message: formData.message,
+      submissionDate: new Date().toISOString()
+    }, { merge: true });
+
+    setTimeout(() => {
+      setLoading(false);
+      setSubmitted(true);
+      toast({
+        title: "Message Sent",
+        description: "We've received your inquiry and will reach out shortly.",
+      });
+    }, 800);
+  };
+
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-white">
       <Navbar />
       
       <main className="flex-grow">
+        {/* Hero Section */}
         <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
@@ -119,6 +195,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Stats Section */}
         <div className="relative z-20 -mt-20 container mx-auto px-4 max-w-6xl">
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
@@ -133,6 +210,7 @@ export default function Home() {
           </div>
         </div>
 
+        {/* About Section */}
         <section className="py-32 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -179,6 +257,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Courses Section */}
         <section className="py-24 bg-[#F8FAFC]">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
@@ -229,6 +308,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Events Section */}
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="text-center mb-16 space-y-4 max-w-4xl mx-auto">
@@ -285,6 +365,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Testimonials Section */}
         <section className="py-24 bg-[#F8FAFC]">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16 space-y-4 max-w-4xl mx-auto">
@@ -333,6 +414,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* CTA Section */}
         <section className="bg-[#5D5CFF] py-24 text-center px-6">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">
@@ -348,9 +430,104 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Contact Section */}
+        <section className="py-24 bg-white relative overflow-hidden">
+          <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
+            <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
+                <MessageSquare className="h-4 w-4" />
+                <span>Get In Touch</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">
+                {settings?.contactHeadline || "Connect With Us"}
+              </h2>
+              <p className="text-lg text-slate-500 font-medium">
+                {settings?.contactDescription || "Have questions about our campus or programs? We're here to help you navigate your academic future."}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+              <div className="lg:col-span-1 space-y-6">
+                {[
+                  { icon: Mail, title: "Email Us", detail: settings?.mainEmail || "info@idealstudypoint.edu", color: "text-indigo-600", bg: "bg-indigo-50" },
+                  { icon: Phone, title: "Call Us", detail: settings?.mainPhone || "+1 (234) 567-890", color: "text-emerald-600", bg: "bg-emerald-50" },
+                  { icon: MapPin, title: "Visit Us", detail: settings?.address || "123 Education Ave, Knowledge City, ED 56789", color: "text-amber-600", bg: "bg-amber-50" }
+                ].map((item, i) => (
+                  <Card key={i} className="border-none shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-3xl bg-white group transition-all hover:-translate-y-1">
+                    <CardContent className="p-6 flex items-center gap-5">
+                      <div className={`${item.bg} h-12 w-12 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform`}>
+                        <item.icon className={`h-5 w-5 ${item.color}`} />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-slate-900 text-sm">{item.title}</h4>
+                        <p className="text-slate-500 font-medium text-xs leading-relaxed">{item.detail}</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <Card className="lg:col-span-2 border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden border border-slate-50">
+                <CardContent className="p-8 md:p-12">
+                  {submitted ? (
+                    <div className="text-center space-y-6 py-10">
+                      <div className="relative inline-flex p-6 bg-emerald-50 rounded-full">
+                        <Sparkles className="absolute -top-1 -right-1 h-6 w-6 text-emerald-400 animate-pulse" />
+                        <CheckCircle2 className="h-12 w-12 text-emerald-600" />
+                      </div>
+                      <h3 className="text-3xl font-headline font-bold text-slate-900">Message Sent!</h3>
+                      <p className="text-slate-500 font-medium">We've received your inquiry and will reach out shortly.</p>
+                      <Button variant="outline" className="rounded-xl px-8" onClick={() => setSubmitted(false)}>Send another message</Button>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleContactSubmit} className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">First Name</Label>
+                          <Input required value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} placeholder="Jane" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Last Name</Label>
+                          <Input required value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} placeholder="Doe" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Email</Label>
+                          <Input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="jane@example.com" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Phone</Label>
+                          <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+1 (555) 000-0000" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Subject</Label>
+                        <Input required value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} placeholder="Inquiry about Programs" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Message</Label>
+                        <Textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="How can we help you?" className="min-h-[120px] rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all p-4" />
+                      </div>
+                      <Button type="submit" size="lg" className="w-full h-14 rounded-xl font-bold text-lg bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-600/20 transition-all gap-3" disabled={loading}>
+                        {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
+                          <>
+                            Send Inquiry <Send className="h-4 w-4" />
+                          </>
+                        )}
+                      </Button>
+                    </form>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
       </main>
 
       <Footer />
     </div>
   );
 }
+
