@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
             </div>
             <div className="space-y-2">
               <CardTitle className="text-3xl font-headline font-bold">Admin Portal</CardTitle>
-              <CardDescription>Enter your credentials to manage IDEAL STUDY POINT content</CardDescription>
+              <CardDescription>Enter your credentials to manage Ideal Study Point content</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="p-8 md:p-10 bg-white">

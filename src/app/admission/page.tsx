@@ -90,7 +90,7 @@ export default function AdmissionPage() {
             {/* Left Content Column */}
             <div className="space-y-10">
               <div className="space-y-6">
-                <h2 className="text-3xl font-headline font-bold text-slate-900">Why Apply to IDEAL STUDY POINT?</h2>
+                <h2 className="text-3xl font-headline font-bold text-slate-900">Why Apply to Ideal Study Point?</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[

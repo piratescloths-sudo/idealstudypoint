@@ -12,7 +12,7 @@ export function Footer() {
               <div className="p-2 bg-indigo-600 rounded-xl">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-              <span className="text-2xl font-headline font-bold text-white">IDEAL STUDY POINT</span>
+              <span className="text-2xl font-headline font-bold text-white">Ideal Study Point</span>
             </Link>
             <p className="text-slate-400 text-base leading-relaxed font-medium">
               Empowering the next generation of leaders through quality education,
@@ -85,7 +85,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-slate-800 mt-20 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm font-semibold tracking-widest uppercase">
-          <p>© {new Date().getFullYear()} IDEAL STUDY POINT Academy. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Ideal Study Point Academy. All rights reserved.</p>
           <div className="flex gap-10">
             <Link href="#" className="hover:text-indigo-400">Privacy Policy</Link>
             <Link href="#" className="hover:text-indigo-400">Terms of Use</Link>

@@ -46,7 +46,7 @@ export function Navbar() {
             "text-2xl font-headline font-bold tracking-tight transition-colors",
             !scrolled && pathname === "/" ? "text-white" : "text-slate-900"
           )}>
-            IDEAL STUDY POINT
+            Ideal Study Point
           </span>
         </Link>
 
