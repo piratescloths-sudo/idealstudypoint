@@ -177,7 +177,7 @@ export default function Home() {
       <Navbar />
       
       <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
-        {/* Hero Section - 95vh Height */}
+        {/* Hero Section - 95vh Height, nudge content upwards with pb-24 */}
         <section className="relative min-h-[95vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
@@ -201,7 +201,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-[#000]/40 backdrop-blur-[1px]" />
           </div>
 
-          <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center pt-16">
+          <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center pt-16 pb-24">
             <div className="max-w-5xl space-y-8">
               <div className="animate-reveal opacity-0" style={{ animationDelay: '0.2s' }}>
                 <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-500/20 backdrop-blur-md rounded-full border border-blue-400/30 text-white font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
@@ -236,7 +236,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* About Section - Compact Height */}
+        {/* About Section - Reduced vertical padding (Compact Height) */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -361,7 +361,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section */}
+        {/* Testimonials Section - Modern Light Carousel Style */}
         <section className="py-40 bg-[#F8FAFC] relative overflow-hidden">
           <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl opacity-50" />
           <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-100/50 rounded-full blur-3xl opacity-50" />
@@ -558,7 +558,7 @@ export default function Home() {
                         <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Message</Label>
                         <Textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Message" className="min-h-[120px] rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all p-4" />
                       </div>
-                      <Button type="submit" size="lg" className="w-full h-14 rounded-xl font-bold text-lg bg-blue-600 pool-blue-700 shadow-xl shadow-blue-600/20 transition-all gap-3" disabled={loading}>
+                      <Button type="submit" size="lg" className="w-full h-14 rounded-xl font-bold text-lg bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all gap-3" disabled={loading}>
                         {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
                           <>
                             Send Inquiry <Send className="h-4 w-4" />
