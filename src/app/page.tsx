@@ -1,100 +1,45 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Award, Globe, Users, Quote, Star, Calendar, MapPin } from "lucide-react";
+import { ArrowRight, BookOpen, Award, Globe, Users, Quote, Star, Calendar, MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, limit, where } from "firebase/firestore";
 
 export default function Home() {
+  const firestore = useFirestore();
   const heroImg = PlaceHolderImages.find(img => img.id === "hero-bg");
   const aboutImg = PlaceHolderImages.find(img => img.id === "about-img");
+
+  const coursesQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'courses'), where('isFeatured', '==', true), limit(3));
+  }, [firestore]);
+  const { data: featuredCourses, isLoading: coursesLoading } = useCollection(coursesQuery);
+
+  const eventsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'events'), limit(3));
+  }, [firestore]);
+  const { data: featuredEvents, isLoading: eventsLoading } = useCollection(eventsQuery);
+
+  const testimonialsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'testimonials'), limit(3));
+  }, [firestore]);
+  const { data: testimonials, isLoading: testimonialsLoading } = useCollection(testimonialsQuery);
   
   const stats = [
     { label: "Courses", value: "120+", icon: BookOpen, color: "text-indigo-600" },
     { label: "Students", value: "15K+", icon: Users, color: "text-indigo-600" },
     { label: "Success Rate", value: "98%", icon: Award, color: "text-indigo-600" },
     { label: "Countries", value: "50+", icon: Globe, color: "text-indigo-600" },
-  ];
-
-  const featuredCourses = [
-    {
-      title: "Mastering React & Next.js",
-      instructor: "Dr. Sarah Johnson",
-      price: "$49.99",
-      img: PlaceHolderImages.find(img => img.id === "course-cs")?.imageUrl,
-    },
-    {
-      title: "Business Leadership Excellence",
-      instructor: "Prof. Michael Chen",
-      price: "$39.99",
-      img: PlaceHolderImages.find(img => img.id === "course-business")?.imageUrl,
-    },
-    {
-      title: "Creative Digital Illustration",
-      instructor: "Emily White",
-      price: "$29.99",
-      img: PlaceHolderImages.find(img => img.id === "course-art")?.imageUrl,
-    },
-  ];
-
-  const featuredEvents = [
-    {
-      title: "Career Fair 2026",
-      date: "June 10th, 2026",
-      time: "9:00 AM",
-      location: "Student Union Hall",
-      description: "Connect with top employers, explore internship opportunities, and attend resume workshops.",
-      day: "10",
-      month: "JUN",
-      img: PlaceHolderImages.find(img => img.id === "event-workshop")?.imageUrl,
-    },
-    {
-      title: "Tech Innovation Summit",
-      date: "May 20th, 2026",
-      time: "9:00 AM",
-      location: "Innovation Center",
-      description: "Annual technology conference featuring industry leaders, workshops, and networking opportunities.",
-      day: "20",
-      month: "MAY",
-      img: PlaceHolderImages.find(img => img.id === "course-cs")?.imageUrl,
-    },
-    {
-      title: "Arts & Culture Festival",
-      date: "May 5th, 2026",
-      time: "2:00 PM",
-      location: "Creative Arts Building",
-      description: "Celebrate creativity with exhibitions, performances, and interactive art installations.",
-      day: "05",
-      month: "MAY",
-      img: PlaceHolderImages.find(img => img.id === "course-art")?.imageUrl,
-    },
-  ];
-
-  const testimonials = [
-    {
-      text: "The faculty here are incredible. They bring real-world experience into the classroom, making every lecture engaging and practical.",
-      name: "Michael Chang",
-      role: "Business Administration Student",
-      initial: "M",
-      rating: 5
-    },
-    {
-      text: "I went from knowing nothing about marketing to running campaigns for major brands. The curriculum is perfectly structured.",
-      name: "Priya Sharma",
-      role: "Digital Marketing Graduate",
-      initial: "P",
-      rating: 4
-    },
-    {
-      text: "Ideal Study Point transformed my career. The hands-on projects and mentorship gave me the confidence to land my dream job.",
-      name: "Jessica Thompson",
-      role: "Computer Science Graduate",
-      initial: "J",
-      rating: 5
-    }
   ];
 
   return (
@@ -222,11 +167,12 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {featuredCourses.map((course, idx) => (
+              {coursesLoading && <Loader2 className="mx-auto animate-spin" />}
+              {featuredCourses?.map((course, idx) => (
                 <Card key={idx} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
                   <div className="relative h-40 w-full overflow-hidden">
                     <Image
-                      src={course.img || ""}
+                      src={course.imageUrl || PlaceHolderImages[1].imageUrl}
                       alt={course.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -242,7 +188,7 @@ export default function Home() {
                       <span>{course.instructor}</span>
                     </div>
                     <div className="flex justify-between items-center pt-4 border-t border-slate-50">
-                      <span className="text-xl font-black text-indigo-600 tracking-tighter">{course.price}</span>
+                      <span className="text-xl font-black text-indigo-600 tracking-tighter">{course.duration}</span>
                       <Button asChild className="rounded-xl h-9 px-5 text-[10px] font-bold bg-slate-900 hover:bg-indigo-600 text-white transition-all shadow-md">
                         <Link href="/admission">Enroll Now</Link>
                       </Button>
@@ -266,38 +212,41 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {featuredEvents.map((event, idx) => (
-                <Card key={idx} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src={event.img || ""}
-                      alt={event.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute top-6 right-6">
-                      <span className="bg-secondary text-white text-[9px] font-black uppercase tracking-[0.15em] px-4 py-2 rounded-full shadow-lg">Upcoming</span>
-                    </div>
-                    <div className="absolute bottom-6 left-6 bg-white rounded-xl p-3 shadow-xl flex flex-col items-center justify-center min-w-[50px]">
-                      <span className="text-xl font-black text-indigo-600 leading-none">{event.day}</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">{event.month}</span>
-                    </div>
-                  </div>
-                  <CardContent className="p-6 space-y-4">
-                    <h3 className="text-lg font-headline font-bold text-indigo-600 leading-tight">{event.title}</h3>
-                    <div className="space-y-2 pt-3 border-t border-slate-50 text-[10px] font-bold text-slate-400">
-                      <div className="flex items-center gap-3">
-                        <Calendar className="h-3.5 w-3.5 text-indigo-400" />
-                        <span>{event.date} • {event.time}</span>
+              {eventsLoading && <Loader2 className="mx-auto animate-spin" />}
+              {featuredEvents?.map((event, idx) => {
+                 const dateObj = event.date ? new Date(event.date) : new Date();
+                 const day = dateObj.getDate().toString().padStart(2, '0');
+                 const month = dateObj.toLocaleString('default', { month: 'short' }).toUpperCase();
+                 
+                 return (
+                  <Card key={idx} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
+                    <div className="relative h-48 w-full">
+                      <Image
+                        src={event.imageUrl || PlaceHolderImages[4].imageUrl}
+                        alt={event.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute top-6 right-6">
+                        <span className="bg-secondary text-white text-[9px] font-black uppercase tracking-[0.15em] px-4 py-2 rounded-full shadow-lg">Upcoming</span>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <MapPin className="h-3.5 w-3.5 text-indigo-400" />
-                        <span>{event.location}</span>
+                      <div className="absolute bottom-6 left-6 bg-white rounded-xl p-3 shadow-xl flex flex-col items-center justify-center min-w-[50px]">
+                        <span className="text-xl font-black text-indigo-600 leading-none">{day}</span>
+                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">{month}</span>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    <CardContent className="p-6 space-y-4">
+                      <h3 className="text-lg font-headline font-bold text-indigo-600 leading-tight">{event.title}</h3>
+                      <div className="space-y-2 pt-3 border-t border-slate-50 text-[10px] font-bold text-slate-400">
+                        <div className="flex items-center gap-3">
+                          <Calendar className="h-3.5 w-3.5 text-indigo-400" />
+                          <span>{new Date(event.date).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
 
             <div className="mt-16 flex justify-center">
@@ -319,28 +268,29 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {testimonials.map((t, idx) => (
+              {testimonialsLoading && <Loader2 className="mx-auto animate-spin" />}
+              {testimonials?.map((t, idx) => (
                 <Card key={idx} className="border-none shadow-xl rounded-[2.5rem] bg-white p-6 flex flex-col justify-between h-full transition-transform hover:-translate-y-2 duration-300">
                   <div className="space-y-4">
                     <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-50/50">
                       <Quote className="h-5 w-5 text-indigo-200" />
                     </div>
-                    <p className="text-base text-slate-600 font-medium leading-relaxed italic">&quot;{t.text}&quot;</p>
+                    <p className="text-base text-slate-600 font-medium leading-relaxed italic">&quot;{t.content}&quot;</p>
                   </div>
                   
                   <div className="pt-6 flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-base">
-                        {t.initial}
+                      <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-base overflow-hidden">
+                        {t.imageUrl ? <Image src={t.imageUrl} alt={t.authorName} width={40} height={40} /> : t.authorName[0]}
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-slate-900 text-sm">{t.name}</span>
-                        <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-0.5">{t.role}</span>
+                        <span className="font-bold text-slate-900 text-sm">{t.authorName}</span>
+                        <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-0.5">{t.authorTitle}</span>
                       </div>
                     </div>
                     <div className="flex gap-0.5">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={cn("h-3 w-3", i < t.rating ? "fill-amber-400 text-amber-400" : "text-slate-200")} />
+                        <Star key={i} className={cn("h-3 w-3 fill-amber-400 text-amber-400")} />
                       ))}
                     </div>
                   </div>

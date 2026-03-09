@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { generateEventSummary } from "@/ai/flows/generate-event-summary";
 import { toast } from "@/hooks/use-toast";
+import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
+import { collection, query, doc } from "firebase/firestore";
 
 export default function AdminEventsPage() {
   const [isAdding, setIsAdding] = useState(false);
@@ -22,6 +24,13 @@ export default function AdminEventsPage() {
     description: "",
     summary: ""
   });
+
+  const firestore = useFirestore();
+  const eventsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'events'));
+  }, [firestore]);
+  const { data: events, isLoading } = useCollection(eventsQuery);
 
   const handleAiGenerate = async () => {
     if (!formData.title || !formData.description) {
@@ -43,6 +52,32 @@ export default function AdminEventsPage() {
     } finally {
       setGenerating(false);
     }
+  };
+
+  const handleSave = () => {
+    if (!firestore) return;
+    const colRef = collection(firestore, 'events');
+    const newDocId = doc(colRef).id;
+
+    addDocumentNonBlocking(colRef, {
+      id: newDocId,
+      title: formData.title,
+      date: formData.date,
+      description: formData.description,
+      imageUrl: "https://picsum.photos/seed/" + Math.random() + "/800/600",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+
+    setIsAdding(false);
+    setFormData({ title: "", date: "", location: "", description: "", summary: "" });
+    toast({ title: "Event Added", description: "Successfully created event." });
+  };
+
+  const handleDelete = (eventId: string) => {
+    if (!firestore) return;
+    deleteDocumentNonBlocking(doc(firestore, 'events', eventId));
+    toast({ title: "Deleted", description: "Event removed." });
   };
 
   return (
@@ -92,7 +127,7 @@ export default function AdminEventsPage() {
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <Button variant="outline" onClick={() => setIsAdding(false)}>Cancel</Button>
-              <Button className="gap-2 px-8" onClick={() => { toast({ title: "Event Added", description: "Successfully created event." }); setIsAdding(false); }}>
+              <Button className="gap-2 px-8" onClick={handleSave}>
                 <Save className="h-4 w-4" /> Save Event
               </Button>
             </div>
@@ -106,24 +141,21 @@ export default function AdminEventsPage() {
             <TableRow>
               <TableHead>Event Title</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Location</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {[
-              { id: 1, title: "Global Tech Summit", date: "2024-10-15", loc: "Main Auditorium" },
-              { id: 2, title: "Leadership Seminar", date: "2024-10-22", loc: "Hall B" },
-            ].map((ev) => (
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={3} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+              </TableRow>
+            )}
+            {events?.map((ev) => (
               <TableRow key={ev.id}>
                 <TableCell className="font-semibold">{ev.title}</TableCell>
-                <TableCell className="flex items-center gap-2"><CalendarIcon className="h-4 w-4 text-primary" /> {ev.date}</TableCell>
-                <TableCell>{ev.loc}</TableCell>
+                <TableCell className="flex items-center gap-2"><CalendarIcon className="h-4 w-4 text-primary" /> {new Date(ev.date).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right space-x-2">
-                   <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10">
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => handleDelete(ev.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>

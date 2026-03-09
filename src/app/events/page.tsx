@@ -1,66 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { Calendar as CalendarIcon, MapPin, ArrowRight } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, ArrowRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
-import { cn } from "@/lib/utils";
-
-const mockEvents = [
-  {
-    id: "1",
-    title: "Career Fair 2026",
-    date: "June 10th, 2026",
-    time: "9:00 AM",
-    location: "Student Union Hall",
-    description: "Connect with top employers, explore internship opportunities, and attend resume workshops to kickstart your career.",
-    day: "10",
-    month: "JUN",
-    image: PlaceHolderImages.find(img => img.id === "event-workshop")?.imageUrl,
-    type: "Workshop"
-  },
-  {
-    id: "2",
-    title: "Tech Innovation Summit",
-    date: "May 20th, 2026",
-    time: "9:00 AM",
-    location: "Innovation Center",
-    description: "Annual technology conference featuring industry leaders, workshops, and networking opportunities for tech enthusiasts.",
-    day: "20",
-    month: "MAY",
-    image: PlaceHolderImages.find(img => img.id === "course-cs")?.imageUrl,
-    type: "Conference"
-  },
-  {
-    id: "3",
-    title: "Arts & Culture Festival",
-    date: "May 5th, 2026",
-    time: "2:00 PM",
-    location: "Creative Arts Building",
-    description: "Celebrate creativity with exhibitions, performances, and interactive art installations from local and international artists.",
-    day: "05",
-    month: "MAY",
-    image: PlaceHolderImages.find(img => img.id === "course-art")?.imageUrl,
-    type: "Exhibition"
-  },
-  {
-    id: "4",
-    title: "Leadership in Modern Times",
-    date: "June 15th, 2026",
-    time: "11:00 AM",
-    location: "Main Hall B",
-    description: "Developing leadership qualities for the next generation of business leaders and community organizers.",
-    day: "15",
-    month: "JUN",
-    image: PlaceHolderImages.find(img => img.id === "event-seminar")?.imageUrl,
-    type: "Seminar"
-  }
-];
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query } from "firebase/firestore";
 
 export default function EventsPage() {
+  const firestore = useFirestore();
+
+  const eventsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'events'));
+  }, [firestore]);
+  
+  const { data: events, isLoading } = useCollection(eventsQuery);
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
@@ -80,68 +39,64 @@ export default function EventsPage() {
           </div>
 
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {mockEvents.map((event) => (
-                <Card key={event.id} className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-500 rounded-[2rem] bg-white">
-                  <div className="relative h-52 w-full">
-                    <Image
-                      src={event.image || ""}
-                      alt={event.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-secondary text-white text-[9px] font-black uppercase tracking-[0.15em] px-3 py-1.5 rounded-full shadow-md">Upcoming</span>
-                    </div>
-                    <div className="absolute bottom-4 left-4 bg-white rounded-xl p-3 shadow-lg flex flex-col items-center justify-center min-w-[55px]">
-                      <span className="text-xl font-black text-indigo-600 leading-none">{event.day}</span>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{event.month}</span>
-                    </div>
-                  </div>
-                  <CardContent className="p-6 space-y-3">
-                    <h3 className="text-lg font-headline font-bold text-indigo-600 leading-tight">
-                      {event.title}
-                    </h3>
-                    <p className="text-slate-500 text-xs font-medium leading-relaxed line-clamp-2">
-                      {event.description}
-                    </p>
-                    <div className="space-y-2 pt-3 border-t border-slate-50 text-[11px] font-bold text-slate-400">
-                      <div className="flex items-center gap-2.5">
-                        <CalendarIcon className="h-3.5 w-3.5 text-indigo-400" />
-                        <span>{event.date} • {event.time}</span>
-                      </div>
-                      <div className="flex items-center gap-2.5">
-                        <MapPin className="h-3.5 w-3.5 text-indigo-400" />
-                        <span className="line-clamp-1">{event.location}</span>
-                      </div>
-                    </div>
-                    <Button className="w-full h-10 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs shadow-md transition-all gap-2 group mt-2">
-                      Register Now <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <div className="mt-16 flex justify-center">
-              <div className="flex gap-2">
-                {[1, 2, 3].map(n => (
-                  <Button 
-                    key={n} 
-                    variant={n === 1 ? "default" : "outline"} 
-                    className={cn(
-                      "w-10 h-10 p-0 rounded-xl font-bold transition-all",
-                      n === 1 
-                        ? "bg-indigo-600 text-white shadow-md border-none" 
-                        : "bg-white border-slate-200 text-slate-400 hover:text-indigo-600"
-                    )}
-                  >
-                    {n}
-                  </Button>
-                ))}
+            {isLoading && (
+              <div className="flex justify-center py-20">
+                <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
               </div>
-            </div>
+            )}
+
+            {!isLoading && events && events.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {events.map((event) => {
+                  const dateObj = event.date ? new Date(event.date) : new Date();
+                  const day = dateObj.getDate().toString().padStart(2, '0');
+                  const month = dateObj.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+                  return (
+                    <Card key={event.id} className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-500 rounded-[2rem] bg-white">
+                      <div className="relative h-52 w-full">
+                        <Image
+                          src={event.imageUrl || PlaceHolderImages[4].imageUrl}
+                          alt={event.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                        <div className="absolute top-4 right-4">
+                          <span className="bg-secondary text-white text-[9px] font-black uppercase tracking-[0.15em] px-3 py-1.5 rounded-full shadow-md">Upcoming</span>
+                        </div>
+                        <div className="absolute bottom-4 left-4 bg-white rounded-xl p-3 shadow-lg flex flex-col items-center justify-center min-w-[55px]">
+                          <span className="text-xl font-black text-indigo-600 leading-none">{day}</span>
+                          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">{month}</span>
+                        </div>
+                      </div>
+                      <CardContent className="p-6 space-y-3">
+                        <h3 className="text-lg font-headline font-bold text-indigo-600 leading-tight">
+                          {event.title}
+                        </h3>
+                        <p className="text-slate-500 text-xs font-medium leading-relaxed line-clamp-2">
+                          {event.description}
+                        </p>
+                        <div className="space-y-2 pt-3 border-t border-slate-50 text-[11px] font-bold text-slate-400">
+                          <div className="flex items-center gap-2.5">
+                            <CalendarIcon className="h-3.5 w-3.5 text-indigo-400" />
+                            <span>{new Date(event.date).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                        <Button asChild className="w-full h-10 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-xs shadow-md transition-all gap-2 group mt-2">
+                          <Link href="/contact">Register Now <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" /></Link>
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            ) : !isLoading && (
+               <div className="text-center py-20 bg-white rounded-[3rem] shadow-sm border border-slate-50">
+                <CalendarIcon className="h-16 w-16 text-slate-200 mx-auto mb-6" />
+                <h3 className="text-2xl font-headline font-bold text-slate-900 mb-2">No upcoming events</h3>
+                <p className="text-slate-500 mb-8">Check back soon for new workshops and seminars.</p>
+              </div>
+            )}
           </div>
         </div>
       </main>

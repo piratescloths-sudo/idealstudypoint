@@ -1,3 +1,5 @@
+"use client";
+
 import { 
   Users, 
   BookOpen, 
@@ -5,16 +7,31 @@ import {
   TrendingUp, 
   ArrowUpRight,
   MessageCircle,
-  Clock
+  Clock,
+  Loader2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { collection, query, orderBy, limit } from "firebase/firestore";
 
 export default function AdminDashboard() {
+  const firestore = useFirestore();
+
+  const coursesQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'courses')) : null, [firestore]);
+  const inquiriesQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'admissionInquiries'), orderBy('submissionDate', 'desc'), limit(5)) : null, [firestore]);
+  const messagesQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'contactMessages')) : null, [firestore]);
+  const eventsQuery = useMemoFirebase(() => firestore ? query(collection(firestore, 'events')) : null, [firestore]);
+
+  const { data: courses } = useCollection(coursesQuery);
+  const { data: recentInquiries, isLoading: loadingInquiries } = useCollection(inquiriesQuery);
+  const { data: messages } = useCollection(messagesQuery);
+  const { data: events } = useCollection(eventsQuery);
+
   const stats = [
-    { label: "Total Students", value: "12,450", icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
-    { label: "Active Courses", value: "48", icon: BookOpen, color: "text-emerald-600", bg: "bg-emerald-50" },
-    { label: "Pending Admissions", value: "156", icon: TrendingUp, color: "text-amber-600", bg: "bg-amber-50" },
-    { label: "Unread Messages", value: "24", icon: MessageCircle, color: "text-rose-600", bg: "bg-rose-50" },
+    { label: "Active Courses", value: courses?.length || 0, icon: BookOpen, color: "text-emerald-600", bg: "bg-emerald-50" },
+    { label: "Events", value: events?.length || 0, icon: Calendar, color: "text-blue-600", bg: "bg-blue-50" },
+    { label: "Admissions", value: recentInquiries?.length || 0, icon: TrendingUp, color: "text-amber-600", bg: "bg-amber-50" },
+    { label: "Messages", value: messages?.length || 0, icon: MessageCircle, color: "text-rose-600", bg: "bg-rose-50" },
   ];
 
   return (
@@ -31,9 +48,6 @@ export default function AdminDashboard() {
               <div className="flex justify-between items-start">
                 <div className={stat.bg + " p-4 rounded-2xl group-hover:scale-110 transition-transform"}>
                   <stat.icon className={stat.color + " h-6 w-6"} />
-                </div>
-                <div className="flex items-center text-emerald-500 text-xs font-bold">
-                  +12% <ArrowUpRight className="h-3 w-3" />
                 </div>
               </div>
               <div className="mt-4 space-y-1">
@@ -53,18 +67,19 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="space-y-6">
-              {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+              {loadingInquiries && <Loader2 className="animate-spin" />}
+              {recentInquiries?.map((sub) => (
+                <div key={sub.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
                   <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center font-bold text-xs">
-                      JD
+                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center font-bold text-xs uppercase">
+                      {sub.name[0]}
                     </div>
                     <div>
-                      <p className="font-semibold text-sm">Jane Doe</p>
-                      <p className="text-xs text-muted-foreground">Applied for Computer Science</p>
+                      <p className="font-semibold text-sm">{sub.name}</p>
+                      <p className="text-xs text-muted-foreground">Applied for {sub.selectedCourseId}</p>
                     </div>
                   </div>
-                  <span className="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-bold">Pending</span>
+                  <span className="text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-bold">New</span>
                 </div>
               ))}
             </div>
@@ -78,15 +93,13 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent className="pt-6">
             <div className="space-y-6">
-              {[1, 2, 3, 4].map((n) => (
-                <div key={n} className="flex gap-4">
-                  <div className="h-2 w-2 mt-2 bg-primary rounded-full shrink-0" />
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">New course &quot;Digital Marketing&quot; published</p>
-                    <p className="text-xs text-muted-foreground">Today at 10:45 AM</p>
-                  </div>
+              <div className="flex gap-4">
+                <div className="h-2 w-2 mt-2 bg-primary rounded-full shrink-0" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium">Monitoring Course Enrollment</p>
+                  <p className="text-xs text-muted-foreground">Live data active</p>
                 </div>
-              ))}
+              </div>
             </div>
           </CardContent>
         </Card>

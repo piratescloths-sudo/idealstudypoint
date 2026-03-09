@@ -11,18 +11,29 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { generateCourseDescription } from "@/ai/flows/generate-course-description";
 import { toast } from "@/hooks/use-toast";
+import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
+import { collection, query, doc, serverTimestamp } from "firebase/firestore";
 
 export default function AdminCoursesPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [search, setSearch] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     instructor: "",
     duration: "",
     targetAudience: "",
     learningObjectives: "",
-    description: ""
+    description: "",
+    shortDescription: ""
   });
+
+  const firestore = useFirestore();
+  const coursesQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'courses'));
+  }, [firestore]);
+  const { data: courses, isLoading } = useCollection(coursesQuery);
 
   const handleAiGenerate = async () => {
     if (!formData.title || !formData.instructor) {
@@ -38,7 +49,7 @@ export default function AdminCoursesPage() {
         targetAudience: formData.targetAudience || "Everyone",
         learningObjectives: formData.learningObjectives.split("\n").filter(l => l.trim())
       });
-      setFormData({ ...formData, description: result.description });
+      setFormData({ ...formData, description: result.description, shortDescription: result.description.substring(0, 150) + "..." });
       toast({ title: "AI Magic Complete", description: "Course description generated successfully." });
     } catch (err) {
       toast({ variant: "destructive", title: "Error", description: "Could not generate description." });
@@ -46,6 +57,37 @@ export default function AdminCoursesPage() {
       setGenerating(false);
     }
   };
+
+  const handleSave = () => {
+    if (!firestore) return;
+    const colRef = collection(firestore, 'courses');
+    const newDocId = doc(colRef).id;
+    
+    addDocumentNonBlocking(colRef, {
+      id: newDocId,
+      title: formData.title,
+      instructor: formData.instructor,
+      duration: formData.duration,
+      shortDescription: formData.shortDescription || formData.description.substring(0, 100),
+      longDescription: formData.description,
+      isFeatured: true,
+      imageUrl: "https://picsum.photos/seed/" + Math.random() + "/600/400",
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    });
+
+    setIsAdding(false);
+    setFormData({ title: "", instructor: "", duration: "", targetAudience: "", learningObjectives: "", description: "", shortDescription: "" });
+    toast({ title: "Success", description: "Course added to database." });
+  };
+
+  const handleDelete = (courseId: string) => {
+    if (!firestore) return;
+    deleteDocumentNonBlocking(doc(firestore, 'courses', courseId));
+    toast({ title: "Deleted", description: "Course removed." });
+  };
+
+  const filteredCourses = courses?.filter(c => c.title.toLowerCase().includes(search.toLowerCase())) || [];
 
   return (
     <div className="space-y-8">
@@ -98,7 +140,7 @@ export default function AdminCoursesPage() {
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <Button variant="outline" onClick={() => setIsAdding(false)}>Cancel</Button>
-              <Button className="gap-2 px-8" onClick={() => { toast({ title: "Success", description: "Course added." }); setIsAdding(false); }}>
+              <Button className="gap-2 px-8" onClick={handleSave}>
                 <Save className="h-4 w-4" /> Save Course
               </Button>
             </div>
@@ -110,10 +152,7 @@ export default function AdminCoursesPage() {
         <div className="p-6 border-b flex items-center justify-between">
           <div className="relative max-w-sm w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground h-4 w-4" />
-            <Input placeholder="Search courses..." className="pl-10 h-10 rounded-xl" />
-          </div>
-          <div className="flex gap-2">
-             {/* Filter buttons could go here */}
+            <Input placeholder="Search courses..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10 h-10 rounded-xl" />
           </div>
         </div>
         <Table>
@@ -126,20 +165,18 @@ export default function AdminCoursesPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {[
-              { id: 1, title: "Full Stack Development", inst: "David Miller", dur: "12 Weeks" },
-              { id: 2, title: "UI/UX Design Masterclass", inst: "Mark Wilson", dur: "8 Weeks" },
-              { id: 3, title: "Data Science Fundamentals", inst: "Sarah Chen", dur: "10 Weeks" },
-            ].map((course) => (
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+              </TableRow>
+            )}
+            {filteredCourses.map((course) => (
               <TableRow key={course.id}>
                 <TableCell className="font-semibold">{course.title}</TableCell>
-                <TableCell>{course.inst}</TableCell>
-                <TableCell>{course.dur}</TableCell>
+                <TableCell>{course.instructor}</TableCell>
+                <TableCell>{course.duration}</TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-primary hover:bg-primary/10">
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => handleDelete(course.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>

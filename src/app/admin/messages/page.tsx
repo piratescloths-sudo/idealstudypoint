@@ -1,17 +1,26 @@
 "use client";
 
-import { MailOpen, Mail, Trash2, Reply } from "lucide-react";
+import { MailOpen, Mail, Trash2, Reply, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
+import { useCollection, useFirestore, useMemoFirebase, deleteDocumentNonBlocking } from "@/firebase";
+import { collection, query, orderBy, doc } from "firebase/firestore";
 
 export default function AdminMessagesPage() {
-  const messages = [
-    { id: 1, sender: "Alice Brown", email: "alice@test.com", subject: "Inquiry about Scholarship", date: "2 hours ago", isRead: false },
-    { id: 2, sender: "Robert Wilson", email: "robert@test.com", subject: "Campus Tour Request", date: "5 hours ago", isRead: true },
-    { id: 3, sender: "Elena Petrova", email: "elena@test.com", subject: "Course Fee structure", date: "Yesterday", isRead: true },
-  ];
+  const firestore = useFirestore();
+  const messagesQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'contactMessages'), orderBy('submissionDate', 'desc'));
+  }, [firestore]);
+  const { data: messages, isLoading } = useCollection(messagesQuery);
+
+  const handleDelete = (id: string) => {
+    if (!firestore) return;
+    deleteDocumentNonBlocking(doc(firestore, 'contactMessages', id));
+    toast({ title: "Deleted", description: "Message removed." });
+  };
 
   return (
     <div className="space-y-8">
@@ -26,28 +35,30 @@ export default function AdminMessagesPage() {
             <TableRow>
               <TableHead className="w-[40px]"></TableHead>
               <TableHead>Sender</TableHead>
-              <TableHead>Subject</TableHead>
+              <TableHead>Message</TableHead>
               <TableHead>Received</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {messages.map((msg) => (
-              <TableRow key={msg.id} className={msg.isRead ? "opacity-75" : "bg-primary/5"}>
+            {isLoading && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+              </TableRow>
+            )}
+            {messages?.map((msg) => (
+              <TableRow key={msg.id} className="hover:bg-muted/50">
                 <TableCell>
-                  {msg.isRead ? <MailOpen className="h-4 w-4 text-muted-foreground" /> : <Mail className="h-4 w-4 text-primary" />}
+                  <Mail className="h-4 w-4 text-primary" />
                 </TableCell>
                 <TableCell>
-                  <div className="font-semibold">{msg.sender}</div>
+                  <div className="font-semibold">{msg.name}</div>
                   <div className="text-xs text-muted-foreground">{msg.email}</div>
                 </TableCell>
-                <TableCell className="font-medium">{msg.subject}</TableCell>
-                <TableCell className="text-muted-foreground text-sm">{msg.date}</TableCell>
+                <TableCell className="font-medium max-w-xs truncate">{msg.message}</TableCell>
+                <TableCell className="text-muted-foreground text-sm">{new Date(msg.submissionDate).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-primary">
-                    <Reply className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => toast({ title: "Deleted", description: "Message moved to trash." })}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => handleDelete(msg.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>

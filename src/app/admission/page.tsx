@@ -8,7 +8,8 @@ import {
   Heart, 
   Send, 
   CheckCircle2, 
-  Sparkles 
+  Sparkles,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,15 +26,46 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
+import { useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from "@/firebase";
+import { collection, query, doc } from "firebase/firestore";
 
 export default function AdmissionPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const firestore = useFirestore();
+
+  const coursesQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return query(collection(firestore, 'courses'));
+  }, [firestore]);
+  const { data: courses } = useCollection(coursesQuery);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    courseId: "",
+    message: ""
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!firestore) return;
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
+
+    const colRef = collection(firestore, 'admissionInquiries');
+    const newDocId = doc(colRef).id;
+
+    addDocumentNonBlocking(colRef, {
+      id: newDocId,
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      selectedCourseId: formData.courseId,
+      message: formData.message,
+      submissionDate: new Date().toISOString()
+    });
+
     setLoading(false);
     setSubmitted(true);
     toast({
@@ -75,7 +107,6 @@ export default function AdmissionPage() {
       <main className="flex-grow pt-40 pb-24">
         <div className="container mx-auto px-6 md:px-12 lg:px-24">
           
-          {/* Centered Header Section */}
           <div className="text-center mb-16 space-y-4 max-w-2xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-headline font-bold text-slate-900 leading-tight">
               Start Your Application
@@ -87,33 +118,16 @@ export default function AdmissionPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
             
-            {/* Left Content Column */}
             <div className="space-y-10">
               <div className="space-y-6">
                 <h2 className="text-3xl font-headline font-bold text-slate-900">Why Apply to Ideal Study Point?</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
-                    { 
-                      icon: BookOpen, 
-                      title: "World-Class Curriculum", 
-                      desc: "Programs designed by industry experts" 
-                    },
-                    { 
-                      icon: Clock, 
-                      title: "Flexible Schedule", 
-                      desc: "Learn at your pace" 
-                    },
-                    { 
-                      icon: Award, 
-                      title: "Recognized Degrees", 
-                      desc: "Accredited certifications" 
-                    },
-                    { 
-                      icon: Heart, 
-                      title: "Career Support", 
-                      desc: "Placement assistance" 
-                    }
+                    { icon: BookOpen, title: "World-Class Curriculum", desc: "Programs designed by industry experts" },
+                    { icon: Clock, title: "Flexible Schedule", desc: "Learn at your pace" },
+                    { icon: Award, title: "Recognized Degrees", desc: "Accredited certifications" },
+                    { icon: Heart, title: "Career Support", desc: "Placement assistance" }
                   ].map((feature, i) => (
                     <Card key={i} className="border-none shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-3xl p-6 bg-white transition-all hover:-translate-y-1 duration-300">
                       <CardContent className="p-0 space-y-3">
@@ -130,7 +144,6 @@ export default function AdmissionPage() {
                 </div>
               </div>
 
-              {/* Admission Process Box */}
               <Card className="border-none shadow-none rounded-3xl bg-indigo-50/50 p-10 border border-indigo-100">
                 <CardContent className="p-0 space-y-5">
                   <h3 className="text-xl font-bold text-slate-900">Admission Process</h3>
@@ -144,36 +157,34 @@ export default function AdmissionPage() {
               </Card>
             </div>
 
-            {/* Right Form Column */}
             <Card className="border-none shadow-2xl rounded-[2.5rem] bg-white overflow-hidden">
               <CardContent className="p-10 md:p-14">
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-bold text-slate-900">Full Name *</Label>
-                    <Input id="name" required placeholder="John Doe" className="h-12 rounded-xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all" />
+                    <Input id="name" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="John Doe" className="h-12 rounded-xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-bold text-slate-900">Email Address *</Label>
-                    <Input id="email" type="email" required placeholder="john@example.com" className="h-12 rounded-xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all" />
+                    <Input id="email" type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="john@example.com" className="h-12 rounded-xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="phone" className="text-sm font-bold text-slate-900">Phone Number</Label>
-                    <Input id="phone" type="tel" placeholder="+1 (555) 000-0000" className="h-12 rounded-xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all" />
+                    <Input id="phone" type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+1 (555) 000-0000" className="h-12 rounded-xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all" />
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="course" className="text-sm font-bold text-slate-900">Select Course</Label>
-                    <Select required>
+                    <Select required onValueChange={val => setFormData({...formData, courseId: val})}>
                       <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all">
                         <SelectValue placeholder="Choose a course" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
-                        <SelectItem value="cs">Computer Science</SelectItem>
-                        <SelectItem value="business">Business Management</SelectItem>
-                        <SelectItem value="design">Graphic Design</SelectItem>
-                        <SelectItem value="data">Data Science</SelectItem>
+                        {courses?.map(c => (
+                          <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -182,13 +193,15 @@ export default function AdmissionPage() {
                     <Label htmlFor="message" className="text-sm font-bold text-slate-900">Additional Message</Label>
                     <Textarea 
                       id="message" 
+                      value={formData.message}
+                      onChange={e => setFormData({...formData, message: e.target.value})}
                       placeholder="Tell us about yourself..." 
                       className="min-h-[140px] rounded-2xl bg-slate-50 border-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all p-4" 
                     />
                   </div>
 
                   <Button type="submit" className="w-full h-14 rounded-xl text-lg font-bold gap-3 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-600/20 transition-all" disabled={loading}>
-                    {loading ? "Processing..." : (
+                    {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
                       <>
                         <Send className="h-5 w-5" /> Submit Application
                       </>
