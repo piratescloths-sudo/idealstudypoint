@@ -74,7 +74,7 @@ export default function Home() {
     if (heroImages.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 2000);
+    }, 3000);
     return () => clearInterval(interval);
   }, [heroImages]);
 
@@ -164,7 +164,7 @@ export default function Home() {
                 />
               </div>
             ))}
-            <div className="absolute inset-0 bg-[#1a1f29]/60 backdrop-blur-[1px]" />
+            <div className="absolute inset-0 bg-[#1a1f29]/50 backdrop-blur-[1px]" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center pt-16">
@@ -448,10 +448,10 @@ export default function Home() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
               <div className="lg:col-span-1 space-y-6">
-                {/* Map Section in Homepage Contact */}
+                {/* Map Section */}
                 {settings?.googleMapEmbedUrl && (
                   <Card className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.03)] rounded-[2rem] bg-white overflow-hidden group transition-all hover:-translate-y-1">
-                    <div className="aspect-square w-full">
+                    <div className="aspect-square w-full bg-slate-50">
                       <iframe
                         src={settings.googleMapEmbedUrl}
                         width="100%"
@@ -460,7 +460,7 @@ export default function Home() {
                         allowFullScreen={true}
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
-                        className="grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700"
+                        className="grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700"
                       ></iframe>
                     </div>
                   </Card>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Shield, Globe, Info, Loader2, MessageSquare, Map as MapIcon } from "lucide-react";
+import { Save, Shield, Globe, Info, Loader2, MessageSquare, Map as MapIcon, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -147,17 +147,26 @@ export default function AdminSettingsPage() {
                 className="rounded-xl bg-slate-50 border-none min-h-[80px]" 
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                <MapIcon className="h-3 w-3" /> Google Map Embed URL (Src)
+            <div className="space-y-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
+              <Label className="text-xs font-bold uppercase tracking-widest text-amber-700 flex items-center gap-2">
+                <MapIcon className="h-3 w-3" /> Google Map Embed URL
               </Label>
               <Input 
                 value={formData.googleMapEmbedUrl} 
                 onChange={e => setFormData({...formData, googleMapEmbedUrl: e.target.value})}
                 placeholder="https://www.google.com/maps/embed?pb=..."
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-xl h-12 bg-white border-amber-200" 
               />
-              <p className="text-[10px] text-muted-foreground">Copy the 'src' attribute value from the Google Maps 'Embed a map' iframe code.</p>
+              <div className="space-y-1">
+                <p className="text-[10px] text-amber-800 font-bold flex items-center gap-1">
+                  <Info className="h-3 w-3" /> IMPORTANT: You must use the Embed URL, not a sharing link.
+                </p>
+                <ol className="text-[9px] text-amber-700 list-decimal list-inside space-y-0.5">
+                  <li>Go to Google Maps and find your location.</li>
+                  <li>Click "Share" then select "Embed a map".</li>
+                  <li>Copy the URL inside the 'src' attribute (starts with https://www.google.com/maps/embed...).</li>
+                </ol>
+              </div>
             </div>
             <div className="space-y-2">
               <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Office Hours</Label>

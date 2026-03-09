@@ -129,7 +129,7 @@ export default function ContactPage() {
               {/* Map Section */}
               {settings?.googleMapEmbedUrl && (
                 <Card className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.03)] rounded-[2rem] bg-white overflow-hidden group transition-all hover:-translate-y-1">
-                  <div className="aspect-square w-full">
+                  <div className="aspect-square w-full bg-slate-50">
                     <iframe
                       src={settings.googleMapEmbedUrl}
                       width="100%"
@@ -138,7 +138,7 @@ export default function ContactPage() {
                       allowFullScreen={true}
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      className="grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700"
+                      className="grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700"
                     ></iframe>
                   </div>
                 </Card>
