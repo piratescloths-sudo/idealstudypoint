@@ -22,11 +22,11 @@ export default function AdminLoginPage() {
     // Simulate auth delay
     setTimeout(() => {
       setLoading(false);
-      if (email === "admin@idealstudypoint.edu" && password === "password123") {
+      if (email === "kanhucharanideal@gmail.com" && password === "Kanhu@12365") {
         router.push("/admin/dashboard");
         toast({ title: "Welcome back!", description: "Successfully logged into dashboard." });
       } else {
-        toast({ variant: "destructive", title: "Error", description: "Invalid credentials. Use admin@idealstudypoint.edu / password123 for demo." });
+        toast({ variant: "destructive", title: "Error", description: "Invalid credentials. Please check your email and password." });
       }
     }, 1500);
   };
@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Sign In to Dashboard"}
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                Demo access: <span className="font-semibold">admin@idealstudypoint.edu</span> / <span className="font-semibold">password123</span>
+                Administrative access required for Ideal Study Point management.
               </p>
             </form>
           </CardContent>
