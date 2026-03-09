@@ -22,11 +22,11 @@ export default function AdminLoginPage() {
     // Simulate auth delay
     setTimeout(() => {
       setLoading(false);
-      if (email === "admin@eduflow.edu" && password === "password123") {
+      if (email === "admin@idealstudypoint.edu" && password === "password123") {
         router.push("/admin/dashboard");
         toast({ title: "Welcome back!", description: "Successfully logged into dashboard." });
       } else {
-        toast({ variant: "destructive", title: "Error", description: "Invalid credentials. Use admin@eduflow.edu / password123 for demo." });
+        toast({ variant: "destructive", title: "Error", description: "Invalid credentials. Use admin@idealstudypoint.edu / password123 for demo." });
       }
     }, 1500);
   };
@@ -47,7 +47,7 @@ export default function AdminLoginPage() {
             </div>
             <div className="space-y-2">
               <CardTitle className="text-3xl font-headline font-bold">Admin Portal</CardTitle>
-              <CardDescription>Enter your credentials to manage EduFlow content</CardDescription>
+              <CardDescription>Enter your credentials to manage IDEAL STUDY POINT content</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="p-8 md:p-10 bg-white">
@@ -80,7 +80,7 @@ export default function AdminLoginPage() {
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Sign In to Dashboard"}
               </Button>
               <p className="text-center text-xs text-muted-foreground">
-                Demo access: <span className="font-semibold">admin@eduflow.edu</span> / <span className="font-semibold">password123</span>
+                Demo access: <span className="font-semibold">admin@idealstudypoint.edu</span> / <span className="font-semibold">password123</span>
               </p>
             </form>
           </CardContent>

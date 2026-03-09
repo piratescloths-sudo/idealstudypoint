@@ -89,7 +89,7 @@ export default function Home() {
       rating: 4
     },
     {
-      text: "EduVista transformed my career. The hands-on projects and mentorship gave me the confidence to land my dream job.",
+      text: "IDEAL STUDY POINT transformed my career. The hands-on projects and mentorship gave me the confidence to land my dream job.",
       name: "Jessica Thompson",
       role: "Computer Science Graduate",
       initial: "J",
@@ -107,7 +107,7 @@ export default function Home() {
           <div className="absolute inset-0 z-0">
             <Image
               src={heroImg?.imageUrl || ""}
-              alt="EduVista Campus"
+              alt="IDEAL STUDY POINT Campus"
               fill
               className="object-cover brightness-[0.25]"
               priority
@@ -116,11 +116,11 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-b from-[#1a1f29]/95 via-[#1a1f29]/90 to-[#1a1f29]" />
           </div>
 
-          <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center pt-12">
+          <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center pt-16">
             <div className="max-w-5xl space-y-8">
               <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-500/10 backdrop-blur-md rounded-full border border-indigo-500/20 text-indigo-300 font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
                 <span>🎓</span>
-                <span>Welcome to EduVista Academy</span>
+                <span>Welcome to IDEAL STUDY POINT Academy</span>
               </div>
               
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-black text-white leading-[1.1] tracking-tighter">
@@ -184,11 +184,11 @@ export default function Home() {
                 </div>
                 
                 <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">
-                  Why Choose <br /> EduVista?
+                  Why Choose <br /> IDEAL STUDY POINT?
                 </h2>
                 
                 <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                  For over two decades, EduVista Academy has been at the forefront of education, blending traditional teaching methods with modern technology to shape the leaders of tomorrow.
+                  For over two decades, IDEAL STUDY POINT Academy has been at the forefront of education, blending traditional teaching methods with modern technology to shape the leaders of tomorrow.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">

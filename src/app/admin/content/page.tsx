@@ -39,7 +39,7 @@ export default function AdminContentPage() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label>Hero Heading</Label>
-                <Input defaultValue="Unlock Your Potential with EduFlow" className="h-12 rounded-xl" />
+                <Input defaultValue="Unlock Your Potential with IDEAL STUDY POINT" className="h-12 rounded-xl" />
               </div>
               <div className="space-y-2">
                 <Label>Hero Sub-heading</Label>
@@ -65,11 +65,11 @@ export default function AdminContentPage() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label>About Title</Label>
-                <Input defaultValue="Why Choose EduFlow Academy?" className="h-12 rounded-xl" />
+                <Input defaultValue="Why Choose IDEAL STUDY POINT Academy?" className="h-12 rounded-xl" />
               </div>
               <div className="space-y-2">
                 <Label>About Description</Label>
-                <Textarea defaultValue="With over two decades of excellence, EduFlow is committed to providing students with the best learning experience." className="rounded-xl min-h-[150px]" />
+                <Textarea defaultValue="With over two decades of excellence, IDEAL STUDY POINT is committed to providing students with the best learning experience." className="rounded-xl min-h-[150px]" />
               </div>
             </CardContent>
           </Card>
@@ -94,7 +94,7 @@ export default function AdminContentPage() {
                     </div>
                     <div className="space-y-2">
                       <Label>Feedback</Label>
-                      <Textarea defaultValue="The curriculum at EduFlow is truly state-of-the-art..." />
+                      <Textarea defaultValue="The curriculum at IDEAL STUDY POINT is truly state-of-the-art..." />
                     </div>
                   </CardContent>
                 </Card>

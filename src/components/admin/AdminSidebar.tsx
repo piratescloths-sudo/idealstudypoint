@@ -34,7 +34,7 @@ export function AdminSidebar() {
         <div className="p-2 bg-indigo-600 rounded-xl">
           <GraduationCap className="h-6 w-6 text-white" />
         </div>
-        <span className="text-2xl font-headline font-bold text-indigo-600">EduVista</span>
+        <span className="text-xl font-headline font-bold text-indigo-600">IDEAL STUDY POINT</span>
       </div>
 
       <nav className="flex-grow px-4 space-y-2 mt-4">

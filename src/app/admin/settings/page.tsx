@@ -38,7 +38,7 @@ export default function AdminSettingsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Primary Email</Label>
-                <Input defaultValue="info@eduflow.edu" className="rounded-xl" />
+                <Input defaultValue="info@idealstudypoint.edu" className="rounded-xl" />
               </div>
               <div className="space-y-2">
                 <Label>Phone Number</Label>
@@ -78,7 +78,7 @@ export default function AdminSettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
                 <Label>Admin Username</Label>
-                <Input defaultValue="admin@eduflow.edu" disabled className="rounded-xl bg-muted" />
+                <Input defaultValue="admin@idealstudypoint.edu" disabled className="rounded-xl bg-muted" />
               </div>
               <div className="space-y-2">
                 <Label>Change Admin Password</Label>

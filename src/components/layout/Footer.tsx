@@ -12,7 +12,7 @@ export function Footer() {
               <div className="p-2 bg-indigo-600 rounded-xl">
                 <GraduationCap className="h-6 w-6 text-white" />
               </div>
-              <span className="text-3xl font-headline font-bold text-white">EduVista</span>
+              <span className="text-2xl font-headline font-bold text-white">IDEAL STUDY POINT</span>
             </Link>
             <p className="text-slate-400 text-base leading-relaxed font-medium">
               Empowering the next generation of leaders through quality education,
@@ -78,14 +78,14 @@ export function Footer() {
                 <div className="h-10 w-10 bg-indigo-500/10 rounded-xl flex items-center justify-center shrink-0">
                   <Mail className="h-5 w-5 text-indigo-400" />
                 </div>
-                <span>hello@eduvista.edu</span>
+                <span>hello@idealstudypoint.edu</span>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="border-t border-slate-800 mt-20 pt-10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm font-semibold tracking-widest uppercase">
-          <p>© {new Date().getFullYear()} EduVista Academy. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} IDEAL STUDY POINT Academy. All rights reserved.</p>
           <div className="flex gap-10">
             <Link href="#" className="hover:text-indigo-400">Privacy Policy</Link>
             <Link href="#" className="hover:text-indigo-400">Terms of Use</Link>

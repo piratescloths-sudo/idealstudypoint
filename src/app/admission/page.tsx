@@ -90,7 +90,7 @@ export default function AdmissionPage() {
             {/* Left Content Column */}
             <div className="space-y-10">
               <div className="space-y-6">
-                <h2 className="text-3xl font-headline font-bold text-slate-900">Why Apply to EduVista?</h2>
+                <h2 className="text-3xl font-headline font-bold text-slate-900">Why Apply to IDEAL STUDY POINT?</h2>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {[
@@ -102,27 +102,27 @@ export default function AdmissionPage() {
                     { 
                       icon: Clock, 
                       title: "Flexible Schedule", 
-                      desc: "Learn at your own pace" 
+                      desc: "Learn at your pace" 
                     },
                     { 
                       icon: Award, 
                       title: "Recognized Degrees", 
-                      desc: "Globally accredited certifications" 
+                      desc: "Accredited certifications" 
                     },
                     { 
                       icon: Heart, 
                       title: "Career Support", 
-                      desc: "Placement assistance and mentorship" 
+                      desc: "Placement assistance" 
                     }
                   ].map((feature, i) => (
-                    <Card key={i} className="border-none shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-3xl p-8 bg-white transition-all hover:-translate-y-1 duration-300">
-                      <CardContent className="p-0 space-y-4">
-                        <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center">
-                          <feature.icon className="h-6 w-6 text-indigo-600" />
+                    <Card key={i} className="border-none shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-3xl p-6 bg-white transition-all hover:-translate-y-1 duration-300">
+                      <CardContent className="p-0 space-y-3">
+                        <div className="h-10 w-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+                          <feature.icon className="h-5 w-5 text-indigo-600" />
                         </div>
                         <div className="space-y-1">
-                          <h3 className="font-bold text-slate-900">{feature.title}</h3>
-                          <p className="text-xs text-slate-400 font-medium">{feature.desc}</p>
+                          <h3 className="font-bold text-slate-900 text-sm">{feature.title}</h3>
+                          <p className="text-[10px] text-slate-400 font-medium">{feature.desc}</p>
                         </div>
                       </CardContent>
                     </Card>

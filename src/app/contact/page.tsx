@@ -34,7 +34,7 @@ export default function ContactPage() {
           <div className="text-center mb-20 space-y-6 max-w-3xl mx-auto">
              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary/10 rounded-full text-primary font-bold text-xs uppercase tracking-wider">
               <MessageSquare className="h-3.5 w-3.5" />
-              <span>Support \u0026 Inquiries</span>
+              <span>Support & Inquiries</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tight leading-tight">Connect With Our Team</h1>
             <p className="text-xl text-slate-500 font-medium">
@@ -53,8 +53,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h4 className="font-bold text-xl text-slate-900 mb-1">Email Us</h4>
-                      <p className="text-slate-500 font-medium">info@eduvista.edu</p>
-                      <p className="text-slate-500 font-medium">admissions@eduvista.edu</p>
+                      <p className="text-slate-500 font-medium">info@idealstudypoint.edu</p>
+                      <p className="text-slate-500 font-medium">admissions@idealstudypoint.edu</p>
                     </div>
                   </div>
                   <div className="flex gap-8 group">

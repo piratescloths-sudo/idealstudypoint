@@ -40,13 +40,13 @@ export function Navbar() {
       <div className="container mx-auto px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
-            <GraduationCap className="h-6 w-6 text-white" />
+            < GraduationCap className="h-6 w-6 text-white" />
           </div>
           <span className={cn(
             "text-2xl font-headline font-bold tracking-tight transition-colors",
             !scrolled && pathname === "/" ? "text-white" : "text-slate-900"
           )}>
-            EduVista
+            IDEAL STUDY POINT
           </span>
         </Link>
 
