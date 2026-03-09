@@ -484,7 +484,7 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="bg-blue-600 py-20 text-center px-6">
+        <section className="bg-blue-600 py-12 text-center px-6">
           <RevealOnScroll>
             <div className="max-w-4xl mx-auto space-y-8">
               <h2 className="text-5xl md:text-7xl font-headline font-bold text-white tracking-tight">
@@ -493,7 +493,7 @@ export default function Home() {
               <p className="text-2xl text-blue-100 font-medium">
                 Join thousands of students who have transformed their careers with {settings?.siteName || 'Ideal Study Point'}.
               </p>
-              <div className="pt-4">
+              <div className="pt-2">
                 <Button asChild size="lg" className="h-20 px-16 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 text-2xl font-bold gap-4 transition-all">
                   <Link href="/admission">Apply Today <ArrowRight className="h-8 w-8" /></Link>
                 </Button>
