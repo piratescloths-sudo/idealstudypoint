@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -33,8 +34,8 @@ export function Navbar() {
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300",
         scrolled
-          ? "bg-slate-900/80 backdrop-blur-md shadow-md py-4"
-          : "bg-transparent py-6"
+          ? "bg-white/90 backdrop-blur-md shadow-[0_2px_15px_rgba(0,0,0,0.03)] py-4"
+          : "bg-white/80 backdrop-blur-sm py-6"
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
@@ -42,22 +43,22 @@ export function Navbar() {
           <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
             <GraduationCap className="h-6 w-6 text-white" />
           </div>
-          <span className="text-2xl font-headline font-bold text-white tracking-tight">
+          <span className="text-2xl font-headline font-bold text-slate-900 tracking-tight">
             EduVista
           </span>
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-1 bg-slate-800/20 backdrop-blur-sm p-1 rounded-full border border-white/10">
+        <div className="hidden md:flex items-center gap-1 p-1 rounded-full">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
               className={cn(
-                "text-sm font-medium px-5 py-2 rounded-full transition-all",
+                "text-sm font-bold px-6 py-2 rounded-full transition-all",
                 pathname === link.href 
-                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20" 
-                  : "text-slate-200 hover:text-white hover:bg-white/10"
+                  ? "bg-indigo-600 text-white shadow-md" 
+                  : "text-slate-500 hover:text-indigo-600 hover:bg-slate-50"
               )}
             >
               {link.name}
@@ -66,7 +67,7 @@ export function Navbar() {
         </div>
 
         <div className="hidden md:block">
-          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-11 border-none shadow-xl shadow-indigo-500/20">
+          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-11 border-none shadow-lg shadow-indigo-500/10">
             <Link href="/admin/login">
               <LogIn className="h-4 w-4" />
               Admin Panel
@@ -76,7 +77,7 @@ export function Navbar() {
 
         {/* Mobile Menu Trigger */}
         <button
-          className="md:hidden p-2 text-white"
+          className="md:hidden p-2 text-slate-600"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -86,7 +87,7 @@ export function Navbar() {
       {/* Mobile Menu Overlay */}
       <div
         className={cn(
-          "fixed inset-0 top-[80px] bg-slate-900 z-40 md:hidden transition-transform duration-300 transform",
+          "fixed inset-0 top-[80px] bg-white z-40 md:hidden transition-transform duration-300 transform border-t",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -97,8 +98,8 @@ export function Navbar() {
               href={link.href}
               onClick={() => setIsOpen(false)}
               className={cn(
-                "text-2xl font-semibold",
-                pathname === link.href ? "text-indigo-400" : "text-white/70"
+                "text-2xl font-bold",
+                pathname === link.href ? "text-indigo-600" : "text-slate-400"
               )}
             >
               {link.name}
@@ -106,7 +107,7 @@ export function Navbar() {
           ))}
           <Button asChild className="mt-4 bg-indigo-600 h-14 text-lg rounded-2xl">
             <Link href="/admin/login" onClick={() => setIsOpen(false)}>
-              Admin Login
+              Admin Panel
             </Link>
           </Button>
         </div>
