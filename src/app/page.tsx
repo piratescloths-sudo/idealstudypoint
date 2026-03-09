@@ -43,7 +43,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
+const FALLBACK_LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
 /**
  * A helper component that triggers an animation when it enters the viewport.
@@ -121,6 +121,8 @@ export default function Home() {
     }, 1500);
     return () => clearTimeout(timer);
   }, []);
+
+  const logoUrl = settings?.logoUrl || FALLBACK_LOGO_URL;
 
   const heroImages = (settings?.heroImages?.filter((url: string) => url && url.trim() !== "")?.length > 0)
     ? settings.heroImages.filter((url: string) => url && url.trim() !== "")
@@ -201,7 +203,7 @@ export default function Home() {
       {isPreloading && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white transition-opacity duration-700">
           <div className="relative h-32 w-32 animate-pulse mb-4">
-            <Image src={LOGO_URL} alt="Loading..." fill className="object-contain" priority />
+            <Image src={logoUrl} alt="Loading..." fill className="object-contain" priority />
           </div>
           <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
             <div className="h-full bg-blue-600 animate-[loading_1.5s_ease-in-out_infinite]" />
@@ -212,7 +214,7 @@ export default function Home() {
       <Navbar />
       
       <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
-        {/* Hero Section - Immersive 95vh Height, content slightly moved down from top side */}
+        {/* Hero Section */}
         <section className="relative h-[95vh] flex flex-col items-center justify-center pt-20 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
@@ -238,7 +240,7 @@ export default function Home() {
           </div>
 
           <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
-            <div className="max-w-5xl space-y-8">
+            <div className="max-w-5xl space-y-8 mt-12">
               <div className="animate-reveal opacity-0" style={{ animationDelay: '0.2s' }}>
                 <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-500/20 backdrop-blur-md rounded-full border border-blue-400/30 text-white font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
                   <Sparkles className="h-3 w-3 text-blue-300" />
@@ -257,7 +259,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section - Floating balanced between Hero and About */}
+        {/* Stats Section */}
         <div className="relative z-20 -mt-24 container mx-auto px-4 max-w-6xl">
           <RevealOnScroll delay={0.1}>
             <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
@@ -274,7 +276,7 @@ export default function Home() {
           </RevealOnScroll>
         </div>
 
-        {/* About Section - Compact and Modern */}
+        {/* About Section */}
         <section className="py-20 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <RevealOnScroll>
@@ -408,11 +410,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section - Redesigned Modern Carousel */}
+        {/* Testimonials Section */}
         <section className="py-40 bg-[#F8FAFC] relative overflow-hidden">
-          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl opacity-50" />
-          <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-100/50 rounded-full blur-3xl opacity-50" />
-          
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl relative z-10">
             <RevealOnScroll>
               <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8">
@@ -424,16 +423,6 @@ export default function Home() {
                   <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">
                     Hear From Our <br className="hidden md:block" /> <span className="text-blue-600">Alumni</span>
                   </h2>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="hidden md:flex flex-col items-end text-right">
-                    <div className="text-3xl font-black text-slate-900">4.9/5</div>
-                    <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Average Student Rating</div>
-                  </div>
-                  <div className="h-16 w-px bg-slate-200 hidden md:block mx-6" />
-                  <p className="text-lg text-slate-500 font-medium max-w-xs text-center md:text-left">
-                    Join a community of thousands who transformed their lives at Ideal Study Point.
-                  </p>
                 </div>
               </div>
 
@@ -502,7 +491,7 @@ export default function Home() {
                 Ready to Start Your Journey?
               </h2>
               <p className="text-2xl text-blue-100 font-medium">
-                Join thousands of students who have transformed their careers with Ideal Study Point.
+                Join thousands of students who have transformed their careers with {settings?.siteName || 'Ideal Study Point'}.
               </p>
               <div className="pt-8">
                 <Button asChild size="lg" className="h-20 px-16 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 text-2xl font-bold gap-4 transition-all">

@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Shield, Globe, Info, Loader2, MessageSquare, Map as MapIcon, ExternalLink } from "lucide-react";
+import { Save, Shield, Globe, Info, Loader2, MessageSquare, Map as MapIcon, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,6 +22,8 @@ export default function AdminSettingsPage() {
   const { data: settings, isLoading } = useDoc(settingsRef);
   const [formData, setFormData] = useState({
     siteName: "Ideal Study Point",
+    logoUrl: "",
+    faviconUrl: "",
     mainEmail: "info@idealstudypoint.edu",
     mainPhone: "+1 (234) 567-890",
     address: "123 Education Ave, Knowledge City, ED 56789",
@@ -37,6 +40,8 @@ export default function AdminSettingsPage() {
     if (settings) {
       setFormData({
         siteName: settings.siteName || "Ideal Study Point",
+        logoUrl: settings.logoUrl || "",
+        faviconUrl: settings.faviconUrl || "",
         mainEmail: settings.mainEmail || "info@idealstudypoint.edu",
         mainPhone: settings.mainPhone || "+1 (234) 567-890",
         address: settings.address || "123 Education Ave, Knowledge City, ED 56789",
@@ -83,7 +88,7 @@ export default function AdminSettingsPage() {
             <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
               <Info className="h-5 w-5 text-indigo-600" />
             </div>
-            <CardTitle className="text-xl">Basic Information</CardTitle>
+            <CardTitle className="text-xl">Branding & Identity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
             <div className="space-y-2">
@@ -95,7 +100,36 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Campus Address</Label>
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Website Logo URL</Label>
+              <Input 
+                value={formData.logoUrl} 
+                onChange={e => setFormData({...formData, logoUrl: e.target.value})}
+                placeholder="https://example.com/logo.png"
+                className="rounded-xl h-12 bg-slate-50 border-none" 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Favicon (Tab Icon) URL</Label>
+              <Input 
+                value={formData.faviconUrl} 
+                onChange={e => setFormData({...formData, faviconUrl: e.target.value})}
+                placeholder="https://example.com/favicon.ico"
+                className="rounded-xl h-12 bg-slate-50 border-none" 
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-none shadow-sm rounded-3xl bg-white">
+          <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
+            <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+              <ImageIcon className="h-5 w-5 text-indigo-600" />
+            </div>
+            <CardTitle className="text-xl">Campus Address</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Address</Label>
               <Input 
                 value={formData.address} 
                 onChange={e => setFormData({...formData, address: e.target.value})}
@@ -157,16 +191,6 @@ export default function AdminSettingsPage() {
                 placeholder="https://www.google.com/maps/embed?pb=..."
                 className="rounded-xl h-12 bg-white border-amber-200" 
               />
-              <div className="space-y-1">
-                <p className="text-[10px] text-amber-800 font-bold flex items-center gap-1">
-                  <Info className="h-3 w-3" /> IMPORTANT: You must use the Embed URL, not a sharing link.
-                </p>
-                <ol className="text-[9px] text-amber-700 list-decimal list-inside space-y-0.5">
-                  <li>Go to Google Maps and find your location.</li>
-                  <li>Click "Share" then select "Embed a map".</li>
-                  <li>Copy the URL inside the 'src' attribute (starts with https://www.google.com/maps/embed...).</li>
-                </ol>
-              </div>
             </div>
             <div className="space-y-2">
               <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Office Hours</Label>
@@ -214,27 +238,6 @@ export default function AdminSettingsPage() {
                 placeholder="https://linkedin.com/in/..." 
                 className="rounded-xl h-12 bg-slate-50 border-none" 
               />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-none shadow-sm rounded-3xl bg-white">
-          <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
-            <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <Shield className="h-5 w-5 text-indigo-600" />
-            </div>
-            <CardTitle className="text-xl">Security & Authentication</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6 pt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Admin Username</Label>
-                <Input defaultValue="kanhucharanideal@gmail.com" disabled className="rounded-xl h-12 bg-muted/50 border-none font-medium" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Access Level</Label>
-                <Input defaultValue="Master Administrator" disabled className="rounded-xl h-12 bg-muted/50 border-none font-medium" />
-              </div>
             </div>
           </CardContent>
         </Card>

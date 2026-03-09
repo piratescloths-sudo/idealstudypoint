@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -6,6 +7,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -15,12 +18,20 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ];
 
-const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
+const FALLBACK_LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
+  const firestore = useFirestore();
+
+  const settingsRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'websiteSettings', 'main');
+  }, [firestore]);
+
+  const { data: settings } = useDoc(settingsRef);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +40,8 @@ export function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const logoUrl = settings?.logoUrl || FALLBACK_LOGO_URL;
 
   return (
     <nav
@@ -45,7 +58,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2 group w-fit">
             <div className="relative h-10 w-10 overflow-hidden rounded-xl shadow-lg transition-transform group-hover:scale-110">
               <Image 
-                src={LOGO_URL} 
+                src={logoUrl} 
                 alt="Ideal Study Point Logo" 
                 fill 
                 className="object-cover"
@@ -55,7 +68,7 @@ export function Navbar() {
               "text-2xl font-headline font-bold tracking-tight transition-colors",
               !scrolled && pathname === "/" ? "text-white" : "text-slate-900"
             )}>
-              Ideal Study Point
+              {settings?.siteName || "Ideal Study Point"}
             </span>
           </Link>
         </div>

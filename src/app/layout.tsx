@@ -1,7 +1,9 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { DynamicFavicon } from '@/components/DynamicFavicon';
 
 export const metadata: Metadata = {
   title: 'Ideal Study Point | Modern Education Platform',
@@ -22,6 +24,7 @@ export default function RootLayout({
       </head>
       <body className="font-body antialiased">
         <FirebaseClientProvider>
+          <DynamicFavicon />
           {children}
           <Toaster />
         </FirebaseClientProvider>

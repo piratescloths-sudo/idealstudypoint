@@ -20,6 +20,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useFirestore, useDoc, useMemoFirebase } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
@@ -32,11 +34,21 @@ const menuItems = [
   { name: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
-const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
+const FALLBACK_LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const firestore = useFirestore();
+
+  const settingsRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'websiteSettings', 'main');
+  }, [firestore]);
+
+  const { data: settings } = useDoc(settingsRef);
+
+  const logoUrl = settings?.logoUrl || FALLBACK_LOGO_URL;
 
   return (
     <div className={cn(
@@ -59,14 +71,16 @@ export function AdminSidebar() {
       )}>
         <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-xl shadow-sm">
           <Image 
-            src={LOGO_URL} 
+            src={logoUrl} 
             alt="Ideal Study Point Logo" 
             fill 
             className="object-cover"
           />
         </div>
         {!isCollapsed && (
-          <span className="text-xl font-headline font-bold text-indigo-600 truncate">Ideal Study Point</span>
+          <span className="text-xl font-headline font-bold text-indigo-600 truncate">
+            {settings?.siteName || "Ideal Study Point"}
+          </span>
         )}
       </div>
 
