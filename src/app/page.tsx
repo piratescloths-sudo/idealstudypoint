@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -322,7 +323,7 @@ export default function Home() {
                     </div>
                     <div className="flex gap-0.5 pb-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                        <Star key={i} className={cn("h-4 w-4", i < (t.rating || 5) ? "fill-amber-400 text-amber-400" : "text-slate-200")} />
                       ))}
                     </div>
                   </div>

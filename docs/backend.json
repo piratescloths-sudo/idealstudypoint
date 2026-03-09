@@ -134,6 +134,10 @@
           "type": "string",
           "description": "The actual text content of the testimonial."
         },
+        "rating": {
+          "type": "number",
+          "description": "Star rating given by the student (1 to 5)."
+        },
         "imageUrl": {
           "type": "string",
           "description": "Optional URL to the author's profile picture.",
@@ -155,6 +159,7 @@
         "authorName",
         "authorTitle",
         "content",
+        "rating",
         "createdAt",
         "updatedAt"
       ]

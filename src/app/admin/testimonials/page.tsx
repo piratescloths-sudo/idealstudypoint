@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useState } from "react";
-import { Plus, Edit2, Trash2, Search, Loader2, Save, User, Quote, ImageIcon } from "lucide-react";
+import { Plus, Edit2, Trash2, Search, Loader2, Save, User, Quote, ImageIcon, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { useCollection, useFirestore, useMemoFirebase, setDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
 import { collection, query, doc } from "firebase/firestore";
@@ -21,7 +23,8 @@ export default function AdminTestimonialsPage() {
     authorName: "",
     authorTitle: "",
     content: "",
-    imageUrl: ""
+    imageUrl: "",
+    rating: 5
   });
 
   const firestore = useFirestore();
@@ -32,7 +35,7 @@ export default function AdminTestimonialsPage() {
   const { data: testimonials, isLoading } = useCollection(testimonialsQuery);
 
   const resetForm = () => {
-    setFormData({ authorName: "", authorTitle: "", content: "", imageUrl: "" });
+    setFormData({ authorName: "", authorTitle: "", content: "", imageUrl: "", rating: 5 });
     setEditingId(null);
   };
 
@@ -46,7 +49,8 @@ export default function AdminTestimonialsPage() {
       authorName: t.authorName || "",
       authorTitle: t.authorTitle || "",
       content: t.content || "",
-      imageUrl: t.imageUrl || ""
+      imageUrl: t.imageUrl || "",
+      rating: t.rating || 5
     });
     setEditingId(t.id);
     setIsDialogOpen(true);
@@ -64,6 +68,7 @@ export default function AdminTestimonialsPage() {
       authorName: formData.authorName,
       authorTitle: formData.authorTitle,
       content: formData.content,
+      rating: formData.rating,
       imageUrl: formData.imageUrl || `https://picsum.photos/seed/${testimonialId}/200/200`,
       updatedAt: new Date().toISOString(),
     };
@@ -113,6 +118,7 @@ export default function AdminTestimonialsPage() {
           <TableHeader className="bg-slate-50">
             <TableRow>
               <TableHead className="font-bold">Author</TableHead>
+              <TableHead className="font-bold">Rating</TableHead>
               <TableHead className="font-bold">Content</TableHead>
               <TableHead className="text-right font-bold">Actions</TableHead>
             </TableRow>
@@ -120,12 +126,12 @@ export default function AdminTestimonialsPage() {
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+                <TableCell colSpan={4} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
               </TableRow>
             )}
             {!isLoading && filteredTestimonials.length === 0 && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center py-10 text-muted-foreground">No testimonials found.</TableCell>
+                <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">No testimonials found.</TableCell>
               </TableRow>
             )}
             {filteredTestimonials.map((t) => (
@@ -139,6 +145,13 @@ export default function AdminTestimonialsPage() {
                       <div className="font-semibold text-slate-900 text-sm">{t.authorName}</div>
                       <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{t.authorTitle}</div>
                     </div>
+                  </div>
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`h-3 w-3 ${i < (t.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} />
+                    ))}
                   </div>
                 </TableCell>
                 <TableCell className="text-slate-600 text-sm max-w-md truncate italic">&quot;{t.content}&quot;</TableCell>
@@ -175,9 +188,24 @@ export default function AdminTestimonialsPage() {
                   <Input value={formData.authorTitle} onChange={e => setFormData({...formData, authorTitle: e.target.value})} placeholder="e.g. Alumnus 2023" className="h-12 rounded-xl bg-slate-50 border-none" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2"><ImageIcon className="h-3 w-3" /> Profile Image URL</Label>
-                <Input value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} placeholder="https://example.com/photo.jpg" className="h-12 rounded-xl bg-slate-50 border-none" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2"><ImageIcon className="h-3 w-3" /> Profile Image URL</Label>
+                  <Input value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} placeholder="https://example.com/photo.jpg" className="h-12 rounded-xl bg-slate-50 border-none" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Rating (1-5 Stars)</Label>
+                  <Select value={formData.rating.toString()} onValueChange={val => setFormData({...formData, rating: parseInt(val)})}>
+                    <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-none">
+                      <SelectValue placeholder="Select Rating" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl">
+                      {[1, 2, 3, 4, 5].map(num => (
+                        <SelectItem key={num} value={num.toString()}>{num} Stars</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2"><Quote className="h-3 w-3" /> Testimonial Content</Label>
