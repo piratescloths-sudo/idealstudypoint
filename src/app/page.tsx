@@ -408,7 +408,7 @@ export default function Home() {
         </section>
 
         {/* Contact Section */}
-        <section className="py-24 bg-white relative overflow-hidden">
+        <section className="pt-24 pb-32 bg-white relative overflow-hidden">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
             <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto animate-reveal opacity-0">
               <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
