@@ -24,8 +24,9 @@ export default function Home() {
   }, [firestore]);
   const { data: settings } = useDoc(settingsQuery);
 
-  const heroImages = settings?.heroImages?.length > 0 
-    ? settings.heroImages 
+  // Filter out any empty strings and provide a default if no valid images exist
+  const heroImages = (settings?.heroImages?.filter((url: string) => url && url.trim() !== "")?.length > 0)
+    ? settings.heroImages.filter((url: string) => url && url.trim() !== "")
     : [PlaceHolderImages.find(img => img.id === "hero-bg")?.imageUrl || ""];
 
   // Auto-scrolling interval (2 seconds)
@@ -38,7 +39,9 @@ export default function Home() {
   }, [heroImages]);
 
   // Use dynamic about image from settings or fallback to placeholder
-  const aboutImgUrl = settings?.aboutImage || PlaceHolderImages.find(img => img.id === "about-img")?.imageUrl || "";
+  const aboutImgUrl = (settings?.aboutImage && settings.aboutImage.trim() !== "")
+    ? settings.aboutImage
+    : PlaceHolderImages.find(img => img.id === "about-img")?.imageUrl || "";
 
   const coursesQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -85,26 +88,27 @@ export default function Home() {
                   src={imgUrl}
                   alt={`Ideal Study Point Campus ${index + 1}`}
                   fill
-                  className="object-cover brightness-[0.25]"
+                  className="object-cover"
                   priority={index === 0}
                 />
               </div>
             ))}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#1a1f29]/95 via-[#1a1f29]/90 to-[#1a1f29]" />
+            {/* Reduced opacity overlay so background images are visible */}
+            <div className="absolute inset-0 bg-[#1a1f29]/60 backdrop-blur-[1px]" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center pt-16">
             <div className="max-w-5xl space-y-8">
-              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-500/10 backdrop-blur-md rounded-full border border-indigo-500/20 text-indigo-300 font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
+              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-500/20 backdrop-blur-md rounded-full border border-indigo-500/30 text-indigo-100 font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
                 <span>🎓</span>
                 <span>Welcome to Ideal Study Point</span>
               </div>
               
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-black text-white leading-[1.1] tracking-tighter">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-black text-white leading-[1.1] tracking-tighter drop-shadow-2xl">
                 Shape Your <br /> Future with Excellence
               </h1>
               
-              <p className="text-lg md:text-xl text-slate-400 max-w-4xl mx-auto leading-relaxed font-medium">
+              <p className="text-lg md:text-xl text-slate-100 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-lg">
                 {settings?.heroDescription || "Empowering learners with innovative programs, expert faculty, and a supportive community. Join thousands of students achieving their dreams today."}
               </p>
               
@@ -112,7 +116,7 @@ export default function Home() {
                 <Button asChild size="lg" className="h-16 px-10 text-lg font-bold rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-600/40 transition-all border-none">
                   <Link href="/admission" className="flex items-center gap-3">Enroll Now <ArrowRight className="h-5 w-5" /></Link>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="h-16 px-10 text-lg font-bold bg-white/5 text-white border-white/10 backdrop-blur-md hover:bg-white/10 rounded-2xl transition-all">
+                <Button asChild variant="outline" size="lg" className="h-16 px-10 text-lg font-bold bg-white/10 text-white border-white/20 backdrop-blur-md hover:bg-white/20 rounded-2xl transition-all">
                   <Link href="/courses">Browse Courses</Link>
                 </Button>
               </div>
@@ -140,14 +144,15 @@ export default function Home() {
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div className="relative">
-                <div className="relative h-[450px] md:h-[500px] w-full rounded-[3rem] overflow-hidden shadow-xl">
-                  <Image
-                    src={aboutImgUrl}
-                    alt="Why Choose Us"
-                    fill
-                    className="object-cover"
-                    data-ai-hint="students library"
-                  />
+                <div className="relative h-[450px] md:h-[500px] w-full rounded-[3rem] overflow-hidden shadow-xl bg-slate-100">
+                  {aboutImgUrl && (
+                    <Image
+                      src={aboutImgUrl}
+                      alt="Why Choose Us"
+                      fill
+                      className="object-cover"
+                    />
+                  )}
                 </div>
                 <div className="absolute -bottom-8 -right-6 bg-indigo-600 text-white p-8 rounded-[2rem] shadow-xl shadow-indigo-600/30 flex flex-col items-center justify-center text-center min-w-[180px]">
                   <span className="text-4xl font-headline font-bold">25+</span>
