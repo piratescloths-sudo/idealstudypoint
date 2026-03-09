@@ -47,8 +47,10 @@ export default function AdminContentPage() {
   const handleSave = () => {
     if (!firestore || !settingsRef) return;
     
+    // Explicitly include the ID to satisfy security rule requirements
     setDocumentNonBlocking(settingsRef, {
       ...formData,
+      id: "main",
       updatedAt: new Date().toISOString(),
     }, { merge: true });
 
@@ -72,7 +74,7 @@ export default function AdminContentPage() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div className="space-y-1">
-          <h1 className="text-3xl font-headline font-bold">Homepage Content</h1>
+          <h1 className="text-3xl font-headline font-bold text-slate-900">Homepage Content</h1>
           <p className="text-muted-foreground">Modify the text and images displayed on the main page.</p>
         </div>
         <Button className="h-12 px-8 rounded-2xl gap-2 font-bold shadow-xl shadow-primary/20" onClick={handleSave}>
