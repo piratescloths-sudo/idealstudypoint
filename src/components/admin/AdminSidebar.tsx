@@ -11,7 +11,8 @@ import {
   MessageSquare, 
   Settings, 
   Home, 
-  LogOut
+  LogOut,
+  Quote
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,7 @@ const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
   { name: "Manage Courses", icon: BookOpen, href: "/admin/courses" },
   { name: "Manage Events", icon: Calendar, href: "/admin/events" },
+  { name: "Testimonials", icon: Quote, href: "/admin/testimonials" },
   { name: "Admissions", icon: UserCheck, href: "/admin/admissions" },
   { name: "Messages", icon: MessageSquare, href: "/admin/messages" },
   { name: "Homepage Content", icon: Home, href: "/admin/content" },
