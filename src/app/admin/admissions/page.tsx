@@ -1,12 +1,13 @@
 "use client";
 
-import { Eye, CheckCircle2, XCircle, Clock, Mail, Phone, Loader2 } from "lucide-react";
+import { CheckCircle2, Mail, Phone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { useCollection, useFirestore, useMemoFirebase, useUser } from "@/firebase";
 import { collection, query, orderBy } from "firebase/firestore";
+import { useMemo } from "react";
 
 export default function AdminAdmissionsPage() {
   const firestore = useFirestore();
@@ -17,7 +18,23 @@ export default function AdminAdmissionsPage() {
     return query(collection(firestore, 'admissionInquiries'), orderBy('submissionDate', 'desc'));
   }, [firestore, user]);
   
-  const { data: submissions, isLoading } = useCollection(inquiriesQuery);
+  const coursesQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return query(collection(firestore, 'courses'));
+  }, [firestore, user]);
+
+  const { data: submissions, isLoading: loadingSubmissions } = useCollection(inquiriesQuery);
+  const { data: courses, isLoading: loadingCourses } = useCollection(coursesQuery);
+
+  const courseMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    courses?.forEach(course => {
+      map[course.id] = course.title;
+    });
+    return map;
+  }, [courses]);
+
+  const isLoading = loadingSubmissions || loadingCourses;
 
   return (
     <div className="space-y-8">
@@ -31,7 +48,7 @@ export default function AdminAdmissionsPage() {
           <TableHeader className="bg-muted/30">
             <TableRow>
               <TableHead>Student Name</TableHead>
-              <TableHead>Course ID</TableHead>
+              <TableHead>Course Name</TableHead>
               <TableHead>Date Received</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -55,7 +72,9 @@ export default function AdminAdmissionsPage() {
                     <Mail className="h-3 w-3" /> {sub.email} | <Phone className="h-3 w-3" /> {sub.phone}
                   </div>
                 </TableCell>
-                <TableCell className="font-medium text-primary">{sub.selectedCourseId}</TableCell>
+                <TableCell className="font-medium text-primary">
+                  {courseMap[sub.selectedCourseId] || sub.selectedCourseId}
+                </TableCell>
                 <TableCell className="text-muted-foreground text-sm">{new Date(sub.submissionDate).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right space-x-1">
                   <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-emerald-100" onClick={() => toast({title: "Processed", description: "Inquiry noted."})}>
