@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen, Award, Globe, Users, Quote, Star, Calendar, Loader2 } from "lucide-react";
@@ -9,12 +11,33 @@ import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { cn } from "@/lib/utils";
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, query, limit, where } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase, useDoc } from "@/firebase";
+import { collection, query, limit, where, doc } from "firebase/firestore";
 
 export default function Home() {
   const firestore = useFirestore();
-  const heroImg = PlaceHolderImages.find(img => img.id === "hero-bg");
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Fetch Website Settings for Hero Background Slider
+  const settingsQuery = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'websiteSettings', 'main');
+  }, [firestore]);
+  const { data: settings } = useDoc(settingsQuery);
+
+  const heroImages = settings?.heroImages?.length > 0 
+    ? settings.heroImages 
+    : [PlaceHolderImages.find(img => img.id === "hero-bg")?.imageUrl || ""];
+
+  // Auto-scrolling interval (2 seconds)
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [heroImages]);
+
   const aboutImg = PlaceHolderImages.find(img => img.id === "about-img");
 
   const coursesQuery = useMemoFirebase(() => {
@@ -47,17 +70,26 @@ export default function Home() {
       <Navbar />
       
       <main className="flex-grow">
-        {/* Hero Section */}
+        {/* Hero Section with Auto-scrolling Slider */}
         <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <Image
-              src={heroImg?.imageUrl || ""}
-              alt="Ideal Study Point Campus"
-              fill
-              className="object-cover brightness-[0.25]"
-              priority
-              data-ai-hint="university campus"
-            />
+            {heroImages.map((imgUrl, index) => (
+              <div 
+                key={index} 
+                className={cn(
+                  "absolute inset-0 transition-opacity duration-1000 ease-in-out",
+                  index === currentImageIndex ? "opacity-100" : "opacity-0"
+                )}
+              >
+                <Image
+                  src={imgUrl}
+                  alt={`Ideal Study Point Campus ${index + 1}`}
+                  fill
+                  className="object-cover brightness-[0.25]"
+                  priority={index === 0}
+                />
+              </div>
+            ))}
             <div className="absolute inset-0 bg-gradient-to-b from-[#1a1f29]/95 via-[#1a1f29]/90 to-[#1a1f29]" />
           </div>
 
@@ -300,7 +332,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section - Matching Screenshot */}
+        {/* CTA Section */}
         <section className="bg-[#5D5CFF] py-24 text-center px-6">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">

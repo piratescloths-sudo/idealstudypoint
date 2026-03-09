@@ -1,3 +1,4 @@
+
 {
   "entities": {
     "Course": {
@@ -282,6 +283,14 @@
           "type": "string",
           "description": "The descriptive text accompanying the hero headline on the homepage."
         },
+        "heroImages": {
+          "type": "array",
+          "description": "An array of image URLs for the homepage hero background slider.",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
         "aboutTitle": {
           "type": "string",
           "description": "The title for the 'About the institute' section on the homepage."
@@ -396,6 +405,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to meet the core principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs, ensuring a secure, scalable, and debuggable system for the EduFlow application. This design prioritizes clear separation of public and administrative data, along with a robust role-based access control mechanism.\n\nAuthorization Independence is achieved by segregating data into collections based on their security posture. Publicly accessible collections like `courses`, `events`, `testimonials`, and `websiteSettings` grant read access to all users without requiring any complex document-specific authorization checks or `get()` calls in security rules. For administrative operations and access to sensitive data (e.g., `admissionInquiries`, `contactMessages`), authorization relies on a global 'admin' role. An administrator's status is determined by the existence of their Firebase Authentication `uid` as a document ID within the dedicated `/adminRoles` collection. This `exists(/databases/$(database)/documents/adminRoles/$(request.auth.uid))` check is atomic, highly efficient, and completely independent of any specific parent document attributes, thereby eliminating the need for denormalization of authorization context within individual documents.\n\nQAPs (Queries Are Not Filters) are fully supported through this structural segregation. Public collections, such as `/courses` and `/events`, are designed for public `list` operations, meaning any user can query and retrieve all available documents, which is the intended behavior for content displayed on the public website. For collections containing sensitive information, like `/admissionInquiries` and `/contactMessages`, `list` operations are strictly restricted to authenticated administrators only, enforced by the `adminRoles` check. This ensures that `list` queries never inadvertently expose unauthorized data, as the authorization rule itself defines the permissible scope of the query, maintaining data integrity and security while simplifying rule logic."
+    "reasoning": "The Firestore structure is designed to meet the core principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs, ensuring a secure, scalable, and debuggable system for the EduFlow application. This design prioritizes clear separation of public and administrative data, along with a robust role-based access control mechanism."
   }
 }

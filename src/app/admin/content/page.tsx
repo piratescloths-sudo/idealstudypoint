@@ -1,6 +1,8 @@
+
 "use client";
 
-import { Save, RefreshCcw } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Save, Plus, Trash2, Loader2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,11 +10,62 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
+import { useFirestore, useDoc, useMemoFirebase, setDocumentNonBlocking } from "@/firebase";
+import { doc } from "firebase/firestore";
 
 export default function AdminContentPage() {
+  const firestore = useFirestore();
+  const settingsRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'websiteSettings', 'main');
+  }, [firestore]);
+
+  const { data: settings, isLoading } = useDoc(settingsRef);
+  const [formData, setFormData] = useState({
+    heroHeadline: "",
+    heroDescription: "",
+    heroImages: [] as string[],
+    aboutTitle: "",
+    aboutContent: "",
+  });
+
+  const [newImageUrl, setNewImageUrl] = useState("");
+
+  useEffect(() => {
+    if (settings) {
+      setFormData({
+        heroHeadline: settings.heroHeadline || "",
+        heroDescription: settings.heroDescription || "",
+        heroImages: settings.heroImages || [],
+        aboutTitle: settings.aboutTitle || "",
+        aboutContent: settings.aboutContent || "",
+      });
+    }
+  }, [settings]);
+
   const handleSave = () => {
+    if (!firestore || !settingsRef) return;
+    
+    setDocumentNonBlocking(settingsRef, {
+      ...formData,
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
+
     toast({ title: "Settings Updated", description: "Homepage content has been saved successfully." });
   };
+
+  const addHeroImage = () => {
+    if (!newImageUrl) return;
+    setFormData({ ...formData, heroImages: [...formData.heroImages, newImageUrl] });
+    setNewImageUrl("");
+  };
+
+  const removeHeroImage = (index: number) => {
+    const updatedImages = formData.heroImages.filter((_, i) => i !== index);
+    setFormData({ ...formData, heroImages: updatedImages });
+  };
+
+  if (isLoading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin" /></div>;
 
   return (
     <div className="space-y-8">
@@ -30,7 +83,6 @@ export default function AdminContentPage() {
         <TabsList className="bg-white p-1 h-14 rounded-2xl shadow-sm mb-8">
           <TabsTrigger value="hero" className="rounded-xl px-8 h-full data-[state=active]:bg-primary data-[state=active]:text-white">Hero Section</TabsTrigger>
           <TabsTrigger value="about" className="rounded-xl px-8 h-full data-[state=active]:bg-primary data-[state=active]:text-white">About Us</TabsTrigger>
-          <TabsTrigger value="testimonials" className="rounded-xl px-8 h-full data-[state=active]:bg-primary data-[state=active]:text-white">Testimonials</TabsTrigger>
         </TabsList>
 
         <TabsContent value="hero" className="space-y-6">
@@ -39,21 +91,50 @@ export default function AdminContentPage() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label>Hero Heading</Label>
-                <Input defaultValue="Unlock Your Potential with Ideal Study Point" className="h-12 rounded-xl" />
+                <Input 
+                  value={formData.heroHeadline} 
+                  onChange={e => setFormData({ ...formData, heroHeadline: e.target.value })}
+                  className="h-12 rounded-xl" 
+                />
               </div>
               <div className="space-y-2">
                 <Label>Hero Sub-heading</Label>
-                <Textarea defaultValue="Join our world-class academic community. We offer cutting-edge courses designed by industry experts." className="rounded-xl min-h-[100px]" />
+                <Textarea 
+                  value={formData.heroDescription} 
+                  onChange={e => setFormData({ ...formData, heroDescription: e.target.value })}
+                  className="rounded-xl min-h-[100px]" 
+                />
               </div>
-              <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label>Primary Button Text</Label>
-                  <Input defaultValue="Enroll Now" className="h-12 rounded-xl" />
+
+              <div className="space-y-4 pt-4 border-t">
+                <Label className="flex items-center gap-2"><ImageIcon className="h-4 w-4" /> Hero Background Images (Slider)</Label>
+                <div className="flex gap-2">
+                  <Input 
+                    placeholder="Enter image URL..." 
+                    value={newImageUrl} 
+                    onChange={e => setNewImageUrl(e.target.value)}
+                    className="h-12 rounded-xl"
+                  />
+                  <Button type="button" onClick={addHeroImage} className="rounded-xl px-6">
+                    <Plus className="h-4 w-4" /> Add
+                  </Button>
                 </div>
-                <div className="space-y-2">
-                  <Label>Secondary Button Text</Label>
-                  <Input defaultValue="Browse Courses" className="h-12 rounded-xl" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {formData.heroImages.map((url, idx) => (
+                    <div key={idx} className="relative group aspect-video rounded-xl overflow-hidden border">
+                      <img src={url} alt={`Hero ${idx}`} className="object-cover w-full h-full" />
+                      <button 
+                        onClick={() => removeHeroImage(idx)}
+                        className="absolute top-2 right-2 bg-rose-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
                 </div>
+                {formData.heroImages.length === 0 && (
+                  <p className="text-xs text-muted-foreground italic">No custom images added. Default placeholder will be used.</p>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -65,41 +146,22 @@ export default function AdminContentPage() {
             <CardContent className="space-y-6">
               <div className="space-y-2">
                 <Label>About Title</Label>
-                <Input defaultValue="Why Choose Ideal Study Point Academy?" className="h-12 rounded-xl" />
+                <Input 
+                  value={formData.aboutTitle} 
+                  onChange={e => setFormData({ ...formData, aboutTitle: e.target.value })}
+                  className="h-12 rounded-xl" 
+                />
               </div>
               <div className="space-y-2">
                 <Label>About Description</Label>
-                <Textarea defaultValue="With over two decades of excellence, Ideal Study Point is committed to providing students with the best learning experience." className="rounded-xl min-h-[150px]" />
+                <Textarea 
+                  value={formData.aboutContent} 
+                  onChange={e => setFormData({ ...formData, aboutContent: e.target.value })}
+                  className="rounded-xl min-h-[150px]" 
+                />
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-
-        <TabsContent value="testimonials" className="space-y-6">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-             {[1, 2].map((i) => (
-                <Card key={i} className="border-none shadow-sm rounded-3xl">
-                  <CardHeader className="flex flex-row justify-between items-center">
-                    <CardTitle>Testimonial {i}</CardTitle>
-                    <Button variant="ghost" size="icon"><RefreshCcw className="h-4 w-4" /></Button>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label>Student Name</Label>
-                      <Input defaultValue={i === 1 ? "Alex Thompson" : "Maria Garcia"} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Role/Designation</Label>
-                      <Input defaultValue={i === 1 ? "Software Graduate" : "MBA Student"} />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Feedback</Label>
-                      <Textarea defaultValue="The curriculum at Ideal Study Point is truly state-of-the-art..." />
-                    </div>
-                  </CardContent>
-                </Card>
-             ))}
-           </div>
         </TabsContent>
       </Tabs>
     </div>
