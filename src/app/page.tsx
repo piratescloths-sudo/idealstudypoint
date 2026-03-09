@@ -177,8 +177,8 @@ export default function Home() {
       <Navbar />
       
       <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
-        {/* Hero Section - Increased Height */}
-        <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
+        {/* Hero Section - Increased Height to 95vh */}
+        <section className="relative min-h-[95vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
               <div 
@@ -236,8 +236,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* About Section - Increased Spacing */}
-        <section className="py-40 bg-white">
+        {/* About Section - Decreased Height */}
+        <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div className="relative group animate-reveal opacity-0">
@@ -283,7 +283,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Courses Section - Increased Spacing */}
+        {/* Courses Section */}
         <section className="py-40 bg-[#F8FAFC]">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 animate-reveal opacity-0">
@@ -326,7 +326,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Events Section - Increased Spacing */}
+        {/* Events Section */}
         <section className="py-40 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="text-center mb-16 space-y-4 animate-reveal opacity-0">
@@ -361,7 +361,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section - Consistent Large Spacing */}
+        {/* Testimonials Section */}
         <section className="py-40 bg-[#F8FAFC] relative overflow-hidden">
           <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl opacity-50" />
           <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-100/50 rounded-full blur-3xl opacity-50" />
@@ -445,7 +445,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section - Increased Spacing */}
+        {/* CTA Section */}
         <section className="bg-blue-600 py-40 text-center px-6">
           <div className="max-w-4xl mx-auto space-y-8 animate-reveal opacity-0">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">
@@ -462,7 +462,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contact Section - Enhanced spacing as requested */}
+        {/* Contact Section */}
         <section className="pt-40 pb-56 bg-white relative overflow-hidden">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
             <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto animate-reveal opacity-0">
