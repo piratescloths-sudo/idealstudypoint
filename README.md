@@ -1,3 +1,4 @@
+
 # Ideal Study Point
 
 A modern, AI-powered education platform and campus management system built with Next.js, Firebase, and Genkit.
@@ -29,3 +30,16 @@ A modern, AI-powered education platform and campus management system built with 
 3. Set up your Firebase project and add the configuration to `src/firebase/config.ts`.
 4. Run the development server: `npm run dev`
 5. Open [http://localhost:9002](http://localhost:9002) in your browser.
+
+## Deployment to GitHub
+
+To push your changes to your repository for the first time:
+
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/piratescloths-sudo/idealstudypoint.git
+git push -u origin main
+```
