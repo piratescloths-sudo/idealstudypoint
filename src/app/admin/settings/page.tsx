@@ -1,8 +1,7 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Shield, Globe, Info, Loader2, MessageSquare } from "lucide-react";
+import { Save, Shield, Globe, Info, Loader2, MessageSquare, Map as MapIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -30,7 +29,8 @@ export default function AdminSettingsPage() {
     linkedinUrl: "",
     contactHeadline: "Connect With Us",
     contactDescription: "Have questions about our campus or programs? We're here to help you navigate your academic future.",
-    officeHours: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed"
+    officeHours: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed",
+    googleMapEmbedUrl: ""
   });
 
   useEffect(() => {
@@ -45,7 +45,8 @@ export default function AdminSettingsPage() {
         linkedinUrl: settings.linkedinUrl || "",
         contactHeadline: settings.contactHeadline || "Connect With Us",
         contactDescription: settings.contactDescription || "Have questions about our campus or programs? We're here to help you navigate your academic future.",
-        officeHours: settings.officeHours || "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed"
+        officeHours: settings.officeHours || "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed",
+        googleMapEmbedUrl: settings.googleMapEmbedUrl || ""
       });
     }
   }, [settings]);
@@ -108,7 +109,7 @@ export default function AdminSettingsPage() {
                   value={formData.mainEmail} 
                   onChange={e => setFormData({...formData, mainEmail: e.target.value})}
                   className="rounded-xl h-12 bg-slate-50 border-none" 
-                />
+              />
               </div>
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Phone Number</Label>
@@ -145,6 +146,18 @@ export default function AdminSettingsPage() {
                 onChange={e => setFormData({...formData, contactDescription: e.target.value})}
                 className="rounded-xl bg-slate-50 border-none min-h-[80px]" 
               />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                <MapIcon className="h-3 w-3" /> Google Map Embed URL (Src)
+              </Label>
+              <Input 
+                value={formData.googleMapEmbedUrl} 
+                onChange={e => setFormData({...formData, googleMapEmbedUrl: e.target.value})}
+                placeholder="https://www.google.com/maps/embed?pb=..."
+                className="rounded-xl h-12 bg-slate-50 border-none" 
+              />
+              <p className="text-[10px] text-muted-foreground">Copy the 'src' attribute value from the Google Maps 'Embed a map' iframe code.</p>
             </div>
             <div className="space-y-2">
               <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Office Hours</Label>
