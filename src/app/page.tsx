@@ -67,11 +67,11 @@ export default function Home() {
                 <span>Welcome to EduVista Academy</span>
               </div>
               
-              <h1 className="text-5xl md:text-8xl font-headline font-bold text-white leading-[1.1] tracking-tight">
+              <h1 className="text-5xl md:text-8xl font-headline font-bold text-white leading-[1.1] tracking-tight text-center">
                 Shape Your Future <br /> with World-Class <br /> Education
               </h1>
               
-              <p className="text-lg md:text-2xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-medium">
+              <p className="text-lg md:text-2xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-medium text-center">
                 Empowering learners with innovative programs, expert faculty, and a supportive community. Start your journey to success today.
               </p>
               
@@ -94,7 +94,7 @@ export default function Home() {
                   <div className={cn("mb-3", stat.color)}>
                     <stat.icon className="h-8 w-8" />
                   </div>
-                  <div className="text-4xl md:text-5xl font-headline font-black text-slate-900 tracking-tighter">{stat.value}</div>
+                  <div className="text-4xl md:text-5xl font-headline font-bold text-slate-900 tracking-tighter">{stat.value}</div>
                   <div className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em]">{stat.label}</div>
                 </div>
               ))}
