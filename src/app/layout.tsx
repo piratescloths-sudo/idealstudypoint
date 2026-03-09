@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 
-const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
+const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png?v=2";
 
 export const metadata: Metadata = {
   title: 'Ideal Study Point | Modern Education Platform',
@@ -28,9 +28,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-        {/* Explicitly adding link tags to ensure the logo shows as the tab icon */}
+        {/* Force tab icon update with explicit link tags and cache busting */}
         <link rel="icon" type="image/png" href={LOGO_URL} />
         <link rel="apple-touch-icon" href={LOGO_URL} />
+        <link rel="shortcut icon" href={LOGO_URL} />
       </head>
       <body className="font-body antialiased">
         <FirebaseClientProvider>
