@@ -3,8 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Menu, X, LogIn } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { GraduationCap, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -76,15 +75,6 @@ export function Navbar() {
           ))}
         </div>
 
-        <div className="hidden md:block">
-          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-12 border-none shadow-xl shadow-indigo-500/20 transition-all hover:translate-y-[-2px] font-bold">
-            <Link href="/admin/login">
-              <LogIn className="h-4 w-4" />
-              Admin Panel
-            </Link>
-          </Button>
-        </div>
-
         {/* Mobile Menu Trigger */}
         <button
           className={cn(
@@ -118,11 +108,6 @@ export function Navbar() {
               {link.name}
             </Link>
           ))}
-          <Button asChild className="mt-4 bg-indigo-600 h-14 text-lg rounded-2xl">
-            <Link href="/admin/login" onClick={() => setIsOpen(false)}>
-              Admin Panel
-            </Link>
-          </Button>
         </div>
       </div>
     </nav>
