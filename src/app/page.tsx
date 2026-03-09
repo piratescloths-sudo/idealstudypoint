@@ -87,15 +87,15 @@ export default function Home() {
           </div>
 
           {/* Floating Stats Bar */}
-          <div className="container mx-auto px-4 mt-24 relative z-20">
-            <div className="bg-white rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-12 px-16 md:py-16 md:px-24 gap-8 border border-white/50">
+          <div className="container mx-auto px-4 mt-24 relative z-20 max-w-6xl">
+            <div className="bg-white rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-8 px-12 md:py-10 md:px-16 gap-8 border border-white/50">
               {stats.map((stat, i) => (
                 <div key={i} className="flex flex-col items-center justify-center text-center px-4 space-y-1 border-r last:border-0 border-slate-100/80">
-                  <div className={cn("mb-4", stat.color)}>
-                    <stat.icon className="h-8 w-8 opacity-80" />
+                  <div className={cn("mb-3", stat.color)}>
+                    <stat.icon className="h-7 w-7 opacity-80" />
                   </div>
-                  <div className="text-4xl md:text-5xl font-headline font-bold text-slate-900 tracking-tighter">{stat.value}</div>
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.25em]">{stat.label}</div>
+                  <div className="text-3xl md:text-4xl font-headline font-bold text-slate-900 tracking-tighter">{stat.value}</div>
+                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.25em]">{stat.label}</div>
                 </div>
               ))}
             </div>
