@@ -1,7 +1,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Award, Globe, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Award, Globe, Users, Quote, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -41,13 +41,37 @@ export default function Home() {
     },
   ];
 
+  const testimonials = [
+    {
+      text: "The faculty here are incredible. They bring real-world experience into the classroom, making every lecture engaging and practical.",
+      name: "Michael Chang",
+      role: "Business Administration Student",
+      initial: "M",
+      rating: 5
+    },
+    {
+      text: "I went from knowing nothing about marketing to running campaigns for major brands. The curriculum is perfectly structured for beginners and professionals alike.",
+      name: "Priya Sharma",
+      role: "Digital Marketing Graduate",
+      initial: "P",
+      rating: 4
+    },
+    {
+      text: "EduVista transformed my career. The hands-on projects and mentorship gave me the confidence to land my dream job at a top tech company.",
+      name: "Jessica Thompson",
+      role: "Computer Science Graduate",
+      initial: "J",
+      rating: 5
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-white">
       <Navbar />
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative min-h-[50vh] flex flex-col items-center justify-center pt-24 pb-24 overflow-hidden">
+        <section className="relative min-h-[50vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           {/* Background with Gradient Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -68,11 +92,11 @@ export default function Home() {
                 <span>Welcome to EduVista Academy</span>
               </div>
               
-              <h1 className="text-4xl md:text-6xl font-headline font-bold text-white leading-[1.1] tracking-tight text-center">
+              <h1 className="text-4xl md:text-6xl font-headline font-bold text-white leading-[1.1] tracking-tight">
                 Shape Your Future <br /> with World-Class <br /> Education
               </h1>
               
-              <p className="text-base text-slate-400 max-w-lg mx-auto leading-relaxed font-medium text-center">
+              <p className="text-base text-slate-400 max-w-lg mx-auto leading-relaxed font-medium">
                 Empowering learners with innovative programs, expert faculty, and a supportive community. Start your journey to success today.
               </p>
               
@@ -88,7 +112,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Floating Stats Bar - Positioned between sections */}
+        {/* Floating Stats Bar */}
         <div className="relative z-20 -mt-16 container mx-auto px-4 max-w-4xl">
           <div className="bg-white rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-10 px-10 md:px-14 gap-8 border border-white/50">
             {stats.map((stat, i) => (
@@ -201,6 +225,51 @@ export default function Home() {
                       </Button>
                     </div>
                   </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-24 bg-[#F1F5F9]">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16 space-y-6 max-w-2xl mx-auto">
+              <div className="inline-flex items-center gap-2 px-5 py-1.5 bg-indigo-100 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-[0.2em] mx-auto">
+                <span>Testimonials</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-headline font-bold text-slate-900 tracking-tight">What Our Students Say</h2>
+              <p className="text-lg text-slate-500 font-medium leading-relaxed">Hear from our community of learners about their experiences</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              {testimonials.map((t, idx) => (
+                <Card key={idx} className="border-none shadow-[0_15px_35px_-5px_rgba(0,0,0,0.05)] rounded-[2rem] bg-white overflow-hidden p-8 flex flex-col justify-between h-full transition-transform hover:-translate-y-2 duration-300">
+                  <div className="space-y-6">
+                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-50/50">
+                      <Quote className="h-6 w-6 text-indigo-200" />
+                    </div>
+                    <p className="text-slate-600 font-medium leading-relaxed italic">
+                      &quot;{t.text}&quot;
+                    </p>
+                  </div>
+                  
+                  <div className="pt-10 flex items-center justify-between mt-auto">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 border-2 border-white shadow-sm">
+                        {t.initial}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="font-bold text-slate-900 text-sm leading-tight">{t.name}</span>
+                        <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wide">{t.role}</span>
+                      </div>
+                    </div>
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className={cn("h-3 w-3", i < t.rating ? "fill-amber-400 text-amber-400" : "text-slate-200")} />
+                      ))}
+                    </div>
+                  </div>
                 </Card>
               ))}
             </div>
