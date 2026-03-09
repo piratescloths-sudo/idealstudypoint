@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -220,8 +221,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section - Added margin top for spacing instead of negative overlap */}
-        <div className="relative z-20 mt-16 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
+        {/* Stats Section - Floating between Hero and About Us */}
+        <div className="relative z-20 -mt-24 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
               <div key={i} className="flex flex-col items-center justify-center text-center space-y-2 border-r last:border-0 border-slate-100 hover:scale-105 transition-transform">
