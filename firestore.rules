@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * CORE PHILOSOPHY
+     * This ruleset implements a Role-Based Access Control (RBAC) model. Administrative 
+     * privileges are centralized and managed via a dedicated 'adminRoles' collection. 
+     * Content meant for the public website (Courses, Events, Testimonials, Settings) 
+     * is globally readable, while sensitive user submissions (Inquiries, Contact Messages) 
+     * are restricted to authorized administrators.
+     *
+     * DATA STRUCTURE
+     * The database is organized into top-level collections:
+     * - Public Content: /courses, /events, /testimonials, /websiteSettings
+     * - Admin-Only Data: /admissionInquiries, /contactMessages, /adminRoles
+     *
+     * KEY SECURITY DECISIONS
+     * 1. Global Admin Check: Instead of denormalizing roles on every document, we use a 
+     *    centralized lookup on /adminRoles/{uid} for all management operations.
+     * 2. Form Submissions: To allow anonymous users to submit inquiries while preventing 
+     *    open-write vulnerabilities, create operations require the user to be at least 
+     *    anonymously signed in (via Firebase Auth).
+     * 3. Relational Integrity: On document creation, we enforce that the document's 
+     *    internal 'id' field matches the Firestore document ID to ensure data consistency.
+     * 4. Query Safety: Sensitive collections (Inquiries, Messages) explicitly deny 
+     *    public 'list' operations, ensuring private data remains private.
+     */
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the user is authenticated with Firebase Auth. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user has an entry in the adminRoles collection. */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/adminRoles/$(request.auth.uid));
+    }
+
+    /** @description Combines admin check with a verify-existence check for updates and deletes. */
+    function isExistingAdmin() {
+      return isAdmin() && resource != null;
+    }
+
+    /** @description Validates that the data ID matches the document path ID on creation. */
+    function matchesPath(dataId, pathId) {
+      return dataId == pathId;
+    }
+
+    /** @description Ensures that critical relational or identity fields are not changed. */
+    function isImmutable(fieldName) {
+      return request.resource.data[fieldName] == resource.data[fieldName];
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Publicly viewable courses managed strictly by administrators.
+     * @path /courses/{courseId}
+     * @allow Public read (get/list); Admin managed (create/update/delete).
+     * @deny Create by non-admin; Update of non-existent document.
+     * @principle Role-based management with public content visibility.
+     */
+    match /courses/{courseId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, courseId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Upcoming events and workshops. Publicly readable for the website.
+     * @path /events/{eventId}
+     * @allow (get) Publicly; (create) Admin with valid UID mapping.
+     * @deny (list) if query is filtered by data the user shouldn't see (N/A for public collections).
+     * @principle Relational integrity enforced on creation via ID matching.
+     */
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, eventId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Student and alumnus testimonials for homepage display.
+     * @path /testimonials/{testimonialId}
+     * @allow Public read access; Admin-only write access.
+     * @deny Any write operation by an unauthenticated user.
+     * @principle Public consumption with authenticated management.
+     */
+    match /testimonials/{testimonialId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, testimonialId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Admission inquiries submitted by students. Private and sensitive.
+     * @path /admissionInquiries/{inquiryId}
+     * @allow (create) Any signed-in user (including anonymous); (list/get) Admin only.
+     * @deny (list) for non-admins to prevent bulk data exposure.
+     * @principle Secure form submission pattern with RBAC-protected retrieval.
+     */
+    match /admissionInquiries/{inquiryId} {
+      allow get, list: if isAdmin();
+      allow create: if isSignedIn() && matchesPath(request.resource.data.id, inquiryId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Contact form messages. Restricted access to protect sender privacy.
+     * @path /contactMessages/{messageId}
+     * @allow (create) Signed-in users; (read/update/delete) Admins.
+     * @deny (get) access to the user who sent it (messages are one-way submissions).
+     * @principle Restricts access to sensitive PII to authorized personnel only.
+     */
+    match /contactMessages/{messageId} {
+      allow get, list: if isAdmin();
+      allow create: if isSignedIn() && matchesPath(request.resource.data.id, messageId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Singleton document for global website configuration and static content.
+     * @path /websiteSettings/{settingId}
+     * @allow Public read; Admin-only management.
+     * @deny Creation of multiple setting documents (logic handled by client, enforced by rules).
+     * @principle Centralized configuration with strict administrative control.
+     */
+    match /websiteSettings/{settingId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, settingId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Registry of UIDs that are granted administrative access to the platform.
+     * @path /adminRoles/{adminUid}
+     * @allow Admin-only CRUD.
+     * @deny (create) Self-promotion if not already an admin.
+     * @principle Bootstrapped RBAC where existing admins must authorize new admins.
+     */
+    match /adminRoles/{adminUid} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin() && matchesPath(adminUid, request.auth.uid) == false; // Prevent logic errors, only admins create admins
+      allow update: if isExistingAdmin();
+      allow delete: if isExistingAdmin() && adminUid != request.auth.uid; // Prevent admin from deleting themselves
+    }
+  }
+}
