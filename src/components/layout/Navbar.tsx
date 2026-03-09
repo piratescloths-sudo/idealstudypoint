@@ -33,45 +33,50 @@ export function Navbar() {
       className={cn(
         "fixed top-0 w-full z-50 transition-all duration-300",
         scrolled
-          ? "bg-background/80 backdrop-blur-md shadow-md py-2"
-          : "bg-transparent py-4"
+          ? "bg-slate-900/80 backdrop-blur-md shadow-md py-4"
+          : "bg-transparent py-6"
       )}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="p-2 bg-primary rounded-xl shadow-lg shadow-primary/20">
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
             <GraduationCap className="h-6 w-6 text-white" />
           </div>
-          <span className="text-2xl font-headline font-bold text-primary tracking-tight">
-            EduFlow
+          <span className="text-2xl font-headline font-bold text-white tracking-tight">
+            EduVista
           </span>
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-1 bg-slate-800/20 backdrop-blur-sm p-1 rounded-full border border-white/10">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                pathname === link.href ? "text-primary" : "text-muted-foreground"
+                "text-sm font-medium px-5 py-2 rounded-full transition-all",
+                pathname === link.href 
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-500/20" 
+                  : "text-slate-200 hover:text-white hover:bg-white/10"
               )}
             >
               {link.name}
             </Link>
           ))}
-          <Button asChild variant="outline" size="sm" className="gap-2">
+        </div>
+
+        <div className="hidden md:block">
+          <Button asChild className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl gap-2 px-6 h-11 border-none shadow-xl shadow-indigo-500/20">
             <Link href="/admin/login">
               <LogIn className="h-4 w-4" />
-              Admin
+              Admin Panel
             </Link>
           </Button>
         </div>
 
         {/* Mobile Menu Trigger */}
         <button
-          className="md:hidden p-2 text-primary"
+          className="md:hidden p-2 text-white"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -81,25 +86,25 @@ export function Navbar() {
       {/* Mobile Menu Overlay */}
       <div
         className={cn(
-          "fixed inset-0 top-[64px] bg-background z-40 md:hidden transition-transform duration-300 transform",
+          "fixed inset-0 top-[80px] bg-slate-900 z-40 md:hidden transition-transform duration-300 transform",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex flex-col p-6 gap-6">
+        <div className="flex flex-col p-8 gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
               onClick={() => setIsOpen(false)}
               className={cn(
-                "text-xl font-medium",
-                pathname === link.href ? "text-primary" : "text-muted-foreground"
+                "text-2xl font-semibold",
+                pathname === link.href ? "text-indigo-400" : "text-white/70"
               )}
             >
               {link.name}
             </Link>
           ))}
-          <Button asChild variant="default" className="mt-4">
+          <Button asChild className="mt-4 bg-indigo-600 h-14 text-lg rounded-2xl">
             <Link href="/admin/login" onClick={() => setIsOpen(false)}>
               Admin Login
             </Link>

@@ -31,10 +31,10 @@ export function AdminSidebar() {
   return (
     <div className="w-72 bg-white border-r min-h-screen flex flex-col shrink-0">
       <div className="p-8 flex items-center gap-3">
-        <div className="p-2 bg-primary rounded-xl">
+        <div className="p-2 bg-indigo-600 rounded-xl">
           <GraduationCap className="h-6 w-6 text-white" />
         </div>
-        <span className="text-2xl font-headline font-bold text-primary">EduFlow</span>
+        <span className="text-2xl font-headline font-bold text-indigo-600">EduVista</span>
       </div>
 
       <nav className="flex-grow px-4 space-y-2 mt-4">
@@ -47,11 +47,11 @@ export function AdminSidebar() {
               className={cn(
                 "flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all group",
                 isActive 
-                  ? "bg-primary text-white shadow-lg shadow-primary/20" 
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-primary"
+                  ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" 
+                  : "text-slate-500 hover:bg-slate-50 hover:text-indigo-600"
               )}
             >
-              <item.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-muted-foreground group-hover:text-primary")} />
+              <item.icon className={cn("h-5 w-5", isActive ? "text-white" : "text-slate-400 group-hover:text-indigo-600")} />
               {item.name}
             </Link>
           );
@@ -61,7 +61,7 @@ export function AdminSidebar() {
       <div className="p-6 mt-auto border-t">
         <Link 
           href="/admin/login"
-          className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold text-destructive hover:bg-destructive/5 transition-all"
+          className="flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-semibold text-rose-500 hover:bg-rose-50 transition-all"
         >
           <LogOut className="h-5 w-5" />
           Logout

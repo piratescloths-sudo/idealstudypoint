@@ -3,7 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'EduFlow | Modern Education Platform',
+  title: 'EduVista | Modern Education Platform',
   description: 'Empowering students with world-class education and resources.',
 };
 
