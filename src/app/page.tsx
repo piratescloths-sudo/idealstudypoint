@@ -83,14 +83,14 @@ export default function Home() {
       rating: 5
     },
     {
-      text: "I went from knowing nothing about marketing to running campaigns for major brands. The curriculum is perfectly structured for beginners and professionals alike.",
+      text: "I went from knowing nothing about marketing to running campaigns for major brands. The curriculum is perfectly structured.",
       name: "Priya Sharma",
       role: "Digital Marketing Graduate",
       initial: "P",
       rating: 4
     },
     {
-      text: "EduVista transformed my career. The hands-on projects and mentorship gave me the confidence to land my dream job at a top tech company.",
+      text: "EduVista transformed my career. The hands-on projects and mentorship gave me the confidence to land my dream job.",
       name: "Jessica Thompson",
       role: "Computer Science Graduate",
       initial: "J",
@@ -105,7 +105,6 @@ export default function Home() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative h-[65vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
-          {/* Background with Gradient Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
               src={heroImg?.imageUrl || ""}
@@ -145,9 +144,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Floating Stats Bar */}
+        {/* Floating Stats Bar - Bridging Hero and About */}
         <div className="relative z-20 -mt-16 container mx-auto px-4 max-w-5xl">
-          <div className="bg-white rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-10 px-10 md:px-16 gap-8 border border-white/50">
+          <div className="bg-white rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-10 px-10 md:px-14 gap-8 border border-white/50">
             {stats.map((stat, i) => (
               <div key={i} className="flex flex-col items-center justify-center text-center px-4 space-y-1 border-r last:border-0 border-slate-100">
                 <div className={cn("mb-1", stat.color)}>
@@ -190,16 +189,11 @@ export default function Home() {
                 </h2>
                 
                 <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                  For over 25 years, EduVista Academy has been at the forefront of education, blending traditional teaching methods with modern technology. Our diverse programs, experienced faculty, and state-of-the-art facilities create an environment where students thrive.
+                  For over 25 years, EduVista Academy has been at the forefront of education, blending traditional teaching methods with modern technology.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8">
-                  {[
-                    "Expert Faculty",
-                    "Modern Campus",
-                    "Flexible Learning",
-                    "Career Support"
-                  ].map((feature, i) => (
+                  {["Expert Faculty", "Modern Campus", "Flexible Learning", "Career Support"].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3">
                       <div className="h-2 w-2 rounded-full bg-indigo-600" />
                       <span className="font-bold text-slate-700">{feature}</span>
@@ -221,7 +215,7 @@ export default function Home() {
                   <span>Academic Excellence</span>
                 </div>
                 <h2 className="text-3xl md:text-5xl font-headline font-bold text-slate-900 tracking-tight">Our Programs</h2>
-                <p className="text-base text-slate-500 max-w-xl font-medium leading-relaxed">Explore our most popular courses designed to elevate your career and skills.</p>
+                <p className="text-base text-slate-500 max-w-xl font-medium leading-relaxed">Explore our most popular courses designed to elevate your career.</p>
               </div>
               <Button asChild variant="ghost" className="text-indigo-600 font-bold text-sm hover:bg-indigo-50 px-8 h-12 rounded-xl gap-2 transition-all">
                 <Link href="/courses" className="flex items-center gap-2">View All Courses <ArrowRight className="h-4 w-4" /></Link>
@@ -292,7 +286,6 @@ export default function Home() {
                   </div>
                   <CardContent className="p-8 space-y-4">
                     <h3 className="text-xl font-headline font-bold text-indigo-600 leading-tight">{event.title}</h3>
-                    <p className="text-slate-500 font-medium leading-relaxed line-clamp-2">{event.description}</p>
                     <div className="space-y-3 pt-4 border-t border-slate-50 text-[13px] font-bold text-slate-400">
                       <div className="flex items-center gap-3">
                         <Calendar className="h-4 w-4 text-indigo-400" />
@@ -324,29 +317,26 @@ export default function Home() {
                 <span>Testimonials</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-headline font-bold text-slate-900 tracking-tight">What Our Students Say</h2>
-              <p className="text-lg text-slate-500 font-medium leading-relaxed">Hear from our community of learners about their experiences</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {testimonials.map((t, idx) => (
-                <Card key={idx} className="border-none shadow-[0_15px_35px_-5px_rgba(0,0,0,0.05)] rounded-[2.5rem] bg-white overflow-hidden p-10 flex flex-col justify-between h-full transition-transform hover:-translate-y-2 duration-300">
+                <Card key={idx} className="border-none shadow-sm rounded-[2.5rem] bg-white p-10 flex flex-col justify-between h-full transition-transform hover:-translate-y-2 duration-300">
                   <div className="space-y-8">
                     <div className="h-12 w-12 flex items-center justify-center rounded-2xl bg-indigo-50/50">
                       <Quote className="h-7 w-7 text-indigo-200" />
                     </div>
-                    <p className="text-slate-600 font-medium leading-relaxed italic text-lg">
-                      &quot;{t.text}&quot;
-                    </p>
+                    <p className="text-slate-600 font-medium leading-relaxed italic text-lg">&quot;{t.text}&quot;</p>
                   </div>
                   
                   <div className="pt-12 flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-4">
-                      <div className="h-14 w-14 rounded-2xl bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 border-2 border-white shadow-sm text-xl">
+                      <div className="h-14 w-14 rounded-2xl bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-xl">
                         {t.initial}
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-bold text-slate-900 text-base leading-tight">{t.name}</span>
-                        <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5">{t.role}</span>
+                        <span className="font-bold text-slate-900 text-base">{t.name}</span>
+                        <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">{t.role}</span>
                       </div>
                     </div>
                     <div className="flex gap-0.5">
