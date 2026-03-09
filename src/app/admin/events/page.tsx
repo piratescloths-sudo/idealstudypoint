@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Edit2, Trash2, Wand2, Loader2, Calendar as CalendarIcon, Save, Search } from "lucide-react";
+import { Plus, Edit2, Trash2, Wand2, Loader2, Calendar as CalendarIcon, Save, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -23,7 +23,8 @@ export default function AdminEventsPage() {
     date: "",
     location: "",
     description: "",
-    summary: ""
+    summary: "",
+    imageUrl: ""
   });
 
   const firestore = useFirestore();
@@ -34,7 +35,7 @@ export default function AdminEventsPage() {
   const { data: events, isLoading } = useCollection(eventsQuery);
 
   const resetForm = () => {
-    setFormData({ title: "", date: "", location: "", description: "", summary: "" });
+    setFormData({ title: "", date: "", location: "", description: "", summary: "", imageUrl: "" });
     setEditingEventId(null);
   };
 
@@ -49,7 +50,8 @@ export default function AdminEventsPage() {
       date: event.date ? event.date.split('T')[0] : "",
       location: event.location || "",
       description: event.description || "",
-      summary: event.summary || ""
+      summary: event.summary || "",
+      imageUrl: event.imageUrl || ""
     });
     setEditingEventId(event.id);
     setIsDialogOpen(true);
@@ -91,7 +93,7 @@ export default function AdminEventsPage() {
       location: formData.location,
       description: formData.description,
       summary: formData.summary,
-      imageUrl: "https://picsum.photos/seed/" + (editingEventId || Math.random()) + "/800/600",
+      imageUrl: formData.imageUrl || "https://picsum.photos/seed/" + eventId + "/800/600",
       updatedAt: new Date().toISOString(),
     };
 
@@ -189,6 +191,10 @@ export default function AdminEventsPage() {
               <div className="space-y-2 md:col-span-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Location</Label>
                 <Input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="e.g. Main Auditorium" className="h-12 rounded-xl bg-slate-50 border-none" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2"><ImageIcon className="h-3 w-3" /> Image URL</Label>
+                <Input value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} placeholder="https://example.com/event-image.jpg" className="h-12 rounded-xl bg-slate-50 border-none" />
               </div>
               <div className="space-y-2 md:col-span-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Full Description</Label>

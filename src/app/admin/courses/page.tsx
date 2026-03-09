@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Edit2, Trash2, Search, Wand2, Loader2, Save, X } from "lucide-react";
+import { Plus, Edit2, Trash2, Search, Wand2, Loader2, Save, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -26,7 +26,8 @@ export default function AdminCoursesPage() {
     targetAudience: "",
     learningObjectives: "",
     description: "",
-    shortDescription: ""
+    shortDescription: "",
+    imageUrl: ""
   });
 
   const firestore = useFirestore();
@@ -37,7 +38,7 @@ export default function AdminCoursesPage() {
   const { data: courses, isLoading } = useCollection(coursesQuery);
 
   const resetForm = () => {
-    setFormData({ title: "", instructor: "", duration: "", targetAudience: "", learningObjectives: "", description: "", shortDescription: "" });
+    setFormData({ title: "", instructor: "", duration: "", targetAudience: "", learningObjectives: "", description: "", shortDescription: "", imageUrl: "" });
     setEditingCourseId(null);
   };
 
@@ -52,9 +53,10 @@ export default function AdminCoursesPage() {
       instructor: course.instructor || "",
       duration: course.duration || "",
       targetAudience: course.targetAudience || "",
-      learningObjectives: "", // Usually stored as long string or array, here we keep it simple
+      learningObjectives: "", 
       description: course.longDescription || "",
-      shortDescription: course.shortDescription || ""
+      shortDescription: course.shortDescription || "",
+      imageUrl: course.imageUrl || ""
     });
     setEditingCourseId(course.id);
     setIsDialogOpen(true);
@@ -98,7 +100,7 @@ export default function AdminCoursesPage() {
       shortDescription: formData.shortDescription || formData.description.substring(0, 100),
       longDescription: formData.description,
       isFeatured: true,
-      imageUrl: "https://picsum.photos/seed/" + (editingCourseId || Math.random()) + "/600/400",
+      imageUrl: formData.imageUrl || "https://picsum.photos/seed/" + courseId + "/600/400",
       updatedAt: new Date().toISOString(),
     };
 
@@ -203,6 +205,10 @@ export default function AdminCoursesPage() {
               <div className="space-y-2">
                 <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Target Audience</Label>
                 <Input value={formData.targetAudience} onChange={e => setFormData({...formData, targetAudience: e.target.value})} placeholder="e.g. Beginners" className="h-12 rounded-xl bg-slate-50 border-none" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400 flex items-center gap-2"><ImageIcon className="h-3 w-3" /> Image URL</Label>
+                <Input value={formData.imageUrl} onChange={e => setFormData({...formData, imageUrl: e.target.value})} placeholder="https://example.com/course-image.jpg" className="h-12 rounded-xl bg-slate-50 border-none" />
               </div>
               {!editingCourseId && (
                 <div className="space-y-2 md:col-span-2">
