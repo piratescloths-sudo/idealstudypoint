@@ -207,15 +207,6 @@ export default function Home() {
               <p className="text-lg md:text-xl text-slate-100 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-lg animate-reveal opacity-0" style={{ animationDelay: '0.6s' }}>
                 {settings?.heroDescription || "Empowering learners with innovative programs, expert faculty, and a supportive community. Join thousands of students achieving their dreams today."}
               </p>
-              
-              <div className="flex flex-wrap justify-center gap-6 pt-8 animate-reveal opacity-0" style={{ animationDelay: '0.8s' }}>
-                <Button asChild size="lg" className="h-16 px-10 text-lg font-bold rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/40 transition-all">
-                  <Link href="/admission" className="flex items-center gap-3">Enroll Now <ArrowRight className="h-5 w-5" /></Link>
-                </Button>
-                <Button asChild variant="outline" size="lg" className="h-16 px-10 text-lg font-bold bg-white/10 text-white border-white/20 backdrop-blur-md hover:bg-white/20 rounded-2xl transition-all">
-                  <Link href="/courses">Browse Courses</Link>
-                </Button>
-              </div>
             </div>
           </div>
         </section>
