@@ -1,13 +1,12 @@
-
 "use client";
 
 import { useState } from "react";
-import { Plus, Edit2, Trash2, Wand2, Loader2, Calendar as CalendarIcon, Save } from "lucide-react";
+import { Plus, Edit2, Trash2, Wand2, Loader2, Calendar as CalendarIcon, Save, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { generateEventSummary } from "@/ai/flows/generate-event-summary";
@@ -16,7 +15,8 @@ import { useCollection, useFirestore, useMemoFirebase, setDocumentNonBlocking, d
 import { collection, query, doc } from "firebase/firestore";
 
 export default function AdminEventsPage() {
-  const [isAdding, setIsAdding] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingEventId, setEditingEventId] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -32,6 +32,28 @@ export default function AdminEventsPage() {
     return query(collection(firestore, 'events'));
   }, [firestore]);
   const { data: events, isLoading } = useCollection(eventsQuery);
+
+  const resetForm = () => {
+    setFormData({ title: "", date: "", location: "", description: "", summary: "" });
+    setEditingEventId(null);
+  };
+
+  const handleOpenAddDialog = () => {
+    resetForm();
+    setIsDialogOpen(true);
+  };
+
+  const handleOpenEditDialog = (event: any) => {
+    setFormData({
+      title: event.title || "",
+      date: event.date ? event.date.split('T')[0] : "",
+      location: event.location || "",
+      description: event.description || "",
+      summary: event.summary || ""
+    });
+    setEditingEventId(event.id);
+    setIsDialogOpen(true);
+  };
 
   const handleAiGenerate = async () => {
     if (!formData.title || !formData.description) {
@@ -57,23 +79,31 @@ export default function AdminEventsPage() {
 
   const handleSave = () => {
     if (!firestore) return;
-    const colRef = collection(firestore, 'events');
-    const newDocId = doc(colRef).id;
-    const eventRef = doc(firestore, 'events', newDocId);
+    
+    const isNew = !editingEventId;
+    const eventId = editingEventId || doc(collection(firestore, 'events')).id;
+    const eventRef = doc(firestore, 'events', eventId);
 
-    setDocumentNonBlocking(eventRef, {
-      id: newDocId,
+    const payload = {
+      id: eventId,
       title: formData.title,
       date: formData.date,
+      location: formData.location,
       description: formData.description,
-      imageUrl: "https://picsum.photos/seed/" + Math.random() + "/800/600",
-      createdAt: new Date().toISOString(),
+      summary: formData.summary,
+      imageUrl: "https://picsum.photos/seed/" + (editingEventId || Math.random()) + "/800/600",
       updatedAt: new Date().toISOString(),
-    }, { merge: true });
+    };
 
-    setIsAdding(false);
-    setFormData({ title: "", date: "", location: "", description: "", summary: "" });
-    toast({ title: "Event Added", description: "Successfully created event." });
+    if (isNew) {
+      (payload as any).createdAt = new Date().toISOString();
+    }
+
+    setDocumentNonBlocking(eventRef, payload, { merge: true });
+
+    setIsDialogOpen(false);
+    resetForm();
+    toast({ title: "Event Saved", description: `Successfully ${isNew ? 'created' : 'updated'} event.` });
   };
 
   const handleDelete = (eventId: string) => {
@@ -86,78 +116,50 @@ export default function AdminEventsPage() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <div className="space-y-1">
-          <h1 className="text-3xl font-headline font-bold">Manage Events</h1>
+          <h1 className="text-3xl font-headline font-bold text-slate-900">Manage Events</h1>
           <p className="text-muted-foreground">Announce and manage campus events and seminars.</p>
         </div>
-        <Dialog open={isAdding} onOpenChange={setIsAdding}>
-          <DialogTrigger asChild>
-            <Button className="h-12 px-6 rounded-2xl gap-2 font-bold shadow-xl shadow-primary/20">
-              <Plus className="h-5 w-5" /> Add New Event
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-2xl rounded-[2rem]">
-            <DialogHeader>
-              <DialogTitle className="text-2xl font-headline">New Event Details</DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
-              <div className="space-y-2">
-                <Label>Event Title</Label>
-                <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Tech Summit 2024" />
-              </div>
-              <div className="space-y-2">
-                <Label>Date</Label>
-                <Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <Label>Location</Label>
-                <Input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="e.g. Main Auditorium" />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <Label>Full Description</Label>
-                <Textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Explain what the event is about in detail..." />
-              </div>
-              <div className="space-y-2 md:col-span-2">
-                <div className="flex justify-between items-center">
-                  <Label>Marketing Summary (Short)</Label>
-                  <Button type="button" variant="ghost" size="sm" className="text-primary gap-1" onClick={handleAiGenerate} disabled={generating}>
-                    {generating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
-                    AI Summarize
-                  </Button>
-                </div>
-                <Textarea value={formData.summary} onChange={e => setFormData({...formData, summary: e.target.value})} className="min-h-[80px]" placeholder="A concise, engaging summary..." />
-              </div>
-            </div>
-            <div className="flex justify-end gap-3 mt-6">
-              <Button variant="outline" onClick={() => setIsAdding(false)}>Cancel</Button>
-              <Button className="gap-2 px-8" onClick={handleSave}>
-                <Save className="h-4 w-4" /> Save Event
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={handleOpenAddDialog} className="h-12 px-6 rounded-2xl gap-2 font-bold shadow-xl shadow-primary/20">
+          <Plus className="h-5 w-5" /> Add New Event
+        </Button>
       </div>
 
-      <Card className="border-none shadow-sm rounded-3xl overflow-hidden">
+      <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white">
         <Table>
-          <TableHeader className="bg-muted/30">
+          <TableHeader className="bg-slate-50">
             <TableRow>
-              <TableHead>Event Title</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="font-bold">Event Title</TableHead>
+              <TableHead className="font-bold">Date</TableHead>
+              <TableHead className="font-bold">Location</TableHead>
+              <TableHead className="text-right font-bold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={3} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+                <TableCell colSpan={4} className="text-center py-10"><Loader2 className="mx-auto animate-spin" /></TableCell>
+              </TableRow>
+            )}
+            {!isLoading && (!events || events.length === 0) && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center py-10 text-muted-foreground">No events found.</TableCell>
               </TableRow>
             )}
             {events?.map((ev) => (
-              <TableRow key={ev.id}>
-                <TableCell className="font-semibold">{ev.title}</TableCell>
-                <TableCell className="flex items-center gap-2"><CalendarIcon className="h-4 w-4 text-primary" /> {new Date(ev.date).toLocaleDateString()}</TableCell>
+              <TableRow key={ev.id} className="hover:bg-slate-50/50">
+                <TableCell className="font-semibold text-slate-900">{ev.title}</TableCell>
+                <TableCell className="text-slate-600">
+                  <div className="flex items-center gap-2">
+                    <CalendarIcon className="h-3.5 w-3.5 text-indigo-500" />
+                    {new Date(ev.date).toLocaleDateString()}
+                  </div>
+                </TableCell>
+                <TableCell className="text-slate-600 font-medium">{ev.location || "Online"}</TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:bg-destructive/10" onClick={() => handleDelete(ev.id)}>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-indigo-600 hover:bg-indigo-50" onClick={() => handleOpenEditDialog(ev)}>
+                    <Edit2 className="h-4 w-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-rose-500 hover:bg-rose-50" onClick={() => handleDelete(ev.id)}>
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </TableCell>
@@ -166,6 +168,52 @@ export default function AdminEventsPage() {
           </TableBody>
         </Table>
       </Card>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-2xl rounded-[2.5rem] p-0 overflow-hidden border-none">
+          <div className="bg-white p-8 md:p-10 space-y-8">
+            <DialogHeader>
+              <DialogTitle className="text-3xl font-headline font-bold text-slate-900">
+                {editingEventId ? 'Edit Event Details' : 'New Event Details'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Event Title</Label>
+                <Input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} placeholder="e.g. Tech Summit 2024" className="h-12 rounded-xl bg-slate-50 border-none" />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Date</Label>
+                <Input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="h-12 rounded-xl bg-slate-50 border-none" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Location</Label>
+                <Input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} placeholder="e.g. Main Auditorium" className="h-12 rounded-xl bg-slate-50 border-none" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Full Description</Label>
+                <Textarea value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} placeholder="Explain what the event is about in detail..." className="bg-slate-50 border-none rounded-xl p-4 min-h-[120px]" />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <div className="flex justify-between items-center mb-1">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Marketing Summary (Short)</Label>
+                  <Button type="button" variant="ghost" size="sm" className="text-primary gap-1 font-bold" onClick={handleAiGenerate} disabled={generating}>
+                    {generating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wand2 className="h-3 w-3" />}
+                    AI Summarize
+                  </Button>
+                </div>
+                <Textarea value={formData.summary} onChange={e => setFormData({...formData, summary: e.target.value})} className="min-h-[80px] bg-slate-50 border-none rounded-xl p-4" placeholder="A concise, engaging summary..." />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 pt-4">
+              <Button variant="ghost" onClick={() => setIsDialogOpen(false)} className="rounded-xl px-8 h-12 font-bold">Cancel</Button>
+              <Button className="h-12 px-10 rounded-xl gap-2 font-bold shadow-lg shadow-primary/20" onClick={handleSave}>
+                <Save className="h-5 w-5" /> {editingEventId ? 'Update' : 'Save'} Event
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
