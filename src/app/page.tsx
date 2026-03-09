@@ -123,7 +123,7 @@ export default function Home() {
                 <span>Welcome to EduVista Academy</span>
               </div>
               
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-bold text-white leading-[1.1] tracking-tighter">
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-black text-white leading-[1.1] tracking-tighter">
                 Shape Your <br /> Future with <br /> Excellence
               </h1>
               
