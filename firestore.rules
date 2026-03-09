@@ -1,0 +1,114 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * CORE PHILOSOPHY
+     * This ruleset implements a Role-Based Access Control (RBAC) model. Administrative 
+     * privileges are centralized and managed via a dedicated 'adminRoles' collection. 
+     * Additionally, a master admin email is explicitly permitted for initial setup and recovery.
+     */
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the user is authenticated with Firebase Auth. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user is an admin via DB record or master email. */
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/adminRoles/$(request.auth.uid)) ||
+        request.auth.token.email == "kanhucharanideal@gmail.com"
+      );
+    }
+
+    /** @description Combines admin check with a verify-existence check for updates and deletes. */
+    function isExistingAdmin() {
+      return isAdmin() && resource != null;
+    }
+
+    /** @description Validates that the data ID matches the document path ID on creation. */
+    function matchesPath(dataId, pathId) {
+      return dataId == pathId;
+    }
+
+    /** @description Ensures that critical relational or identity fields are not changed. */
+    function isImmutable(fieldName) {
+      return request.resource.data[fieldName] == resource.data[fieldName];
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Publicly viewable courses managed strictly by administrators.
+     */
+    match /courses/{courseId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, courseId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Upcoming events and workshops. Publicly readable.
+     */
+    match /events/{eventId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, eventId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Student and alumnus testimonials for homepage display.
+     */
+    match /testimonials/{testimonialId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, testimonialId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Admission inquiries submitted by students. Private.
+     */
+    match /admissionInquiries/{inquiryId} {
+      allow get, list: if isAdmin();
+      allow create: if isSignedIn() && matchesPath(request.resource.data.id, inquiryId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Contact form messages. Restricted access.
+     */
+    match /contactMessages/{messageId} {
+      allow get, list: if isAdmin();
+      allow create: if isSignedIn() && matchesPath(request.resource.data.id, messageId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Singleton document for global website configuration.
+     */
+    match /websiteSettings/{settingId} {
+      allow get, list: if true;
+      allow create: if isAdmin() && matchesPath(request.resource.data.id, settingId);
+      allow update: if isExistingAdmin() && isImmutable('id');
+      allow delete: if isExistingAdmin();
+    }
+
+    /**
+     * @description Registry of UIDs that are granted administrative access.
+     */
+    match /adminRoles/{adminUid} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin() && matchesPath(adminUid, request.auth.uid) == false;
+      allow update: if isExistingAdmin();
+      allow delete: if isExistingAdmin() && adminUid != request.auth.uid;
+    }
+  }
+}

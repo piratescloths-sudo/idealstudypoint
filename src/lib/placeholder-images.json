@@ -1,0 +1,58 @@
+{
+  "placeholderImages": [
+    {
+      "id": "hero-bg",
+      "description": "Modern University Campus",
+      "imageUrl": "https://picsum.photos/seed/edu1/1200/800",
+      "imageHint": "university campus"
+    },
+    {
+      "id": "course-cs",
+      "description": "Computer Science Course",
+      "imageUrl": "https://picsum.photos/seed/cs1/600/400",
+      "imageHint": "coding computer"
+    },
+    {
+      "id": "course-business",
+      "description": "Business Administration",
+      "imageUrl": "https://picsum.photos/seed/biz1/600/400",
+      "imageHint": "business meeting"
+    },
+    {
+      "id": "course-art",
+      "description": "Digital Arts",
+      "imageUrl": "https://picsum.photos/seed/art1/600/400",
+      "imageHint": "digital art"
+    },
+    {
+      "id": "event-workshop",
+      "description": "Science Workshop",
+      "imageUrl": "https://picsum.photos/seed/event1/800/600",
+      "imageHint": "science lab"
+    },
+    {
+      "id": "event-seminar",
+      "description": "Leadership Seminar",
+      "imageUrl": "https://picsum.photos/seed/event2/800/600",
+      "imageHint": "seminar talk"
+    },
+    {
+      "id": "student-1",
+      "description": "Student Testimonial 1",
+      "imageUrl": "https://picsum.photos/seed/student1/200/200",
+      "imageHint": "student portrait"
+    },
+    {
+      "id": "student-2",
+      "description": "Student Testimonial 2",
+      "imageUrl": "https://picsum.photos/seed/student2/200/200",
+      "imageHint": "happy student"
+    },
+    {
+      "id": "about-img",
+      "description": "Students studying in library",
+      "imageUrl": "https://picsum.photos/seed/about1/800/600",
+      "imageHint": "students library"
+    }
+  ]
+}

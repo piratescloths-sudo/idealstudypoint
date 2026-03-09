@@ -1,0 +1,449 @@
+
+{
+  "entities": {
+    "Course": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Course",
+      "type": "object",
+      "description": "Represents a single educational course offered by the institution.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Course entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the course."
+        },
+        "instructor": {
+          "type": "string",
+          "description": "The name of the instructor teaching the course."
+        },
+        "duration": {
+          "type": "string",
+          "description": "The estimated duration of the course (e.g., '6 weeks', '3 months')."
+        },
+        "shortDescription": {
+          "type": "string",
+          "description": "A brief summary of the course content."
+        },
+        "longDescription": {
+          "type": "string",
+          "description": "A detailed description of the course, potentially AI-generated for enrichment."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the course's image, stored in Firebase Storage.",
+          "format": "uri"
+        },
+        "isFeatured": {
+          "type": "boolean",
+          "description": "Indicates if the course should be highlighted on the homepage."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the course was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the course was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "instructor",
+        "duration",
+        "shortDescription",
+        "imageUrl",
+        "isFeatured",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Event": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Event",
+      "type": "object",
+      "description": "Details about an upcoming event or workshop organized by the institution.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Event entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the event."
+        },
+        "date": {
+          "type": "string",
+          "description": "The date and time when the event will take place.",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the event."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL to the event's image, stored in Firebase Storage.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the event was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the event was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "date",
+        "description",
+        "imageUrl",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Testimonial": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Testimonial",
+      "type": "object",
+      "description": "A testimonial from a student or alumnus.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Testimonial entity."
+        },
+        "authorName": {
+          "type": "string",
+          "description": "The name of the person giving the testimonial."
+        },
+        "authorTitle": {
+          "type": "string",
+          "description": "The title or role of the author (e.g., 'Student', 'Alumnus', 'Graduate 2023')."
+        },
+        "content": {
+          "type": "string",
+          "description": "The actual text content of the testimonial."
+        },
+        "rating": {
+          "type": "number",
+          "description": "Star rating given by the student (1 to 5)."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "Optional URL to the author's profile picture.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the testimonial was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the testimonial was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "authorName",
+        "authorTitle",
+        "content",
+        "rating",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "AdmissionInquiry": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "AdmissionInquiry",
+      "type": "object",
+      "description": "A record of an admission inquiry submitted by a prospective student.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the AdmissionInquiry entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the inquirer."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the inquirer.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the inquirer."
+        },
+        "selectedCourseId": {
+          "type": "string",
+          "description": "Reference to the Course entity the inquirer is interested in. (Relationship: Course 1:N AdmissionInquiry)"
+        },
+        "message": {
+          "type": "string",
+          "description": "Any additional message or question from the inquirer."
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "The date and time when the inquiry was submitted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "phone",
+        "selectedCourseId",
+        "message",
+        "submissionDate"
+      ]
+    },
+    "ContactMessage": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ContactMessage",
+      "type": "object",
+      "description": "A message submitted via the website's contact form.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ContactMessage entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the sender."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the sender.",
+          "format": "email"
+        },
+        "message": {
+          "type": "string",
+          "description": "The content of the message."
+        },
+        "submissionDate": {
+          "type": "string",
+          "description": "The date and time when the message was submitted.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "message",
+        "submissionDate"
+      ]
+    },
+    "WebsiteSetting": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "WebsiteSetting",
+      "type": "object",
+      "description": "Stores global website configuration and content for static pages, managed by admin. Intended to be a singleton entity (e.g., ID 'main').",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the WebsiteSetting entity (expected to be a fixed value like 'main')."
+        },
+        "siteName": {
+          "type": "string",
+          "description": "The name of the educational website (e.g., 'EduFlow')."
+        },
+        "logoUrl": {
+          "type": "string",
+          "description": "URL to the institution logo.",
+          "format": "uri"
+        },
+        "faviconUrl": {
+          "type": "string",
+          "description": "URL to the website tab icon (favicon).",
+          "format": "uri"
+        },
+        "mainEmail": {
+          "type": "string",
+          "description": "The primary contact email address for the institution.",
+          "format": "email"
+        },
+        "mainPhone": {
+          "type": "string",
+          "description": "The primary contact phone number for the institution."
+        },
+        "address": {
+          "type": "string",
+          "description": "The physical address of the institution."
+        },
+        "googleMapEmbedUrl": {
+          "type": "string",
+          "description": "URL for embedding a Google Map location on the contact page.",
+          "format": "uri"
+        },
+        "heroHeadline": {
+          "type": "string",
+          "description": "The main headline for the homepage hero section."
+        },
+        "heroDescription": {
+          "type": "string",
+          "description": "The descriptive text accompanying the hero headline on the homepage."
+        },
+        "heroImages": {
+          "type": "array",
+          "description": "An array of image URLs for the homepage hero background slider.",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "aboutTitle": {
+          "type": "string",
+          "description": "The title for the 'About the institute' section on the homepage."
+        },
+        "aboutContent": {
+          "type": "string",
+          "description": "The detailed content for the 'About the institute' section on the homepage."
+        },
+        "aboutImage": {
+          "type": "string",
+          "description": "The image URL for the 'About' section."
+        },
+        "stat1Label": { "type": "string" },
+        "stat1Value": { "type": "string" },
+        "stat2Label": { "type": "string" },
+        "stat2Value": { "type": "string" },
+        "stat3Label": { "type": "string" },
+        "stat3Value": { "type": "string" },
+        "stat4Label": { "type": "string" },
+        "stat4Value": { "type": "string" },
+        "contactHeadline": {
+          "type": "string",
+          "description": "The main headline for the contact page."
+        },
+        "contactDescription": {
+          "type": "string",
+          "description": "The descriptive text for the contact page."
+        },
+        "officeHours": {
+          "type": "string",
+          "description": "Text describing the office hours."
+        },
+        "socialMediaLinks": {
+          "type": "array",
+          "description": "An array of objects, each representing a social media link for the institution.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the website settings were last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "siteName",
+        "mainEmail",
+        "mainPhone",
+        "address",
+        "heroHeadline",
+        "heroDescription",
+        "aboutTitle",
+        "aboutContent",
+        "updatedAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/courses/{courseId}",
+        "definition": {
+          "entityName": "Course",
+          "schema": {
+            "$ref": "#/backend/entities/Course"
+          },
+          "description": "Stores details of all educational courses."
+        }
+      },
+      {
+        "path": "/events/{eventId}",
+        "definition": {
+          "entityName": "Event",
+          "schema": {
+            "$ref": "#/backend/entities/Event"
+          },
+          "description": "Contains information about upcoming events."
+        }
+      },
+      {
+        "path": "/testimonials/{testimonialId}",
+        "definition": {
+          "entityName": "Testimonial",
+          "schema": {
+            "$ref": "#/backend/entities/Testimonial"
+          },
+          "description": "Stores student and alumnus testimonials."
+        }
+      },
+      {
+        "path": "/admissionInquiries/{inquiryId}",
+        "definition": {
+          "entityName": "AdmissionInquiry",
+          "schema": {
+            "$ref": "#/backend/entities/AdmissionInquiry"
+          },
+          "description": "Records admission inquiries."
+        }
+      },
+      {
+        "path": "/contactMessages/{messageId}",
+        "definition": {
+          "entityName": "ContactMessage",
+          "schema": {
+            "$ref": "#/backend/entities/ContactMessage"
+          },
+          "description": "Stores messages submitted via the contact form."
+        }
+      },
+      {
+        "path": "/websiteSettings/{settingId}",
+        "definition": {
+          "entityName": "WebsiteSetting",
+          "schema": {
+            "$ref": "#/backend/entities/WebsiteSetting"
+          },
+          "description": "Contains global website configuration."
+        }
+      },
+      {
+        "path": "/adminRoles/{adminUid}",
+        "definition": {
+          "entityName": "AdminRole",
+          "schema": {
+            "$ref": "#/backend/entities/AdminRole"
+          },
+          "description": "Designates users as administrators."
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to meet core principles..."
+  }
+}
