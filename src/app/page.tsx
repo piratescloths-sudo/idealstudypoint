@@ -161,13 +161,6 @@ export default function Home() {
           <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
             <div className="h-full bg-blue-600 animate-[loading_1.5s_ease-in-out_infinite]" />
           </div>
-          <style jsx>{`
-            @keyframes loading {
-              0% { width: 0%; transform: translateX(-100%); }
-              50% { width: 50%; transform: translateX(50%); }
-              100% { width: 0%; transform: translateX(200%); }
-            }
-          `}</style>
         </div>
       )}
 
@@ -227,7 +220,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section with Entrance Motion */}
+        {/* Stats Section */}
         <div className="relative z-20 -mt-20 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
@@ -246,7 +239,7 @@ export default function Home() {
         <section className="py-32 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div className="relative group">
+              <div className="relative group animate-reveal opacity-0">
                 <div className="relative h-[450px] md:h-[500px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
                   {aboutImgUrl && (
                     <Image
@@ -263,7 +256,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-8 animate-reveal opacity-0">
                 <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-[0.2em]">
                   <span>About ISP</span>
                 </div>
@@ -292,21 +285,20 @@ export default function Home() {
         {/* Courses Section */}
         <section className="py-24 bg-[#F8FAFC]">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 animate-reveal opacity-0">
               <div className="space-y-4 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-[0.2em]">
                   <BookOpen className="h-4 w-4" />
                   <span>Academic Excellence</span>
                 </div>
                 <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter">Our Programs</h2>
-                <p className="text-base text-slate-500 max-w-2xl font-medium leading-relaxed">Explore our most popular courses designed to elevate your professional career.</p>
               </div>
               <Button asChild variant="ghost" className="text-blue-600 font-bold text-base hover:bg-blue-50 px-8 h-12 rounded-2xl gap-3 transition-all">
                 <Link href="/courses" className="flex items-center gap-2">View All Programs <ArrowRight className="h-4 w-4" /></Link>
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-reveal opacity-0">
               {coursesLoading && <Loader2 className="mx-auto animate-spin" />}
               {featuredCourses?.map((course, idx) => (
                 <Card key={idx} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
@@ -317,19 +309,12 @@ export default function Home() {
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute top-4 left-4">
-                      <span className="bg-blue-600 text-white text-[9px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full shadow-lg">New</span>
-                    </div>
                   </div>
                   <CardContent className="p-6 space-y-4">
                     <h3 className="text-lg font-headline font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">{course.title}</h3>
-                    <div className="flex items-center gap-3 text-slate-500 font-bold text-[10px] bg-slate-50 w-fit px-3 py-1.5 rounded-xl">
-                      <Users className="h-3.5 w-3.5 text-blue-600" />
-                      <span>{course.instructor}</span>
-                    </div>
                     <div className="flex justify-between items-center pt-4 border-t border-slate-50">
                       <span className="text-xl font-black text-blue-600 tracking-tighter">{course.duration}</span>
-                      <Button asChild className="rounded-xl h-9 px-5 text-[10px] font-bold bg-slate-900 hover:bg-blue-600 text-white transition-all shadow-md">
+                      <Button asChild className="rounded-xl h-9 px-5 text-[10px] font-bold bg-slate-900 hover:bg-blue-600 text-white shadow-md">
                         <Link href="/admission">Enroll Now</Link>
                       </Button>
                     </div>
@@ -340,9 +325,83 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Events Section */}
+        <section className="py-24 bg-white">
+          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
+            <div className="text-center mb-16 space-y-4 animate-reveal opacity-0">
+              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
+                <Calendar className="h-4 w-4" />
+                <span>Upcoming Events</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter">Campus Highlights</h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-reveal opacity-0">
+              {eventsLoading && <Loader2 className="mx-auto animate-spin" />}
+              {featuredEvents?.map((event, idx) => (
+                <Card key={idx} className="group overflow-hidden border-none shadow-lg hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white border border-slate-50">
+                  <div className="relative h-48 w-full overflow-hidden">
+                    <Image src={event.imageUrl || PlaceHolderImages[4].imageUrl} alt={event.title} fill className="object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute top-4 left-4 bg-white rounded-xl p-2 shadow-lg text-center min-w-[50px]">
+                      <div className="text-lg font-black text-blue-600 leading-none">{event.date ? new Date(event.date).getDate() : '??'}</div>
+                      <div className="text-[9px] font-bold text-slate-400 uppercase">{event.date ? new Date(event.date).toLocaleString('default', { month: 'short' }) : 'TBA'}</div>
+                    </div>
+                  </div>
+                  <CardContent className="p-6 space-y-3">
+                    <h3 className="text-lg font-headline font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">{event.title}</h3>
+                    <p className="text-sm text-slate-500 line-clamp-2">{event.summary || event.description}</p>
+                    <Button asChild variant="link" className="p-0 h-auto text-blue-600 font-bold text-xs gap-2 mt-2">
+                      <Link href="/events">Learn More <ArrowRight className="h-3 w-3" /></Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-24 bg-slate-900 text-white">
+          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-center">
+              <div className="space-y-6 animate-reveal opacity-0">
+                <div className="inline-flex items-center gap-2 px-6 py-2 bg-white/10 rounded-full text-blue-400 font-bold text-[11px] uppercase tracking-widest">
+                  <Quote className="h-4 w-4" />
+                  <span>Success Stories</span>
+                </div>
+                <h2 className="text-4xl md:text-5xl font-headline font-bold tracking-tighter">Hear From Our Graduates</h2>
+                <p className="text-slate-400 font-medium">Join a community of thousands of successful professionals who started their journey at Ideal Study Point.</p>
+              </div>
+
+              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 animate-reveal opacity-0">
+                {testimonialsLoading && <Loader2 className="animate-spin text-white" />}
+                {testimonials?.map((t, idx) => (
+                  <Card key={idx} className="bg-white/5 border-white/10 border rounded-[2rem] p-8 space-y-6">
+                    <div className="flex gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
+                      ))}
+                    </div>
+                    <p className="text-slate-300 italic font-medium leading-relaxed">"{t.content}"</p>
+                    <div className="flex items-center gap-4 pt-4 border-t border-white/10">
+                      <div className="h-12 w-12 rounded-xl overflow-hidden relative">
+                        <Image src={t.imageUrl || PlaceHolderImages[6].imageUrl} alt={t.authorName} fill className="object-cover" />
+                      </div>
+                      <div>
+                        <div className="font-bold text-white">{t.authorName}</div>
+                        <div className="text-xs text-blue-400 font-bold uppercase tracking-widest">{t.authorTitle}</div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="bg-blue-600 py-24 text-center px-6">
-          <div className="max-w-4xl mx-auto space-y-8">
+          <div className="max-w-4xl mx-auto space-y-8 animate-reveal opacity-0">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">
               Ready to Start Your Journey?
             </h2>
@@ -360,7 +419,7 @@ export default function Home() {
         {/* Contact Section */}
         <section className="py-24 bg-white relative overflow-hidden">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
-            <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto">
+            <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto animate-reveal opacity-0">
               <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
                 <MessageSquare className="h-4 w-4" />
                 <span>Contact Us</span>
@@ -373,9 +432,8 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto animate-reveal opacity-0">
               <div className="lg:col-span-1 space-y-6">
-                {/* Map Section */}
                 {settings?.googleMapEmbedUrl && (
                   <Card className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.03)] rounded-[2rem] bg-white overflow-hidden group transition-all hover:-translate-y-1">
                     <div className="aspect-square w-full bg-slate-50">
