@@ -17,19 +17,16 @@ export default function Home() {
   const firestore = useFirestore();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Fetch Website Settings for Hero Background Slider and About Content
   const settingsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return doc(firestore, 'websiteSettings', 'main');
   }, [firestore]);
   const { data: settings } = useDoc(settingsQuery);
 
-  // Filter out any empty strings and provide a default if no valid images exist
   const heroImages = (settings?.heroImages?.filter((url: string) => url && url.trim() !== "")?.length > 0)
     ? settings.heroImages.filter((url: string) => url && url.trim() !== "")
     : [PlaceHolderImages.find(img => img.id === "hero-bg")?.imageUrl || ""];
 
-  // Auto-scrolling interval (2 seconds)
   useEffect(() => {
     if (heroImages.length <= 1) return;
     const interval = setInterval(() => {
@@ -38,7 +35,6 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [heroImages]);
 
-  // Use dynamic about image from settings or fallback to placeholder
   const aboutImgUrl = (settings?.aboutImage && settings.aboutImage.trim() !== "")
     ? settings.aboutImage
     : PlaceHolderImages.find(img => img.id === "about-img")?.imageUrl || "";
@@ -73,7 +69,6 @@ export default function Home() {
       <Navbar />
       
       <main className="flex-grow">
-        {/* Hero Section with Auto-scrolling Slider */}
         <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
@@ -93,7 +88,6 @@ export default function Home() {
                 />
               </div>
             ))}
-            {/* Reduced opacity overlay so background images are visible */}
             <div className="absolute inset-0 bg-[#1a1f29]/60 backdrop-blur-[1px]" />
           </div>
 
@@ -124,7 +118,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Floating Stats Bar */}
         <div className="relative z-20 -mt-20 container mx-auto px-4 max-w-6xl">
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
@@ -139,7 +132,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* About Us Section */}
         <section className="py-32 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -186,7 +178,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Courses Section */}
         <section className="py-24 bg-[#F8FAFC]">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
@@ -237,7 +228,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Upcoming Events Section */}
         <section className="py-24 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="text-center mb-16 space-y-4 max-w-4xl mx-auto">
@@ -294,7 +284,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section */}
         <section className="py-24 bg-[#F8FAFC]">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16 space-y-4 max-w-4xl mx-auto">
@@ -307,27 +296,33 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
               {testimonialsLoading && <Loader2 className="mx-auto animate-spin" />}
               {testimonials?.map((t, idx) => (
-                <Card key={idx} className="border-none shadow-xl rounded-[2.5rem] bg-white p-6 flex flex-col justify-between h-full transition-transform hover:-translate-y-2 duration-300">
-                  <div className="space-y-4">
-                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-indigo-50/50">
-                      <Quote className="h-5 w-5 text-indigo-200" />
+                <Card key={idx} className="border-none shadow-xl rounded-[2.5rem] bg-white p-10 flex flex-col justify-between h-full transition-all hover:shadow-2xl duration-500">
+                  <div className="space-y-6">
+                    <div className="h-12 w-12 flex items-center justify-center rounded-2xl bg-indigo-50/50">
+                      <Quote className="h-6 w-6 text-indigo-200 fill-indigo-100" />
                     </div>
-                    <p className="text-base text-slate-600 font-medium leading-relaxed italic">&quot;{t.content}&quot;</p>
+                    <p className="text-lg text-slate-600 font-medium leading-relaxed tracking-tight italic">
+                      &quot;{t.content}&quot;
+                    </p>
                   </div>
                   
-                  <div className="pt-6 flex items-center justify-between mt-auto">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-xl bg-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-base overflow-hidden">
-                        {t.imageUrl ? <Image src={t.imageUrl} alt={t.authorName} width={40} height={40} /> : t.authorName[0]}
+                  <div className="pt-10 flex items-end justify-between mt-auto">
+                    <div className="flex items-center gap-4">
+                      <div className="h-14 w-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-xl overflow-hidden shadow-sm">
+                        {t.imageUrl ? (
+                          <Image src={t.imageUrl} alt={t.authorName} width={56} height={56} className="object-cover w-full h-full" />
+                        ) : (
+                          <span>{t.authorName[0]}</span>
+                        )}
                       </div>
-                      <div className="flex flex-col">
-                        <span className="font-bold text-slate-900 text-sm">{t.authorName}</span>
-                        <span className="text-[8px] text-slate-400 font-black uppercase tracking-widest mt-0.5">{t.authorTitle}</span>
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-bold text-slate-900 text-lg leading-none">{t.authorName}</span>
+                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">{t.authorTitle}</span>
                       </div>
                     </div>
-                    <div className="flex gap-0.5">
+                    <div className="flex gap-0.5 pb-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={cn("h-3 w-3 fill-amber-400 text-amber-400")} />
+                        <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
                       ))}
                     </div>
                   </div>
@@ -337,7 +332,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section */}
         <section className="bg-[#5D5CFF] py-24 text-center px-6">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">
