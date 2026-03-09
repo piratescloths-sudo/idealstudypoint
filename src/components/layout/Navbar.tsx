@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { GraduationCap, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -13,6 +14,8 @@ const navLinks = [
   { name: "Events", href: "/events" },
   { name: "Contact", href: "/contact" },
 ];
+
+const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,8 +43,13 @@ export function Navbar() {
         {/* Logo Section - Left balanced */}
         <div className="flex-1">
           <Link href="/" className="flex items-center gap-2 group w-fit">
-            <div className="p-2 bg-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
-              < GraduationCap className="h-6 w-6 text-white" />
+            <div className="relative h-10 w-10 overflow-hidden rounded-xl shadow-lg transition-transform group-hover:scale-110">
+              <Image 
+                src={LOGO_URL} 
+                alt="Ideal Study Point Logo" 
+                fill 
+                className="object-cover"
+              />
             </div>
             <span className={cn(
               "text-2xl font-headline font-bold tracking-tight transition-colors",

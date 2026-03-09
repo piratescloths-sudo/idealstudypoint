@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { GraduationCap, Lock, Mail, ArrowLeft, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Lock, Mail, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
+
+const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState("");
@@ -18,8 +21,7 @@ export default function AdminLoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // In a real app, this would use Firebase Auth
-    // Simulate auth delay
+    // Simulation of authentication
     setTimeout(() => {
       setLoading(false);
       if (email === "kanhucharanideal@gmail.com" && password === "Kanhu@12365") {
@@ -42,8 +44,13 @@ export default function AdminLoginPage() {
       <div className="flex-grow flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-none shadow-2xl rounded-[2.5rem] overflow-hidden">
           <CardHeader className="text-center pt-10 pb-6 space-y-4">
-            <div className="inline-flex p-4 bg-primary rounded-[1.5rem] shadow-xl shadow-primary/20 mx-auto">
-              <GraduationCap className="h-10 w-10 text-white" />
+            <div className="relative h-20 w-20 mx-auto overflow-hidden rounded-[1.5rem] shadow-xl">
+              <Image 
+                src={LOGO_URL} 
+                alt="Ideal Study Point Logo" 
+                fill 
+                className="object-cover"
+              />
             </div>
             <div className="space-y-2">
               <CardTitle className="text-3xl font-headline font-bold">Admin Portal</CardTitle>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
@@ -10,8 +11,7 @@ import {
   MessageSquare, 
   Settings, 
   Home, 
-  LogOut,
-  GraduationCap
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -25,14 +25,21 @@ const menuItems = [
   { name: "Settings", icon: Settings, href: "/admin/settings" },
 ];
 
+const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
+
 export function AdminSidebar() {
   const pathname = usePathname();
 
   return (
     <div className="w-72 bg-white border-r min-h-screen flex flex-col shrink-0">
       <div className="p-8 flex items-center gap-3">
-        <div className="p-2 bg-indigo-600 rounded-xl">
-          <GraduationCap className="h-6 w-6 text-white" />
+        <div className="relative h-10 w-10 overflow-hidden rounded-xl">
+          <Image 
+            src={LOGO_URL} 
+            alt="Ideal Study Point Logo" 
+            fill 
+            className="object-cover"
+          />
         </div>
         <span className="text-xl font-headline font-bold text-indigo-600">Ideal Study Point</span>
       </div>

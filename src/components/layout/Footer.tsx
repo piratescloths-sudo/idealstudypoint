@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { GraduationCap, Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import Image from "next/image";
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+
+const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
 export function Footer() {
   return (
@@ -9,8 +12,13 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-8">
             <Link href="/" className="flex items-center gap-3">
-              <div className="p-2 bg-indigo-600 rounded-xl">
-                <GraduationCap className="h-8 w-8 text-white" />
+              <div className="relative h-12 w-12 overflow-hidden rounded-xl">
+                <Image 
+                  src={LOGO_URL} 
+                  alt="Ideal Study Point Logo" 
+                  fill 
+                  className="object-cover"
+                />
               </div>
               <span className="text-2xl font-headline font-bold text-white">Ideal Study Point</span>
             </Link>
