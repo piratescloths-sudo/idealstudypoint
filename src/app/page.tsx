@@ -177,7 +177,7 @@ export default function Home() {
       <Navbar />
       
       <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
-        {/* Hero Section - Increased Height to 95vh */}
+        {/* Hero Section - 95vh Height */}
         <section className="relative min-h-[95vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
@@ -221,7 +221,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section - Floating position maintained */}
+        {/* Stats Section - Floating position between Hero and About */}
         <div className="relative z-20 -mt-24 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
@@ -236,12 +236,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* About Section - Decreased Height */}
-        <section className="py-24 bg-white">
+        {/* About Section - Compact Height */}
+        <section className="py-16 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div className="relative group animate-reveal opacity-0">
-                <div className="relative h-[450px] md:h-[600px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
+                <div className="relative h-[350px] md:h-[450px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
                   {aboutImgUrl && (
                     <Image
                       src={aboutImgUrl}
