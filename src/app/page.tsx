@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Award, Globe, Users, Quote, Star, Calendar, MapPin, Loader2 } from "lucide-react";
+import { ArrowRight, BookOpen, Award, Globe, Users, Quote, Star, Calendar, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -65,7 +65,7 @@ export default function Home() {
             <div className="max-w-5xl space-y-8">
               <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-500/10 backdrop-blur-md rounded-full border border-indigo-500/20 text-indigo-300 font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
                 <span>🎓</span>
-                <span>Welcome to Ideal Study Point Academy</span>
+                <span>Welcome to Ideal Study Point</span>
               </div>
               
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-black text-white leading-[1.1] tracking-tighter">
@@ -133,7 +133,7 @@ export default function Home() {
                 </h2>
                 
                 <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                  For over two decades, Ideal Study Point Academy has been at the forefront of education, blending traditional teaching methods with modern technology to shape the leaders of tomorrow.
+                  For over two decades, Ideal Study Point has been at the forefront of education, blending traditional teaching methods with modern technology to shape the leaders of tomorrow.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
@@ -296,6 +296,23 @@ export default function Home() {
                   </div>
                 </Card>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Section - Matching Screenshot */}
+        <section className="bg-[#5D5CFF] py-24 text-center px-6">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">
+              Ready to Start Your Journey?
+            </h2>
+            <p className="text-xl text-white/90 font-medium">
+              Join thousands of students who have transformed their careers with Ideal Study Point.
+            </p>
+            <div className="pt-4">
+              <Button asChild size="lg" className="h-16 px-12 rounded-2xl bg-white text-indigo-600 hover:bg-white/90 text-xl font-bold gap-3 transition-all">
+                <Link href="/admission">Apply Now <ArrowRight className="h-6 w-6" /></Link>
+              </Button>
             </div>
           </div>
         </section>
