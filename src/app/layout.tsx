@@ -9,7 +9,9 @@ export const metadata: Metadata = {
   title: 'Ideal Study Point | Modern Education Platform',
   description: 'Empowering students with world-class education and resources.',
   icons: {
-    icon: LOGO_URL,
+    icon: [
+      { url: LOGO_URL, type: 'image/png' },
+    ],
     shortcut: LOGO_URL,
     apple: LOGO_URL,
   }
@@ -27,7 +29,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
         {/* Explicitly adding link tags to ensure the logo shows as the tab icon */}
-        <link rel="icon" href={LOGO_URL} />
+        <link rel="icon" type="image/png" href={LOGO_URL} />
         <link rel="apple-touch-icon" href={LOGO_URL} />
       </head>
       <body className="font-body antialiased">
