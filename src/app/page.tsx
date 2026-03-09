@@ -177,8 +177,8 @@ export default function Home() {
       <Navbar />
       
       <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
-        {/* Hero Section */}
-        <section className="relative min-h-[75vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
+        {/* Hero Section - Increased Height */}
+        <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
               <div 
@@ -221,7 +221,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section - Floating between Hero and About Us */}
+        {/* Stats Section - Floating position maintained */}
         <div className="relative z-20 -mt-24 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
@@ -236,12 +236,12 @@ export default function Home() {
           </div>
         </div>
 
-        {/* About Section */}
-        <section className="py-32 bg-white">
+        {/* About Section - Increased Spacing */}
+        <section className="py-40 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
               <div className="relative group animate-reveal opacity-0">
-                <div className="relative h-[450px] md:h-[500px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
+                <div className="relative h-[450px] md:h-[600px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
                   {aboutImgUrl && (
                     <Image
                       src={aboutImgUrl}
@@ -283,8 +283,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Courses Section */}
-        <section className="py-24 bg-[#F8FAFC]">
+        {/* Courses Section - Increased Spacing */}
+        <section className="py-40 bg-[#F8FAFC]">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 animate-reveal opacity-0">
               <div className="space-y-4 text-center md:text-left">
@@ -326,8 +326,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Events Section */}
-        <section className="py-24 bg-white">
+        {/* Events Section - Increased Spacing */}
+        <section className="py-40 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="text-center mb-16 space-y-4 animate-reveal opacity-0">
               <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
@@ -361,8 +361,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section className="py-32 bg-[#F8FAFC] relative overflow-hidden">
+        {/* Testimonials Section - Consistent Large Spacing */}
+        <section className="py-40 bg-[#F8FAFC] relative overflow-hidden">
           <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl opacity-50" />
           <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-100/50 rounded-full blur-3xl opacity-50" />
           
@@ -445,8 +445,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="bg-blue-600 py-24 text-center px-6">
+        {/* CTA Section - Increased Spacing */}
+        <section className="bg-blue-600 py-40 text-center px-6">
           <div className="max-w-4xl mx-auto space-y-8 animate-reveal opacity-0">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">
               Ready to Start Your Journey?
@@ -462,8 +462,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contact Section */}
-        <section className="pt-24 pb-32 bg-white relative overflow-hidden">
+        {/* Contact Section - Enhanced spacing as requested */}
+        <section className="pt-40 pb-56 bg-white relative overflow-hidden">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
             <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto animate-reveal opacity-0">
               <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
@@ -558,7 +558,7 @@ export default function Home() {
                         <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Message</Label>
                         <Textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Message" className="min-h-[120px] rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all p-4" />
                       </div>
-                      <Button type="submit" size="lg" className="w-full h-14 rounded-xl font-bold text-lg bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all gap-3" disabled={loading}>
+                      <Button type="submit" size="lg" className="w-full h-14 rounded-xl font-bold text-lg bg-blue-600 pool-blue-700 shadow-xl shadow-blue-600/20 transition-all gap-3" disabled={loading}>
                         {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
                           <>
                             Send Inquiry <Send className="h-4 w-4" />
