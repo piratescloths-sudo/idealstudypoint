@@ -33,7 +33,7 @@ A modern, AI-powered education platform and campus management system built with 
 
 ## Deployment to GitHub
 
-To push your changes to your repository for the first time:
+To push your changes to your repository:
 
 ```bash
 git init
@@ -41,5 +41,11 @@ git add .
 git commit -m "Initial commit"
 git branch -M main
 git remote add origin https://github.com/piratescloths-sudo/idealstudypoint.git
+git push -u origin main
+```
+
+If you get an error that the remote origin already exists, use:
+```bash
+git remote set-url origin https://github.com/piratescloths-sudo/idealstudypoint.git
 git push -u origin main
 ```
