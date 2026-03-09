@@ -47,6 +47,12 @@
       "description": "Student Testimonial 2",
       "imageUrl": "https://picsum.photos/seed/student2/200/200",
       "imageHint": "happy student"
+    },
+    {
+      "id": "about-img",
+      "description": "Students studying in library",
+      "imageUrl": "https://picsum.photos/seed/about1/800/600",
+      "imageHint": "students library"
     }
   ]
 }
