@@ -212,8 +212,8 @@ export default function Home() {
       <Navbar />
       
       <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
-        {/* Hero Section - Immersive 95vh Height, content moved to top */}
-        <section className="relative h-[95vh] flex flex-col items-center justify-start pt-20 pb-20 overflow-hidden">
+        {/* Hero Section - Immersive 95vh Height, content slightly moved down from top side */}
+        <section className="relative h-[95vh] flex flex-col items-center justify-center pt-20 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
               <div 
@@ -280,7 +280,7 @@ export default function Home() {
             <RevealOnScroll>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                 <div className="relative group">
-                  <div className="relative h-[400px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
+                  <div className="relative h-[350px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
                     <Image
                       src={aboutImgUrl}
                       alt="Why Choose Us"
