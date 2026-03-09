@@ -308,6 +308,14 @@
           "type": "string",
           "description": "The image URL for the 'About' section."
         },
+        "stat1Label": { "type": "string" },
+        "stat1Value": { "type": "string" },
+        "stat2Label": { "type": "string" },
+        "stat2Value": { "type": "string" },
+        "stat3Label": { "type": "string" },
+        "stat3Value": { "type": "string" },
+        "stat4Label": { "type": "string" },
+        "stat4Value": { "type": "string" },
         "contactHeadline": {
           "type": "string",
           "description": "The main headline for the contact page."

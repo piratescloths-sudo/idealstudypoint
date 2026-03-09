@@ -1,7 +1,8 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Plus, Trash2, Loader2, Image as ImageIcon } from "lucide-react";
+import { Save, Plus, Trash2, Loader2, Image as ImageIcon, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,14 @@ export default function AdminContentPage() {
     aboutTitle: "",
     aboutContent: "",
     aboutImage: "",
+    stat1Label: "Courses",
+    stat1Value: "120+",
+    stat2Label: "Students",
+    stat2Value: "15K+",
+    stat3Label: "Success Rate",
+    stat3Value: "98%",
+    stat4Label: "Countries",
+    stat4Value: "50+",
   });
 
   const [newImageUrl, setNewImageUrl] = useState("");
@@ -40,6 +49,14 @@ export default function AdminContentPage() {
         aboutTitle: settings.aboutTitle || "",
         aboutContent: settings.aboutContent || "",
         aboutImage: settings.aboutImage || "",
+        stat1Label: settings.stat1Label || "Courses",
+        stat1Value: settings.stat1Value || "120+",
+        stat2Label: settings.stat2Label || "Students",
+        stat2Value: settings.stat2Value || "15K+",
+        stat3Label: settings.stat3Label || "Success Rate",
+        stat3Value: settings.stat3Value || "98%",
+        stat4Label: settings.stat4Label || "Countries",
+        stat4Value: settings.stat4Value || "50+",
       });
     }
   }, [settings]);
@@ -47,7 +64,6 @@ export default function AdminContentPage() {
   const handleSave = () => {
     if (!firestore || !settingsRef) return;
     
-    // Explicitly include the ID to satisfy security rule requirements
     setDocumentNonBlocking(settingsRef, {
       ...formData,
       id: "main",
@@ -75,7 +91,7 @@ export default function AdminContentPage() {
       <div className="flex justify-between items-center">
         <div className="space-y-1">
           <h1 className="text-3xl font-headline font-bold text-slate-900">Homepage Content</h1>
-          <p className="text-muted-foreground">Modify the text and images displayed on the main page.</p>
+          <p className="text-muted-foreground">Modify the text, images, and stats displayed on the main page.</p>
         </div>
         <Button className="h-12 px-8 rounded-2xl gap-2 font-bold shadow-xl shadow-primary/20" onClick={handleSave}>
           <Save className="h-5 w-5" /> Save Changes
@@ -85,6 +101,7 @@ export default function AdminContentPage() {
       <Tabs defaultValue="hero" className="w-full">
         <TabsList className="bg-white p-1 h-14 rounded-2xl shadow-sm mb-8">
           <TabsTrigger value="hero" className="rounded-xl px-8 h-full data-[state=active]:bg-primary data-[state=active]:text-white">Hero Section</TabsTrigger>
+          <TabsTrigger value="stats" className="rounded-xl px-8 h-full data-[state=active]:bg-primary data-[state=active]:text-white">Statistics</TabsTrigger>
           <TabsTrigger value="about" className="rounded-xl px-8 h-full data-[state=active]:bg-primary data-[state=active]:text-white">About Us</TabsTrigger>
         </TabsList>
 
@@ -138,6 +155,65 @@ export default function AdminContentPage() {
                 {formData.heroImages.length === 0 && (
                   <p className="text-xs text-muted-foreground italic">No custom images added. Default placeholder will be used.</p>
                 )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="stats" className="space-y-6">
+          <Card className="border-none shadow-sm rounded-3xl">
+            <CardHeader className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-indigo-600" />
+              <CardTitle>Homepage Statistics</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+              {/* Stat 1 */}
+              <div className="space-y-4 p-6 bg-slate-50 rounded-2xl">
+                <Label className="font-bold text-xs uppercase tracking-widest text-slate-400">Statistic 1</Label>
+                <div className="space-y-2">
+                  <Label>Label</Label>
+                  <Input value={formData.stat1Label} onChange={e => setFormData({...formData, stat1Label: e.target.value})} className="bg-white rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Value</Label>
+                  <Input value={formData.stat1Value} onChange={e => setFormData({...formData, stat1Value: e.target.value})} className="bg-white rounded-xl" />
+                </div>
+              </div>
+              {/* Stat 2 */}
+              <div className="space-y-4 p-6 bg-slate-50 rounded-2xl">
+                <Label className="font-bold text-xs uppercase tracking-widest text-slate-400">Statistic 2</Label>
+                <div className="space-y-2">
+                  <Label>Label</Label>
+                  <Input value={formData.stat2Label} onChange={e => setFormData({...formData, stat2Label: e.target.value})} className="bg-white rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Value</Label>
+                  <Input value={formData.stat2Value} onChange={e => setFormData({...formData, stat2Value: e.target.value})} className="bg-white rounded-xl" />
+                </div>
+              </div>
+              {/* Stat 3 */}
+              <div className="space-y-4 p-6 bg-slate-50 rounded-2xl">
+                <Label className="font-bold text-xs uppercase tracking-widest text-slate-400">Statistic 3</Label>
+                <div className="space-y-2">
+                  <Label>Label</Label>
+                  <Input value={formData.stat3Label} onChange={e => setFormData({...formData, stat3Label: e.target.value})} className="bg-white rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Value</Label>
+                  <Input value={formData.stat3Value} onChange={e => setFormData({...formData, stat3Value: e.target.value})} className="bg-white rounded-xl" />
+                </div>
+              </div>
+              {/* Stat 4 */}
+              <div className="space-y-4 p-6 bg-slate-50 rounded-2xl">
+                <Label className="font-bold text-xs uppercase tracking-widest text-slate-400">Statistic 4</Label>
+                <div className="space-y-2">
+                  <Label>Label</Label>
+                  <Input value={formData.stat4Label} onChange={e => setFormData({...formData, stat4Label: e.target.value})} className="bg-white rounded-xl" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Value</Label>
+                  <Input value={formData.stat4Value} onChange={e => setFormData({...formData, stat4Value: e.target.value})} className="bg-white rounded-xl" />
+                </div>
               </div>
             </CardContent>
           </Card>

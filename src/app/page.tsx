@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -101,10 +102,10 @@ export default function Home() {
   const { data: testimonials, isLoading: testimonialsLoading } = useCollection(testimonialsQuery);
   
   const stats = [
-    { label: "Courses", value: "120+", icon: BookOpen, color: "text-indigo-600" },
-    { label: "Students", value: "15K+", icon: Users, color: "text-indigo-600" },
-    { label: "Success Rate", value: "98%", icon: Award, color: "text-indigo-600" },
-    { label: "Countries", value: "50+", icon: Globe, color: "text-indigo-600" },
+    { label: settings?.stat1Label || "Courses", value: settings?.stat1Value || "120+", icon: BookOpen, color: "text-indigo-600" },
+    { label: settings?.stat2Label || "Students", value: settings?.stat2Value || "15K+", icon: Users, color: "text-indigo-600" },
+    { label: settings?.stat3Label || "Success Rate", value: settings?.stat3Value || "98%", icon: Award, color: "text-indigo-600" },
+    { label: settings?.stat4Label || "Countries", value: settings?.stat4Value || "50+", icon: Globe, color: "text-indigo-600" },
   ];
 
   const handleContactSubmit = async (e: React.FormEvent) => {
