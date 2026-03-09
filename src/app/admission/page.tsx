@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   BookOpen, 
   Clock, 
@@ -26,13 +27,23 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { useFirestore, useCollection, useMemoFirebase, addDocumentNonBlocking } from "@/firebase";
+import { useFirestore, useCollection, useMemoFirebase, setDocumentNonBlocking, useAuth, useUser } from "@/firebase";
 import { collection, query, doc } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
 
 export default function AdmissionPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const firestore = useFirestore();
+  const auth = useAuth();
+  const { user } = useUser();
+
+  // Ensure user is signed in anonymously to submit
+  useEffect(() => {
+    if (!user && auth) {
+      signInAnonymously(auth).catch(console.error);
+    }
+  }, [user, auth]);
 
   const coursesQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -50,13 +61,17 @@ export default function AdmissionPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firestore) return;
+    if (!firestore || !user) {
+      toast({ variant: "destructive", title: "Error", description: "You must be connected to submit." });
+      return;
+    }
     setLoading(true);
 
     const colRef = collection(firestore, 'admissionInquiries');
     const newDocId = doc(colRef).id;
+    const inquiryRef = doc(firestore, 'admissionInquiries', newDocId);
 
-    addDocumentNonBlocking(colRef, {
+    setDocumentNonBlocking(inquiryRef, {
       id: newDocId,
       name: formData.name,
       email: formData.email,
@@ -64,7 +79,7 @@ export default function AdmissionPage() {
       selectedCourseId: formData.courseId,
       message: formData.message,
       submissionDate: new Date().toISOString()
-    });
+    }, { merge: true });
 
     setLoading(false);
     setSubmitted(true);

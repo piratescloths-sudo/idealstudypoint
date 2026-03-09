@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -11,8 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { generateCourseDescription } from "@/ai/flows/generate-course-description";
 import { toast } from "@/hooks/use-toast";
-import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
-import { collection, query, doc, serverTimestamp } from "firebase/firestore";
+import { useCollection, useFirestore, useMemoFirebase, setDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
+import { collection, query, doc } from "firebase/firestore";
 
 export default function AdminCoursesPage() {
   const [isAdding, setIsAdding] = useState(false);
@@ -62,8 +63,9 @@ export default function AdminCoursesPage() {
     if (!firestore) return;
     const colRef = collection(firestore, 'courses');
     const newDocId = doc(colRef).id;
+    const courseRef = doc(firestore, 'courses', newDocId);
     
-    addDocumentNonBlocking(colRef, {
+    setDocumentNonBlocking(courseRef, {
       id: newDocId,
       title: formData.title,
       instructor: formData.instructor,
@@ -74,7 +76,7 @@ export default function AdminCoursesPage() {
       imageUrl: "https://picsum.photos/seed/" + Math.random() + "/600/400",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    });
+    }, { merge: true });
 
     setIsAdding(false);
     setFormData({ title: "", instructor: "", duration: "", targetAudience: "", learningObjectives: "", description: "", shortDescription: "" });

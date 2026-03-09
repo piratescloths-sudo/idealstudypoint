@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -11,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { generateEventSummary } from "@/ai/flows/generate-event-summary";
 import { toast } from "@/hooks/use-toast";
-import { useCollection, useFirestore, useMemoFirebase, addDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, setDocumentNonBlocking, deleteDocumentNonBlocking } from "@/firebase";
 import { collection, query, doc } from "firebase/firestore";
 
 export default function AdminEventsPage() {
@@ -58,8 +59,9 @@ export default function AdminEventsPage() {
     if (!firestore) return;
     const colRef = collection(firestore, 'events');
     const newDocId = doc(colRef).id;
+    const eventRef = doc(firestore, 'events', newDocId);
 
-    addDocumentNonBlocking(colRef, {
+    setDocumentNonBlocking(eventRef, {
       id: newDocId,
       title: formData.title,
       date: formData.date,
@@ -67,7 +69,7 @@ export default function AdminEventsPage() {
       imageUrl: "https://picsum.photos/seed/" + Math.random() + "/800/600",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-    });
+    }, { merge: true });
 
     setIsAdding(false);
     setFormData({ title: "", date: "", location: "", description: "", summary: "" });

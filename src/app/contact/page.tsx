@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Mail, Phone, MapPin, Send, MessageSquare, Clock, ArrowUpRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,12 +11,22 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { useFirestore, addDocumentNonBlocking } from "@/firebase";
+import { useFirestore, setDocumentNonBlocking, useAuth, useUser } from "@/firebase";
 import { collection, doc } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
 
 export default function ContactPage() {
   const [loading, setLoading] = useState(false);
   const firestore = useFirestore();
+  const auth = useAuth();
+  const { user } = useUser();
+
+  // Ensure user is signed in anonymously to submit
+  useEffect(() => {
+    if (!user && auth) {
+      signInAnonymously(auth).catch(console.error);
+    }
+  }, [user, auth]);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,19 +39,23 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!firestore) return;
+    if (!firestore || !user) {
+      toast({ variant: "destructive", title: "Error", description: "You must be connected to send a message." });
+      return;
+    }
     setLoading(true);
 
     const colRef = collection(firestore, 'contactMessages');
     const newDocId = doc(colRef).id;
+    const messageRef = doc(firestore, 'contactMessages', newDocId);
 
-    addDocumentNonBlocking(colRef, {
+    setDocumentNonBlocking(messageRef, {
       id: newDocId,
       name: `${formData.firstName} ${formData.lastName}`,
       email: formData.email,
       message: formData.message,
       submissionDate: new Date().toISOString()
-    });
+    }, { merge: true });
 
     setLoading(false);
     toast({
