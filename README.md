@@ -21,7 +21,10 @@ A modern, AI-powered education platform and campus management system built with 
 
 ## Getting Started
 
-1. Clone the repository.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/piratescloths-sudo/idealstudypoint.git
+   ```
 2. Install dependencies: `npm install`
 3. Set up your Firebase project and add the configuration to `src/firebase/config.ts`.
 4. Run the development server: `npm run dev`
