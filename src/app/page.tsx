@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -449,6 +448,24 @@ export default function Home() {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-7xl mx-auto">
               <div className="lg:col-span-1 space-y-6">
+                {/* Map Section in Homepage Contact */}
+                {settings?.googleMapEmbedUrl && (
+                  <Card className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.03)] rounded-[2rem] bg-white overflow-hidden group transition-all hover:-translate-y-1">
+                    <div className="aspect-square w-full">
+                      <iframe
+                        src={settings.googleMapEmbedUrl}
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        allowFullScreen={true}
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        className="grayscale-[0.5] group-hover:grayscale-0 transition-all duration-700"
+                      ></iframe>
+                    </div>
+                  </Card>
+                )}
+
                 {[
                   { icon: Mail, title: "Email Us", detail: settings?.mainEmail || "info@idealstudypoint.edu", color: "text-indigo-600", bg: "bg-indigo-50" },
                   { icon: Phone, title: "Call Us", detail: settings?.mainPhone || "+1 (234) 567-890", color: "text-emerald-600", bg: "bg-emerald-50" },
@@ -530,4 +547,3 @@ export default function Home() {
     </div>
   );
 }
-
