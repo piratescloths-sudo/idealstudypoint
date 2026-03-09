@@ -1,127 +1,148 @@
+
 "use client";
 
 import Image from "next/image";
-import { Calendar as CalendarIcon, MapPin, Clock, ArrowRight, Tag } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { cn } from "@/lib/utils";
 
 const mockEvents = [
   {
     id: "1",
-    title: "Global Tech Summit 2024",
-    date: "Oct 15, 2024",
-    time: "10:00 AM - 4:00 PM",
-    location: "Main Auditorium, Campus A",
-    description: "Join industry leaders from Google, Meta, and Microsoft as they discuss the future of AI and sustainable technology.",
+    title: "Career Fair 2026",
+    date: "June 10th, 2026",
+    time: "9:00 AM",
+    location: "Student Union Hall",
+    description: "Connect with top employers, explore internship opportunities, and attend resume workshops to kickstart your career.",
+    day: "10",
+    month: "JUN",
     image: PlaceHolderImages.find(img => img.id === "event-workshop")?.imageUrl,
     type: "Workshop"
   },
   {
     id: "2",
-    title: "Leadership in Modern Times",
-    date: "Oct 22, 2024",
-    time: "2:00 PM - 5:00 PM",
-    location: "Conference Hall B",
-    description: "An interactive seminar focused on developing soft skills and leadership qualities for aspiring managers.",
-    image: PlaceHolderImages.find(img => img.id === "event-seminar")?.imageUrl,
-    type: "Seminar"
+    title: "Tech Innovation Summit",
+    date: "May 20th, 2026",
+    time: "9:00 AM",
+    location: "Innovation Center",
+    description: "Annual technology conference featuring industry leaders, workshops, and networking opportunities for tech enthusiasts.",
+    day: "20",
+    month: "MAY",
+    image: PlaceHolderImages.find(img => img.id === "course-cs")?.imageUrl,
+    type: "Conference"
   },
   {
     id: "3",
-    title: "Art & Design Showcase",
-    date: "Nov 05, 2024",
-    time: "9:00 AM - 6:00 PM",
-    location: "Exhibition Gallery",
-    description: "Witness the incredible talent of our design students as they present their capstone projects and digital art collections.",
+    title: "Arts & Culture Festival",
+    date: "May 5th, 2026",
+    time: "2:00 PM",
+    location: "Creative Arts Building",
+    description: "Celebrate creativity with exhibitions, performances, and interactive art installations from local and international artists.",
+    day: "05",
+    month: "MAY",
     image: PlaceHolderImages.find(img => img.id === "course-art")?.imageUrl,
     type: "Exhibition"
+  },
+  {
+    id: "4",
+    title: "Leadership in Modern Times",
+    date: "June 15th, 2026",
+    time: "11:00 AM",
+    location: "Main Hall B",
+    description: "Developing leadership qualities for the next generation of business leaders and community organizers.",
+    day: "15",
+    month: "JUN",
+    image: PlaceHolderImages.find(img => img.id === "event-seminar")?.imageUrl,
+    type: "Seminar"
   }
 ];
 
 export default function EventsPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#EEF4F6]">
+    <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
       
-      <main className="flex-grow pt-32 pb-24">
-        <div className="container mx-auto px-4">
+      <main className="flex-grow pt-40 pb-24">
+        <div className="container mx-auto px-8 md:px-12 lg:px-24">
+          
+          {/* Centered Heading Section */}
           <div className="text-center mb-20 space-y-4 max-w-3xl mx-auto">
-             <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-secondary/20 rounded-full text-slate-700 font-bold text-xs uppercase tracking-wider">
-              <CalendarIcon className="h-3.5 w-3.5 text-primary" />
-              <span>Campus Life \u0026 Beyond</span>
+             <div className="inline-flex items-center gap-2 px-5 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-wider mx-auto">
+              <span>Events</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 leading-tight">Upcoming Events</h1>
-            <p className="text-lg text-slate-500 font-medium">
-              Stay connected with our vibrant community. From guest lectures to cultural fests, there&apos;s always something happening at EduFlow.
+            <h1 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tight leading-tight">Upcoming Events</h1>
+            <p className="text-xl text-slate-500 font-medium">
+              Stay connected with our vibrant community. From guest lectures to cultural fests, there&apos;s always something happening.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            {mockEvents.map((event) => (
-              <Card key={event.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
-                <div className="relative h-72 w-full">
-                  <Image
-                    src={event.image || ""}
-                    alt={event.title}
-                    fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                  />
-                  <div className="absolute top-6 left-6 flex flex-col items-center justify-center h-20 w-20 bg-white rounded-[1.5rem] shadow-2xl backdrop-blur-sm bg-white/90">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{event.date.split(' ')[0]}</span>
-                    <span className="text-3xl font-headline font-black text-primary -mt-1">{event.date.split(' ')[1].replace(',', '')}</span>
-                  </div>
-                  <div className="absolute bottom-6 left-6 bg-secondary text-secondary-foreground text-[10px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-full shadow-lg border border-white/20">
-                    {event.type}
-                  </div>
-                </div>
-                <CardContent className="p-10 space-y-6">
-                  <h3 className="text-2xl font-headline font-bold text-slate-900 group-hover:text-primary transition-colors leading-tight">
-                    {event.title}
-                  </h3>
-                  <p className="text-slate-500 font-medium leading-relaxed line-clamp-3">
-                    {event.description}
-                  </p>
-                  <div className="space-y-4 pt-4 border-t border-slate-50">
-                    <div className="flex items-center gap-4 text-sm font-bold text-slate-500">
-                      <div className="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center shrink-0">
-                        <Clock className="h-5 w-5 text-primary" />
-                      </div>
-                      <span>{event.time}</span>
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {mockEvents.map((event) => (
+                <Card key={event.id} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
+                  <div className="relative h-64 w-full">
+                    <Image
+                      src={event.image || ""}
+                      alt={event.title}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute top-6 right-6">
+                      <span className="bg-secondary text-white text-[10px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full shadow-lg">Upcoming</span>
                     </div>
-                    <div className="flex items-center gap-4 text-sm font-bold text-slate-500">
-                      <div className="h-10 w-10 bg-slate-50 rounded-xl flex items-center justify-center shrink-0">
-                        <MapPin className="h-5 w-5 text-primary" />
-                      </div>
-                      <span className="line-clamp-1">{event.location}</span>
+                    <div className="absolute bottom-6 left-6 bg-white rounded-2xl p-4 shadow-xl flex flex-col items-center justify-center min-w-[70px]">
+                      <span className="text-2xl font-black text-indigo-600 leading-none">{event.day}</span>
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{event.month}</span>
                     </div>
                   </div>
-                  <Button className="w-full h-14 rounded-2xl bg-slate-900 hover:bg-primary text-white font-bold text-lg shadow-xl shadow-slate-900/10 transition-all gap-3 group">
-                    Register Now <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <CardContent className="p-8 space-y-4">
+                    <h3 className="text-xl font-headline font-bold text-indigo-600 leading-tight">
+                      {event.title}
+                    </h3>
+                    <p className="text-slate-500 font-medium leading-relaxed line-clamp-3">
+                      {event.description}
+                    </p>
+                    <div className="space-y-3 pt-4 border-t border-slate-50 text-[13px] font-bold text-slate-400">
+                      <div className="flex items-center gap-3">
+                        <CalendarIcon className="h-4 w-4 text-indigo-400" />
+                        <span>{event.date} • {event.time}</span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <MapPin className="h-4 w-4 text-indigo-400" />
+                        <span className="line-clamp-1">{event.location}</span>
+                      </div>
+                    </div>
+                    <Button className="w-full h-12 rounded-xl bg-slate-900 hover:bg-indigo-600 text-white font-bold text-sm shadow-lg transition-all gap-2 group mt-2">
+                      Register Now <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-          {/* Pagination */}
-          <div className="mt-20 flex justify-center gap-3">
-            {[1, 2, 3].map(n => (
-              <Button 
-                key={n} 
-                variant={n === 1 ? "default" : "outline"} 
-                className={cn(
-                  "w-12 h-12 p-0 rounded-2xl font-bold transition-all",
-                  n === 1 
-                    ? "bg-primary text-white shadow-lg shadow-primary/20" 
-                    : "bg-white border-none text-slate-400 hover:text-primary hover:bg-slate-50"
-                )}
-              >
-                {n}
-              </Button>
-            ))}
+            {/* Pagination / View More */}
+            <div className="mt-20 flex justify-center">
+              <div className="flex gap-3">
+                {[1, 2, 3].map(n => (
+                  <Button 
+                    key={n} 
+                    variant={n === 1 ? "default" : "outline"} 
+                    className={cn(
+                      "w-12 h-12 p-0 rounded-2xl font-bold transition-all",
+                      n === 1 
+                        ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20 border-none" 
+                        : "bg-white border-slate-200 text-slate-400 hover:text-indigo-600"
+                    )}
+                  >
+                    {n}
+                  </Button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </main>
