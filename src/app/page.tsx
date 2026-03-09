@@ -177,7 +177,7 @@ export default function Home() {
       
       <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
         {/* Hero Section */}
-        <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
+        <section className="relative min-h-[75vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
             {heroImages.map((imgUrl, index) => (
               <div 
@@ -220,8 +220,8 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section */}
-        <div className="relative z-20 -mt-20 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
+        {/* Stats Section - Removed negative margin to add space between hero and content */}
+        <div className="relative z-20 mt-16 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
               <div key={i} className="flex flex-col items-center justify-center text-center space-y-2 border-r last:border-0 border-slate-100 hover:scale-105 transition-transform">
