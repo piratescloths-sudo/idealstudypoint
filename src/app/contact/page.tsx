@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Mail, Phone, MapPin, Send, MessageSquare, CheckCircle2, Sparkles, Loader2, ArrowLeft } from "lucide-react";
+import { Mail, Phone, MapPin, Send, MessageSquare, CheckCircle2, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +11,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
-import { useFirestore, setDocumentNonBlocking, useAuth, useUser } from "@/firebase";
+import { useFirestore, useDoc, useMemoFirebase, setDocumentNonBlocking, useAuth, useUser } from "@/firebase";
 import { collection, doc } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
 import Link from "next/link";
@@ -22,6 +22,12 @@ export default function ContactPage() {
   const firestore = useFirestore();
   const auth = useAuth();
   const { user } = useUser();
+
+  const settingsRef = useMemoFirebase(() => {
+    if (!firestore) return null;
+    return doc(firestore, 'websiteSettings', 'main');
+  }, [firestore]);
+  const { data: settings } = useDoc(settingsRef);
 
   // Ensure user is signed in anonymously to submit messages securely
   useEffect(() => {
@@ -98,6 +104,8 @@ export default function ContactPage() {
     );
   }
 
+  const officeHoursLines = (settings?.officeHours || "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed").split('\n');
+
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC]">
       <Navbar />
@@ -109,18 +117,20 @@ export default function ContactPage() {
               <MessageSquare className="h-4 w-4" />
               <span>Get In Touch</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tight leading-tight">Connect With Us</h1>
+            <h1 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tight leading-tight">
+              {settings?.contactHeadline || "Connect With Us"}
+            </h1>
             <p className="text-xl text-slate-500 font-medium">
-              Have questions about our campus or programs? We're here to help you navigate your academic future.
+              {settings?.contactDescription || "Have questions about our campus or programs? We're here to help you navigate your academic future."}
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start max-w-7xl mx-auto">
             <div className="lg:col-span-1 space-y-8">
               {[
-                { icon: Mail, title: "Email Us", detail: "info@idealstudypoint.edu", color: "text-indigo-600", bg: "bg-indigo-50" },
-                { icon: Phone, title: "Call Us", detail: "+1 (234) 567-890", color: "text-emerald-600", bg: "bg-emerald-50" },
-                { icon: MapPin, title: "Visit Us", detail: "123 Education Ave, Knowledge City, ED 56789", color: "text-amber-600", bg: "bg-amber-50" }
+                { icon: Mail, title: "Email Us", detail: settings?.mainEmail || "info@idealstudypoint.edu", color: "text-indigo-600", bg: "bg-indigo-50" },
+                { icon: Phone, title: "Call Us", detail: settings?.mainPhone || "+1 (234) 567-890", color: "text-emerald-600", bg: "bg-emerald-50" },
+                { icon: MapPin, title: "Visit Us", detail: settings?.address || "123 Education Ave, Knowledge City, ED 56789", color: "text-amber-600", bg: "bg-amber-50" }
               ].map((item, i) => (
                 <Card key={i} className="border-none shadow-[0_20px_50px_rgba(0,0,0,0.03)] rounded-[2rem] bg-white group transition-all hover:-translate-y-1">
                   <CardContent className="p-8 flex items-center gap-6">
@@ -139,9 +149,12 @@ export default function ContactPage() {
                 <div className="relative z-10 space-y-4">
                   <h3 className="text-2xl font-bold">Office Hours</h3>
                   <div className="space-y-2 text-slate-300 font-medium text-sm">
-                    <p className="flex justify-between"><span>Monday - Friday:</span> <span>9:00 AM - 6:00 PM</span></p>
-                    <p className="flex justify-between"><span>Saturday:</span> <span>10:00 AM - 2:00 PM</span></p>
-                    <p className="flex justify-between"><span>Sunday:</span> <span>Closed</span></p>
+                    {officeHoursLines.map((line, idx) => (
+                      <p key={idx} className="flex justify-between gap-4">
+                        <span>{line.split(':')[0]}:</span> 
+                        <span className="text-right">{line.split(':').slice(1).join(':')}</span>
+                      </p>
+                    ))}
                   </div>
                 </div>
                 <div className="absolute -bottom-10 -right-10 h-40 w-40 bg-white/5 rounded-full" />

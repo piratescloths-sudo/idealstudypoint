@@ -1,11 +1,13 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Shield, Globe, Info, Loader2 } from "lucide-react";
+import { Save, Shield, Globe, Info, Loader2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { useFirestore, useDoc, useMemoFirebase, setDocumentNonBlocking } from "@/firebase";
 import { doc } from "firebase/firestore";
@@ -26,6 +28,9 @@ export default function AdminSettingsPage() {
     facebookUrl: "",
     instagramUrl: "",
     linkedinUrl: "",
+    contactHeadline: "Connect With Us",
+    contactDescription: "Have questions about our campus or programs? We're here to help you navigate your academic future.",
+    officeHours: "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed"
   });
 
   useEffect(() => {
@@ -38,6 +43,9 @@ export default function AdminSettingsPage() {
         facebookUrl: settings.facebookUrl || "",
         instagramUrl: settings.instagramUrl || "",
         linkedinUrl: settings.linkedinUrl || "",
+        contactHeadline: settings.contactHeadline || "Connect With Us",
+        contactDescription: settings.contactDescription || "Have questions about our campus or programs? We're here to help you navigate your academic future.",
+        officeHours: settings.officeHours || "Monday - Friday: 9:00 AM - 6:00 PM\nSaturday: 10:00 AM - 2:00 PM\nSunday: Closed"
       });
     }
   }, [settings]);
@@ -57,7 +65,7 @@ export default function AdminSettingsPage() {
   if (isLoading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin" /></div>;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-20">
       <div className="flex justify-between items-center">
         <div className="space-y-1">
           <h1 className="text-3xl font-headline font-bold text-slate-900">General Settings</h1>
@@ -74,7 +82,7 @@ export default function AdminSettingsPage() {
             <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
               <Info className="h-5 w-5 text-indigo-600" />
             </div>
-            <CardTitle className="text-xl">Contact Information</CardTitle>
+            <CardTitle className="text-xl">Basic Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6 pt-6">
             <div className="space-y-2">
@@ -117,6 +125,42 @@ export default function AdminSettingsPage() {
         <Card className="border-none shadow-sm rounded-3xl bg-white">
           <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
             <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
+              <MessageSquare className="h-5 w-5 text-indigo-600" />
+            </div>
+            <CardTitle className="text-xl">Contact Page Content</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 pt-6">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Contact Headline</Label>
+              <Input 
+                value={formData.contactHeadline} 
+                onChange={e => setFormData({...formData, contactHeadline: e.target.value})}
+                className="rounded-xl h-12 bg-slate-50 border-none" 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Contact Description</Label>
+              <Textarea 
+                value={formData.contactDescription} 
+                onChange={e => setFormData({...formData, contactDescription: e.target.value})}
+                className="rounded-xl bg-slate-50 border-none min-h-[80px]" 
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Office Hours</Label>
+              <Textarea 
+                value={formData.officeHours} 
+                onChange={e => setFormData({...formData, officeHours: e.target.value})}
+                placeholder="e.g. Monday - Friday: 9am - 5pm"
+                className="rounded-xl bg-slate-50 border-none min-h-[100px]" 
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-none shadow-sm rounded-3xl bg-white">
+          <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
+            <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
               <Globe className="h-5 w-5 text-indigo-600" />
             </div>
             <CardTitle className="text-xl">Social Media Links</CardTitle>
@@ -152,7 +196,7 @@ export default function AdminSettingsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm rounded-3xl lg:col-span-2 bg-white">
+        <Card className="border-none shadow-sm rounded-3xl bg-white">
           <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
             <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
               <Shield className="h-5 w-5 text-indigo-600" />

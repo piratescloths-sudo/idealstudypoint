@@ -304,6 +304,22 @@
           "type": "string",
           "description": "The detailed content for the 'About the institute' section on the homepage."
         },
+        "aboutImage": {
+          "type": "string",
+          "description": "The image URL for the 'About' section."
+        },
+        "contactHeadline": {
+          "type": "string",
+          "description": "The main headline for the contact page."
+        },
+        "contactDescription": {
+          "type": "string",
+          "description": "The descriptive text for the contact page."
+        },
+        "officeHours": {
+          "type": "string",
+          "description": "Text describing the office hours."
+        },
         "socialMediaLinks": {
           "type": "array",
           "description": "An array of objects, each representing a social media link for the institution.",
@@ -346,7 +362,7 @@
           "schema": {
             "$ref": "#/backend/entities/Course"
           },
-          "description": "Stores details of all educational courses. Documents in this collection are publicly readable for display on the website and are fully manageable (create, read, update, delete) by authenticated administrators. This collection supports public 'list' operations."
+          "description": "Stores details of all educational courses."
         }
       },
       {
@@ -356,7 +372,7 @@
           "schema": {
             "$ref": "#/backend/entities/Event"
           },
-          "description": "Contains information about upcoming events and workshops. Documents are publicly readable for display and are fully manageable (create, read, update, delete) by authenticated administrators. This collection supports public 'list' operations."
+          "description": "Contains information about upcoming events."
         }
       },
       {
@@ -366,7 +382,7 @@
           "schema": {
             "$ref": "#/backend/entities/Testimonial"
           },
-          "description": "Stores student and alumnus testimonials. Documents are publicly readable for display on the homepage and are fully manageable (create, read, update, delete) by authenticated administrators. This collection supports public 'list' operations."
+          "description": "Stores student and alumnus testimonials."
         }
       },
       {
@@ -376,7 +392,7 @@
           "schema": {
             "$ref": "#/backend/entities/AdmissionInquiry"
           },
-          "description": "Records admission inquiries submitted by prospective students. Documents are publicly writable (for form submissions) but are only readable and manageable (create, read, update, delete) by authenticated administrators. This collection does NOT support public 'list' operations for non-admins."
+          "description": "Records admission inquiries."
         }
       },
       {
@@ -386,7 +402,7 @@
           "schema": {
             "$ref": "#/backend/entities/ContactMessage"
           },
-          "description": "Stores messages submitted via the website's contact form. Documents are publicly writable (for form submissions) but are only readable and manageable (create, read, update, delete) by authenticated administrators. This collection does NOT support public 'list' operations for non-admins."
+          "description": "Stores messages submitted via the contact form."
         }
       },
       {
@@ -396,7 +412,7 @@
           "schema": {
             "$ref": "#/backend/entities/WebsiteSetting"
           },
-          "description": "Contains global website configuration and content (e.g., hero section, contact info). Intended as a singleton document (e.g., ID 'main'). Documents are publicly readable and fully manageable (create, read, update, delete) by authenticated administrators."
+          "description": "Contains global website configuration."
         }
       },
       {
@@ -406,10 +422,10 @@
           "schema": {
             "$ref": "#/backend/entities/AdminRole"
           },
-          "description": "Designates users as administrators for the EduFlow platform. Each document's ID is the Firebase Authentication UID of an admin user. The existence of a document signifies admin status. This collection is only readable and writable by other authenticated administrators, enabling robust DBAC."
+          "description": "Designates users as administrators."
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to meet the core principles of Authorization Independence, Clarity of Intent, DBAC, and QAPs, ensuring a secure, scalable, and debuggable system for the EduFlow application. This design prioritizes clear separation of public and administrative data, along with a robust role-based access control mechanism."
+    "reasoning": "The Firestore structure is designed to meet core principles..."
   }
 }
