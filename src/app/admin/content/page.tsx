@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -27,6 +26,7 @@ export default function AdminContentPage() {
     heroImages: [] as string[],
     aboutTitle: "",
     aboutContent: "",
+    aboutImage: "",
   });
 
   const [newImageUrl, setNewImageUrl] = useState("");
@@ -39,6 +39,7 @@ export default function AdminContentPage() {
         heroImages: settings.heroImages || [],
         aboutTitle: settings.aboutTitle || "",
         aboutContent: settings.aboutContent || "",
+        aboutImage: settings.aboutImage || "",
       });
     }
   }, [settings]);
@@ -159,6 +160,20 @@ export default function AdminContentPage() {
                   onChange={e => setFormData({ ...formData, aboutContent: e.target.value })}
                   className="rounded-xl min-h-[150px]" 
                 />
+              </div>
+              <div className="space-y-2 pt-4 border-t">
+                <Label className="flex items-center gap-2"><ImageIcon className="h-4 w-4" /> About Section Image</Label>
+                <Input 
+                  placeholder="Enter image URL..." 
+                  value={formData.aboutImage} 
+                  onChange={e => setFormData({ ...formData, aboutImage: e.target.value })}
+                  className="h-12 rounded-xl"
+                />
+                {formData.aboutImage && (
+                  <div className="mt-4 relative aspect-video rounded-xl overflow-hidden border max-w-md">
+                    <img src={formData.aboutImage} alt="About Preview" className="object-cover w-full h-full" />
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

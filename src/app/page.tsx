@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -18,7 +17,7 @@ export default function Home() {
   const firestore = useFirestore();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  // Fetch Website Settings for Hero Background Slider
+  // Fetch Website Settings for Hero Background Slider and About Content
   const settingsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
     return doc(firestore, 'websiteSettings', 'main');
@@ -38,7 +37,8 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [heroImages]);
 
-  const aboutImg = PlaceHolderImages.find(img => img.id === "about-img");
+  // Use dynamic about image from settings or fallback to placeholder
+  const aboutImgUrl = settings?.aboutImage || PlaceHolderImages.find(img => img.id === "about-img")?.imageUrl || "";
 
   const coursesQuery = useMemoFirebase(() => {
     if (!firestore) return null;
@@ -105,7 +105,7 @@ export default function Home() {
               </h1>
               
               <p className="text-lg md:text-xl text-slate-400 max-w-4xl mx-auto leading-relaxed font-medium">
-                Empowering learners with innovative programs, expert faculty, and a supportive community. Join thousands of students achieving their dreams today.
+                {settings?.heroDescription || "Empowering learners with innovative programs, expert faculty, and a supportive community. Join thousands of students achieving their dreams today."}
               </p>
               
               <div className="flex flex-wrap justify-center gap-6 pt-8 translate-y-24 relative z-30">
@@ -142,7 +142,7 @@ export default function Home() {
               <div className="relative">
                 <div className="relative h-[450px] md:h-[500px] w-full rounded-[3rem] overflow-hidden shadow-xl">
                   <Image
-                    src={aboutImg?.imageUrl || ""}
+                    src={aboutImgUrl}
                     alt="Why Choose Us"
                     fill
                     className="object-cover"
@@ -161,11 +161,11 @@ export default function Home() {
                 </div>
                 
                 <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">
-                  Why Choose <br /> Ideal Study Point?
+                  {settings?.aboutTitle || "Why Choose Ideal Study Point?"}
                 </h2>
                 
                 <p className="text-lg text-slate-500 font-medium leading-relaxed">
-                  For over two decades, Ideal Study Point has been at the forefront of education, blending traditional teaching methods with modern technology to shape the leaders of tomorrow.
+                  {settings?.aboutContent || "For over two decades, Ideal Study Point has been at the forefront of education, blending traditional teaching methods with modern technology to shape the leaders of tomorrow."}
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
