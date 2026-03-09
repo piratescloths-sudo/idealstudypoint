@@ -45,7 +45,7 @@ export default function Home() {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative min-h-[80vh] flex flex-col items-center justify-center pt-16 overflow-hidden">
+        <section className="relative min-h-[75vh] flex flex-col items-center justify-center pt-16 overflow-hidden">
           {/* Background with Gradient Overlay */}
           <div className="absolute inset-0 z-0">
             <Image
@@ -87,14 +87,14 @@ export default function Home() {
           </div>
 
           {/* Floating Stats Bar */}
-          <div className="container mx-auto px-4 mt-16 relative z-20 max-w-5xl">
-            <div className="bg-white rounded-[2rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] grid grid-cols-2 md:grid-cols-4 py-8 px-10 md:py-10 md:px-14 gap-8 border border-white/50">
+          <div className="container mx-auto px-4 mt-12 relative z-20 max-w-4xl">
+            <div className="bg-white rounded-[2rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-8 px-8 md:px-12 gap-8 border border-white/50">
               {stats.map((stat, i) => (
-                <div key={i} className="flex flex-col items-center justify-center text-center px-4 space-y-1 border-r last:border-0 border-slate-100/80">
-                  <div className={cn("mb-2", stat.color)}>
-                    <stat.icon className="h-6 w-6 opacity-80" />
+                <div key={i} className="flex flex-col items-center justify-center text-center px-2 space-y-1 border-r last:border-0 border-slate-100/80">
+                  <div className={cn("mb-1", stat.color)}>
+                    <stat.icon className="h-5 w-5 opacity-80" />
                   </div>
-                  <div className="text-2xl md:text-3xl font-headline font-bold text-slate-900 tracking-tighter">{stat.value}</div>
+                  <div className="text-xl md:text-2xl font-headline font-bold text-slate-900 tracking-tighter">{stat.value}</div>
                   <div className="text-[8px] font-black text-slate-400 uppercase tracking-[0.25em]">{stat.label}</div>
                 </div>
               ))}
@@ -103,45 +103,45 @@ export default function Home() {
         </section>
 
         {/* Featured Courses Section */}
-        <section className="py-24 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-              <div className="space-y-4">
+        <section className="py-16 bg-white">
+          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
+            <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-6">
+              <div className="space-y-3">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[9px] uppercase tracking-[0.2em]">
                   <BookOpen className="h-3.5 w-3.5" />
                   <span>Academic Excellence</span>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-headline font-bold text-slate-900 tracking-tight">Explore Our Popular Programs</h2>
-                <p className="text-lg text-slate-500 max-w-xl font-medium leading-relaxed">Pick from a variety of professional courses taught by industry veterans and academic experts.</p>
+                <h2 className="text-2xl md:text-4xl font-headline font-bold text-slate-900 tracking-tight">Explore Our Popular Programs</h2>
+                <p className="text-base text-slate-500 max-w-xl font-medium leading-relaxed">Pick from a variety of professional courses taught by industry veterans and academic experts.</p>
               </div>
-              <Button asChild variant="ghost" className="text-indigo-600 font-bold text-base hover:bg-indigo-50 px-6 h-12 rounded-xl gap-2">
+              <Button asChild variant="ghost" className="text-indigo-600 font-bold text-sm hover:bg-indigo-50 px-6 h-11 rounded-xl gap-2">
                 <Link href="/courses" className="flex items-center gap-2">View All Courses <ArrowRight className="h-4 w-4" /></Link>
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {featuredCourses.map((course, idx) => (
-                <Card key={idx} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white border border-slate-50">
-                  <div className="relative h-64 w-full overflow-hidden">
+                <Card key={idx} className="group overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-500 rounded-[2rem] bg-white border border-slate-50">
+                  <div className="relative h-52 w-full overflow-hidden">
                     <Image
                       src={course.img || ""}
                       alt={course.title}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
-                    <div className="absolute top-6 left-6">
-                      <span className="bg-indigo-600 text-white text-[9px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-full shadow-lg">Trending</span>
+                    <div className="absolute top-5 left-5">
+                      <span className="bg-indigo-600 text-white text-[8px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full shadow-lg">Trending</span>
                     </div>
                   </div>
-                  <CardContent className="p-10 space-y-6">
-                    <h3 className="text-xl font-headline font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight">{course.title}</h3>
-                    <div className="flex items-center gap-3 text-slate-500 font-bold text-xs bg-slate-50 w-fit px-4 py-2 rounded-xl">
-                      <Users className="h-3.5 w-3.5 text-indigo-600" />
+                  <CardContent className="p-8 space-y-5">
+                    <h3 className="text-lg font-headline font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight">{course.title}</h3>
+                    <div className="flex items-center gap-2.5 text-slate-500 font-bold text-[11px] bg-slate-50 w-fit px-4 py-1.5 rounded-lg">
+                      <Users className="h-3 w-3 text-indigo-600" />
                       <span>{course.instructor}</span>
                     </div>
-                    <div className="flex justify-between items-center pt-8 border-t border-slate-50">
-                      <span className="text-3xl font-black text-indigo-600 tracking-tighter">{course.price}</span>
-                      <Button asChild className="rounded-[1.25rem] h-12 px-8 font-bold bg-slate-900 hover:bg-indigo-600 text-white transition-all shadow-lg">
+                    <div className="flex justify-between items-center pt-6 border-t border-slate-50">
+                      <span className="text-2xl font-black text-indigo-600 tracking-tighter">{course.price}</span>
+                      <Button asChild className="rounded-xl h-10 px-6 text-xs font-bold bg-slate-900 hover:bg-indigo-600 text-white transition-all shadow-md">
                         <Link href="/admission">Enroll Now</Link>
                       </Button>
                     </div>
