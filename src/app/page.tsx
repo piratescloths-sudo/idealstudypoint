@@ -19,7 +19,9 @@ import {
   Send, 
   MessageSquare,
   CheckCircle2,
-  Sparkles
+  Sparkles,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +36,13 @@ import { useCollection, useFirestore, useMemoFirebase, useDoc, setDocumentNonBlo
 import { collection, query, limit, where, doc } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
 import { toast } from "@/hooks/use-toast";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
 
@@ -107,7 +116,7 @@ export default function Home() {
 
   const testimonialsQuery = useMemoFirebase(() => {
     if (!firestore) return null;
-    return query(collection(firestore, 'testimonials'), limit(3));
+    return query(collection(firestore, 'testimonials'), limit(6));
   }, [firestore]);
   const { data: testimonials, isLoading: testimonialsLoading } = useCollection(testimonialsQuery);
   
@@ -351,41 +360,87 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Testimonials Section */}
-        <section className="py-24 bg-slate-900 text-white">
-          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-center">
-              <div className="space-y-6 animate-reveal opacity-0">
-                <div className="inline-flex items-center gap-2 px-6 py-2 bg-white/10 rounded-full text-blue-400 font-bold text-[11px] uppercase tracking-widest">
+        {/* Testimonials Section (Redesigned Style) */}
+        <section className="py-32 bg-[#F8FAFC] relative overflow-hidden">
+          {/* Background Accents */}
+          <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl opacity-50" />
+          <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-100/50 rounded-full blur-3xl opacity-50" />
+          
+          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl relative z-10">
+            <div className="flex flex-col md:flex-row items-center justify-between mb-20 gap-8 animate-reveal opacity-0">
+              <div className="space-y-4 text-center md:text-left">
+                <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-[0.2em]">
                   <Quote className="h-4 w-4" />
                   <span>Success Stories</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl font-headline font-bold tracking-tighter">Hear From Our Graduates</h2>
-                <p className="text-slate-400 font-medium">Join a community of thousands of successful professionals who started their journey at Ideal Study Point.</p>
+                <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">
+                  Hear From Our <br className="hidden md:block" /> <span className="text-blue-600">Alumni</span>
+                </h2>
               </div>
+              <div className="flex items-center gap-4">
+                <div className="hidden md:flex flex-col items-end text-right">
+                  <div className="text-2xl font-black text-slate-900">4.9/5</div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Average Student Rating</div>
+                </div>
+                <div className="h-12 w-px bg-slate-200 hidden md:block mx-4" />
+                <p className="text-slate-500 font-medium max-w-xs text-center md:text-left">
+                  Join a community of thousands who transformed their lives at Ideal Study Point.
+                </p>
+              </div>
+            </div>
 
-              <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 animate-reveal opacity-0">
-                {testimonialsLoading && <Loader2 className="animate-spin text-white" />}
-                {testimonials?.map((t, idx) => (
-                  <Card key={idx} className="bg-white/5 border-white/10 border rounded-[2rem] p-8 space-y-6">
-                    <div className="flex gap-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />
-                      ))}
+            <div className="animate-reveal opacity-0" style={{ animationDelay: '0.2s' }}>
+              <Carousel 
+                opts={{ align: "start", loop: true }} 
+                className="w-full"
+              >
+                <CarouselContent className="-ml-4">
+                  {testimonialsLoading && (
+                    <div className="flex justify-center w-full py-20">
+                      <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
                     </div>
-                    <p className="text-slate-300 italic font-medium leading-relaxed">"{t.content}"</p>
-                    <div className="flex items-center gap-4 pt-4 border-t border-white/10">
-                      <div className="h-12 w-12 rounded-xl overflow-hidden relative">
-                        <Image src={t.imageUrl || PlaceHolderImages[6].imageUrl} alt={t.authorName} fill className="object-cover" />
-                      </div>
-                      <div>
-                        <div className="font-bold text-white">{t.authorName}</div>
-                        <div className="text-xs text-blue-400 font-bold uppercase tracking-widest">{t.authorTitle}</div>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
+                  )}
+                  {testimonials?.map((t, idx) => (
+                    <CarouselItem key={idx} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                      <Card className="h-full border-none shadow-[0_20px_60px_-15px_rgba(0,0,0,0.05)] rounded-[3rem] bg-white hover:shadow-[0_40px_80px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 group">
+                        <CardContent className="p-10 flex flex-col h-full space-y-8">
+                          <div className="flex justify-between items-start">
+                            <div className="flex gap-0.5">
+                              {[...Array(5)].map((_, i) => (
+                                <Star key={i} className={cn("h-4 w-4", i < (t.rating || 5) ? "fill-amber-400 text-amber-400" : "text-slate-200")} />
+                              ))}
+                            </div>
+                            <Quote className="h-10 w-10 text-blue-50 opacity-50 group-hover:text-blue-100 transition-colors" />
+                          </div>
+                          
+                          <p className="text-lg text-slate-600 font-medium italic leading-relaxed flex-grow">
+                            "{t.content}"
+                          </p>
+
+                          <div className="flex items-center gap-5 pt-8 border-t border-slate-50">
+                            <div className="h-14 w-14 rounded-2xl overflow-hidden relative shadow-lg">
+                              <Image 
+                                src={t.imageUrl || PlaceHolderImages[6].imageUrl} 
+                                alt={t.authorName} 
+                                fill 
+                                className="object-cover" 
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <div className="font-headline font-bold text-slate-900 text-lg leading-none">{t.authorName}</div>
+                              <div className="text-[11px] font-black text-blue-600 uppercase tracking-widest">{t.authorTitle}</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="flex justify-center md:justify-end gap-3 mt-12">
+                  <CarouselPrevious className="static translate-y-0 h-14 w-14 rounded-2xl border-none bg-white shadow-xl hover:bg-blue-600 hover:text-white transition-all" />
+                  <CarouselNext className="static translate-y-0 h-14 w-14 rounded-2xl border-none bg-white shadow-xl hover:bg-blue-600 hover:text-white transition-all" />
+                </div>
+              </Carousel>
             </div>
           </div>
         </section>
