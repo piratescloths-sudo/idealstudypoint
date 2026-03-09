@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -36,6 +35,8 @@ import { collection, query, limit, where, doc } from "firebase/firestore";
 import { signInAnonymously } from "firebase/auth";
 import { toast } from "@/hooks/use-toast";
 
+const LOGO_URL = "https://pub-1407f82391df4ab1951418d04be76914.r2.dev/uploads/7fe55158-c51b-42c9-b70f-55f8802402b7.png";
+
 export default function Home() {
   const firestore = useFirestore();
   const auth = useAuth();
@@ -43,6 +44,7 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [isPreloading, setIsPreloading] = useState(true);
 
   // Contact form state
   const [formData, setFormData] = useState({
@@ -60,12 +62,20 @@ export default function Home() {
   }, [firestore]);
   const { data: settings } = useDoc(settingsQuery);
 
-  // Ensure user is signed in anonymously to submit messages securely
+  // Ensure user is signed in anonymously
   useEffect(() => {
     if (!user && auth) {
       signInAnonymously(auth).catch(console.error);
     }
   }, [user, auth]);
+
+  // Handle Preloader
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsPreloading(false);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const heroImages = (settings?.heroImages?.filter((url: string) => url && url.trim() !== "")?.length > 0)
     ? settings.heroImages.filter((url: string) => url && url.trim() !== "")
@@ -75,7 +85,7 @@ export default function Home() {
     if (heroImages.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
-    }, 3000);
+    }, 5000);
     return () => clearInterval(interval);
   }, [heroImages]);
 
@@ -102,10 +112,10 @@ export default function Home() {
   const { data: testimonials, isLoading: testimonialsLoading } = useCollection(testimonialsQuery);
   
   const stats = [
-    { label: settings?.stat1Label || "Courses", value: settings?.stat1Value || "120+", icon: BookOpen, color: "text-indigo-600" },
-    { label: settings?.stat2Label || "Students", value: settings?.stat2Value || "15K+", icon: Users, color: "text-indigo-600" },
-    { label: settings?.stat3Label || "Success Rate", value: settings?.stat3Value || "98%", icon: Award, color: "text-indigo-600" },
-    { label: settings?.stat4Label || "Countries", value: settings?.stat4Value || "50+", icon: Globe, color: "text-indigo-600" },
+    { label: settings?.stat1Label || "Courses", value: settings?.stat1Value || "120+", icon: BookOpen, color: "text-blue-600" },
+    { label: settings?.stat2Label || "Students", value: settings?.stat2Value || "15K+", icon: Users, color: "text-blue-600" },
+    { label: settings?.stat3Label || "Success Rate", value: settings?.stat3Value || "98%", icon: Award, color: "text-blue-600" },
+    { label: settings?.stat4Label || "Countries", value: settings?.stat4Value || "50+", icon: Globe, color: "text-blue-600" },
   ];
 
   const handleContactSubmit = async (e: React.FormEvent) => {
@@ -142,9 +152,28 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-white">
+      {/* Splash Screen Preloader */}
+      {isPreloading && (
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white transition-opacity duration-700">
+          <div className="relative h-32 w-32 animate-pulse mb-4">
+            <Image src={LOGO_URL} alt="Loading..." fill className="object-contain" priority />
+          </div>
+          <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-full bg-blue-600 animate-[loading_1.5s_ease-in-out_infinite]" />
+          </div>
+          <style jsx>{`
+            @keyframes loading {
+              0% { width: 0%; transform: translateX(-100%); }
+              50% { width: 50%; transform: translateX(50%); }
+              100% { width: 0%; transform: translateX(200%); }
+            }
+          `}</style>
+        </div>
+      )}
+
       <Navbar />
       
-      <main className="flex-grow">
+      <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
         {/* Hero Section */}
         <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-24 pb-20 overflow-hidden">
           <div className="absolute inset-0 z-0">
@@ -152,9 +181,10 @@ export default function Home() {
               <div 
                 key={index} 
                 className={cn(
-                  "absolute inset-0 transition-opacity duration-1000 ease-in-out",
-                  index === currentImageIndex ? "opacity-100" : "opacity-0"
+                  "absolute inset-0 transition-opacity duration-2000 ease-in-out",
+                  index === currentImageIndex ? "opacity-100 scale-105" : "opacity-0 scale-100"
                 )}
+                style={{ transitionProperty: 'opacity, transform', transitionDuration: '2.5s' }}
               >
                 <Image
                   src={imgUrl}
@@ -165,26 +195,28 @@ export default function Home() {
                 />
               </div>
             ))}
-            <div className="absolute inset-0 bg-[#1a1f29]/50 backdrop-blur-[1px]" />
+            <div className="absolute inset-0 bg-[#000]/40 backdrop-blur-[1px]" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center pt-16">
             <div className="max-w-5xl space-y-8">
-              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-500/20 backdrop-blur-md rounded-full border border-indigo-500/30 text-indigo-100 font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
-                <span>🎓</span>
-                <span>Welcome to Ideal Study Point</span>
+              <div className="animate-reveal opacity-0" style={{ animationDelay: '0.2s' }}>
+                <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-500/20 backdrop-blur-md rounded-full border border-blue-400/30 text-white font-semibold text-[11px] mx-auto shadow-2xl uppercase tracking-[0.2em]">
+                  <Sparkles className="h-3 w-3 text-blue-300" />
+                  <span>Excellence Since 2001</span>
+                </div>
               </div>
               
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-black text-white leading-[1.1] tracking-tighter drop-shadow-2xl">
-                Shape Your <br /> Future with Excellence
+              <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-black text-white leading-[1.1] tracking-tighter drop-shadow-2xl animate-reveal opacity-0" style={{ animationDelay: '0.4s' }}>
+                Shape Your <br /> Future with <span className="text-blue-400">Innovation</span>
               </h1>
               
-              <p className="text-lg md:text-xl text-slate-100 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-lg">
+              <p className="text-lg md:text-xl text-slate-100 max-w-4xl mx-auto leading-relaxed font-medium drop-shadow-lg animate-reveal opacity-0" style={{ animationDelay: '0.6s' }}>
                 {settings?.heroDescription || "Empowering learners with innovative programs, expert faculty, and a supportive community. Join thousands of students achieving their dreams today."}
               </p>
               
-              <div className="flex flex-wrap justify-center gap-6 pt-8 translate-y-24 relative z-30">
-                <Button asChild size="lg" className="h-16 px-10 text-lg font-bold rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-xl shadow-indigo-600/40 transition-all border-none">
+              <div className="flex flex-wrap justify-center gap-6 pt-8 animate-reveal opacity-0" style={{ animationDelay: '0.8s' }}>
+                <Button asChild size="lg" className="h-16 px-10 text-lg font-bold rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-600/40 transition-all">
                   <Link href="/admission" className="flex items-center gap-3">Enroll Now <ArrowRight className="h-5 w-5" /></Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="h-16 px-10 text-lg font-bold bg-white/10 text-white border-white/20 backdrop-blur-md hover:bg-white/20 rounded-2xl transition-all">
@@ -195,11 +227,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Stats Section */}
-        <div className="relative z-20 -mt-20 container mx-auto px-4 max-w-6xl">
+        {/* Stats Section with Entrance Motion */}
+        <div className="relative z-20 -mt-20 container mx-auto px-4 max-w-6xl animate-reveal opacity-0" style={{ animationDelay: '1s' }}>
           <div className="bg-white rounded-[2.5rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] grid grid-cols-2 md:grid-cols-4 py-12 px-8 md:px-16 gap-8 border border-white/50">
             {stats.map((stat, i) => (
-              <div key={i} className="flex flex-col items-center justify-center text-center space-y-2 border-r last:border-0 border-slate-100">
+              <div key={i} className="flex flex-col items-center justify-center text-center space-y-2 border-r last:border-0 border-slate-100 hover:scale-105 transition-transform">
                 <div className={cn("mb-1", stat.color)}>
                   <stat.icon className="h-6 w-6 opacity-90" />
                 </div>
@@ -214,26 +246,26 @@ export default function Home() {
         <section className="py-32 bg-white">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-              <div className="relative">
-                <div className="relative h-[450px] md:h-[500px] w-full rounded-[3rem] overflow-hidden shadow-xl bg-slate-100">
+              <div className="relative group">
+                <div className="relative h-[450px] md:h-[500px] w-full rounded-[3rem] overflow-hidden shadow-2xl bg-slate-100">
                   {aboutImgUrl && (
                     <Image
                       src={aboutImgUrl}
                       alt="Why Choose Us"
                       fill
-                      className="object-cover"
+                      className="object-cover group-hover:scale-105 transition-transform duration-1000"
                     />
                   )}
                 </div>
-                <div className="absolute -bottom-8 -right-6 bg-indigo-600 text-white p-8 rounded-[2rem] shadow-xl shadow-indigo-600/30 flex flex-col items-center justify-center text-center min-w-[180px]">
+                <div className="absolute -bottom-8 -right-6 bg-blue-600 text-white p-8 rounded-[2rem] shadow-xl shadow-blue-600/30 flex flex-col items-center justify-center text-center min-w-[180px]">
                   <span className="text-4xl font-headline font-bold">25+</span>
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] mt-2">Years of Excellence</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.2em] mt-2 text-blue-100">Years of Excellence</span>
                 </div>
               </div>
 
               <div className="space-y-8">
-                <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-[0.2em]">
-                  <span>About Us</span>
+                <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-[0.2em]">
+                  <span>About ISP</span>
                 </div>
                 
                 <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">
@@ -247,7 +279,7 @@ export default function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-12">
                   {["Expert Faculty", "Modern Campus", "Flexible Learning", "Career Support"].map((feature, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <div className="h-2.5 w-2.5 rounded-full bg-indigo-600 shadow-lg shadow-indigo-600/20" />
+                      <div className="h-2.5 w-2.5 rounded-full bg-blue-600 shadow-lg shadow-blue-600/20" />
                       <span className="font-bold text-slate-700 text-base">{feature}</span>
                     </div>
                   ))}
@@ -262,15 +294,15 @@ export default function Home() {
           <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
               <div className="space-y-4 text-center md:text-left">
-                <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-[0.2em]">
+                <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-[0.2em]">
                   <BookOpen className="h-4 w-4" />
                   <span>Academic Excellence</span>
                 </div>
                 <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter">Our Programs</h2>
                 <p className="text-base text-slate-500 max-w-2xl font-medium leading-relaxed">Explore our most popular courses designed to elevate your professional career.</p>
               </div>
-              <Button asChild variant="ghost" className="text-indigo-600 font-bold text-base hover:bg-indigo-50 px-8 h-12 rounded-2xl gap-3 transition-all">
-                <Link href="/courses" className="flex items-center gap-2">View All Courses <ArrowRight className="h-4 w-4" /></Link>
+              <Button asChild variant="ghost" className="text-blue-600 font-bold text-base hover:bg-blue-50 px-8 h-12 rounded-2xl gap-3 transition-all">
+                <Link href="/courses" className="flex items-center gap-2">View All Programs <ArrowRight className="h-4 w-4" /></Link>
               </Button>
             </div>
 
@@ -278,7 +310,7 @@ export default function Home() {
               {coursesLoading && <Loader2 className="mx-auto animate-spin" />}
               {featuredCourses?.map((course, idx) => (
                 <Card key={idx} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
-                  <div className="relative h-40 w-full overflow-hidden">
+                  <div className="relative h-44 w-full overflow-hidden">
                     <Image
                       src={course.imageUrl || PlaceHolderImages[1].imageUrl}
                       alt={course.title}
@@ -286,18 +318,18 @@ export default function Home() {
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                     <div className="absolute top-4 left-4">
-                      <span className="bg-indigo-600 text-white text-[9px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full shadow-lg">Trending</span>
+                      <span className="bg-blue-600 text-white text-[9px] font-black uppercase tracking-[0.15em] px-4 py-1.5 rounded-full shadow-lg">New</span>
                     </div>
                   </div>
                   <CardContent className="p-6 space-y-4">
-                    <h3 className="text-lg font-headline font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight">{course.title}</h3>
+                    <h3 className="text-lg font-headline font-bold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-tight">{course.title}</h3>
                     <div className="flex items-center gap-3 text-slate-500 font-bold text-[10px] bg-slate-50 w-fit px-3 py-1.5 rounded-xl">
-                      <Users className="h-3.5 w-3.5 text-indigo-600" />
+                      <Users className="h-3.5 w-3.5 text-blue-600" />
                       <span>{course.instructor}</span>
                     </div>
                     <div className="flex justify-between items-center pt-4 border-t border-slate-50">
-                      <span className="text-xl font-black text-indigo-600 tracking-tighter">{course.duration}</span>
-                      <Button asChild className="rounded-xl h-9 px-5 text-[10px] font-bold bg-slate-900 hover:bg-indigo-600 text-white transition-all shadow-md">
+                      <span className="text-xl font-black text-blue-600 tracking-tighter">{course.duration}</span>
+                      <Button asChild className="rounded-xl h-9 px-5 text-[10px] font-bold bg-slate-900 hover:bg-blue-600 text-white transition-all shadow-md">
                         <Link href="/admission">Enroll Now</Link>
                       </Button>
                     </div>
@@ -308,124 +340,18 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Events Section */}
-        <section className="py-24 bg-white">
-          <div className="container mx-auto px-6 md:px-12 lg:px-24 max-w-7xl">
-            <div className="text-center mb-16 space-y-4 max-w-4xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-wider mx-auto">
-                <span>Events</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 leading-tight tracking-tighter">Upcoming Events</h2>
-              <p className="text-lg text-slate-500 font-medium">Stay connected with our vibrant campus life and community activities.</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {eventsLoading && <Loader2 className="mx-auto animate-spin" />}
-              {featuredEvents?.map((event, idx) => {
-                 const dateObj = event.date ? new Date(event.date) : new Date();
-                 const day = dateObj.getDate().toString().padStart(2, '0');
-                 const month = dateObj.toLocaleString('default', { month: 'short' }).toUpperCase();
-                 
-                 return (
-                  <Card key={idx} className="group overflow-hidden border-none shadow-xl hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] bg-white">
-                    <div className="relative h-48 w-full">
-                      <Image
-                        src={event.imageUrl || PlaceHolderImages[4].imageUrl}
-                        alt={event.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute top-6 right-6">
-                        <span className="bg-secondary text-white text-[9px] font-black uppercase tracking-[0.15em] px-4 py-2 rounded-full shadow-lg">Upcoming</span>
-                      </div>
-                      <div className="absolute bottom-6 left-6 bg-white rounded-xl p-3 shadow-xl flex flex-col items-center justify-center min-w-[50px]">
-                        <span className="text-xl font-black text-indigo-600 leading-none">{day}</span>
-                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">{month}</span>
-                      </div>
-                    </div>
-                    <CardContent className="p-6 space-y-4">
-                      <h3 className="text-lg font-headline font-bold text-indigo-600 leading-tight">{event.title}</h3>
-                      <div className="space-y-2 pt-3 border-t border-slate-50 text-[10px] font-bold text-slate-400">
-                        <div className="flex items-center gap-3">
-                          <Calendar className="h-3.5 w-3.5 text-indigo-400" />
-                          <span>{new Date(event.date).toLocaleDateString()}</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-
-            <div className="mt-16 flex justify-center">
-              <Button asChild variant="outline" className="h-14 px-10 rounded-2xl font-bold border-slate-200 hover:bg-slate-50 gap-4 transition-all text-lg">
-                <Link href="/events" className="flex items-center gap-2">View All Events <ArrowRight className="h-5 w-5" /></Link>
-              </Button>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section className="py-24 bg-[#F8FAFC]">
-          <div className="container mx-auto px-4">
-            <div className="text-center mb-16 space-y-4 max-w-4xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-[0.2em] mx-auto">
-                <span>Testimonials</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">What Our Students Say</h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {testimonialsLoading && <Loader2 className="mx-auto animate-spin" />}
-              {testimonials?.map((t, idx) => (
-                <Card key={idx} className="border-none shadow-xl rounded-[2.5rem] bg-white p-10 flex flex-col justify-between h-full transition-all hover:shadow-2xl duration-500">
-                  <div className="space-y-6">
-                    <div className="h-12 w-12 flex items-center justify-center rounded-2xl bg-indigo-50/50">
-                      <Quote className="h-6 w-6 text-indigo-200 fill-indigo-100" />
-                    </div>
-                    <p className="text-lg text-slate-600 font-medium leading-relaxed tracking-tight italic">
-                      &quot;{t.content}&quot;
-                    </p>
-                  </div>
-                  
-                  <div className="pt-10 flex items-end justify-between mt-auto">
-                    <div className="flex items-center gap-4">
-                      <div className="h-14 w-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center font-bold text-indigo-600 text-xl overflow-hidden shadow-sm">
-                        {t.imageUrl ? (
-                          <Image src={t.imageUrl} alt={t.authorName} width={56} height={56} className="object-cover w-full h-full" />
-                        ) : (
-                          <span>{t.authorName[0]}</span>
-                        )}
-                      </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="font-bold text-slate-900 text-lg leading-none">{t.authorName}</span>
-                        <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-1">{t.authorTitle}</span>
-                      </div>
-                    </div>
-                    <div className="flex gap-0.5 pb-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className={cn("h-4 w-4", i < (t.rating || 5) ? "fill-amber-400 text-amber-400" : "text-slate-200")} />
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* CTA Section */}
-        <section className="bg-[#5D5CFF] py-24 text-center px-6">
+        <section className="bg-blue-600 py-24 text-center px-6">
           <div className="max-w-4xl mx-auto space-y-8">
             <h2 className="text-4xl md:text-6xl font-headline font-bold text-white tracking-tight">
               Ready to Start Your Journey?
             </h2>
-            <p className="text-xl text-white/90 font-medium">
+            <p className="text-xl text-blue-100 font-medium">
               Join thousands of students who have transformed their careers with Ideal Study Point.
             </p>
             <div className="pt-4">
-              <Button asChild size="lg" className="h-16 px-12 rounded-2xl bg-white text-indigo-600 hover:bg-white/90 text-xl font-bold gap-3 transition-all">
-                <Link href="/admission">Apply Now <ArrowRight className="h-6 w-6" /></Link>
+              <Button asChild size="lg" className="h-16 px-12 rounded-2xl bg-white text-blue-600 hover:bg-slate-100 text-xl font-bold gap-3 transition-all">
+                <Link href="/admission">Apply Today <ArrowRight className="h-6 w-6" /></Link>
               </Button>
             </div>
           </div>
@@ -435,9 +361,9 @@ export default function Home() {
         <section className="py-24 bg-white relative overflow-hidden">
           <div className="container mx-auto px-6 md:px-12 lg:px-24 relative z-10">
             <div className="text-center mb-16 space-y-4 max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-6 py-2 bg-indigo-50 rounded-full text-indigo-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
+              <div className="inline-flex items-center gap-2 px-6 py-2 bg-blue-50 rounded-full text-blue-600 font-bold text-[11px] uppercase tracking-widest mx-auto">
                 <MessageSquare className="h-4 w-4" />
-                <span>Get In Touch</span>
+                <span>Contact Us</span>
               </div>
               <h2 className="text-4xl md:text-6xl font-headline font-bold text-slate-900 tracking-tighter leading-tight">
                 {settings?.contactHeadline || "Connect With Us"}
@@ -468,9 +394,9 @@ export default function Home() {
                 )}
 
                 {[
-                  { icon: Mail, title: "Email Us", detail: settings?.mainEmail || "info@idealstudypoint.edu", color: "text-indigo-600", bg: "bg-indigo-50" },
-                  { icon: Phone, title: "Call Us", detail: settings?.mainPhone || "+1 (234) 567-890", color: "text-emerald-600", bg: "bg-emerald-50" },
-                  { icon: MapPin, title: "Visit Us", detail: settings?.address || "123 Education Ave, Knowledge City, ED 56789", color: "text-amber-600", bg: "bg-amber-50" }
+                  { icon: Mail, title: "Email Us", detail: settings?.mainEmail || "info@idealstudypoint.edu", color: "text-blue-600", bg: "bg-blue-50" },
+                  { icon: Phone, title: "Call Us", detail: settings?.mainPhone || "+91 123-456-7890", color: "text-blue-600", bg: "bg-blue-50" },
+                  { icon: MapPin, title: "Visit Us", detail: settings?.address || "123 Education Ave, Knowledge City, ED 56789", color: "text-blue-600", bg: "bg-blue-50" }
                 ].map((item, i) => (
                   <Card key={i} className="border-none shadow-[0_10px_30px_rgba(0,0,0,0.03)] rounded-3xl bg-white group transition-all hover:-translate-y-1">
                     <CardContent className="p-6 flex items-center gap-5">
@@ -490,9 +416,9 @@ export default function Home() {
                 <CardContent className="p-8 md:p-12">
                   {submitted ? (
                     <div className="text-center space-y-6 py-10">
-                      <div className="relative inline-flex p-6 bg-emerald-50 rounded-full">
-                        <Sparkles className="absolute -top-1 -right-1 h-6 w-6 text-emerald-400 animate-pulse" />
-                        <CheckCircle2 className="h-12 w-12 text-emerald-600" />
+                      <div className="relative inline-flex p-6 bg-blue-50 rounded-full">
+                        <Sparkles className="absolute -top-1 -right-1 h-6 w-6 text-blue-400 animate-pulse" />
+                        <CheckCircle2 className="h-12 w-12 text-blue-600" />
                       </div>
                       <h3 className="text-3xl font-headline font-bold text-slate-900">Message Sent!</h3>
                       <p className="text-slate-500 font-medium">We've received your inquiry and will reach out shortly.</p>
@@ -503,32 +429,32 @@ export default function Home() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">First Name</Label>
-                          <Input required value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} placeholder="Jane" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                          <Input required value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} placeholder="First Name" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Last Name</Label>
-                          <Input required value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} placeholder="Doe" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                          <Input required value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} placeholder="Last Name" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
                         </div>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Email</Label>
-                          <Input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="jane@example.com" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                          <Input type="email" required value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="Email" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
                         </div>
                         <div className="space-y-2">
                           <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Phone</Label>
-                          <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="+1 (555) 000-0000" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                          <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="Phone" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Subject</Label>
-                        <Input required value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} placeholder="Inquiry about Programs" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
+                        <Input required value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} placeholder="Subject" className="h-12 rounded-xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all" />
                       </div>
                       <div className="space-y-2">
                         <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Message</Label>
-                        <Textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="How can we help you?" className="min-h-[120px] rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all p-4" />
+                        <Textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Message" className="min-h-[120px] rounded-2xl bg-slate-50 border-none focus:bg-white focus:ring-2 transition-all p-4" />
                       </div>
-                      <Button type="submit" size="lg" className="w-full h-14 rounded-xl font-bold text-lg bg-indigo-600 hover:bg-indigo-700 shadow-xl shadow-indigo-600/20 transition-all gap-3" disabled={loading}>
+                      <Button type="submit" size="lg" className="w-full h-14 rounded-xl font-bold text-lg bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all gap-3" disabled={loading}>
                         {loading ? <Loader2 className="animate-spin h-5 w-5" /> : (
                           <>
                             Send Inquiry <Send className="h-4 w-4" />
