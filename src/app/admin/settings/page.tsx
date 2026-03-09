@@ -83,160 +83,155 @@ export default function AdminSettingsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="border-none shadow-sm rounded-3xl bg-white">
-          <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
-            <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <Info className="h-5 w-5 text-indigo-600" />
+        {/* Branding & Identity Box */}
+        <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
+          <CardHeader className="flex flex-row items-center gap-4 border-b pb-6 p-8">
+            <div className="h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center">
+              <Info className="h-6 w-6 text-indigo-600" />
             </div>
-            <CardTitle className="text-xl">Branding & Identity</CardTitle>
+            <CardTitle className="text-2xl font-bold text-slate-900">Branding & Identity</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 pt-6">
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Institute Name</Label>
+          <CardContent className="space-y-8 p-8">
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Institute Name</Label>
               <Input 
                 value={formData.siteName} 
                 onChange={e => setFormData({...formData, siteName: e.target.value})}
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all text-base" 
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Website Logo URL</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Website Logo URL</Label>
               <Input 
                 value={formData.logoUrl} 
                 onChange={e => setFormData({...formData, logoUrl: e.target.value})}
                 placeholder="https://example.com/logo.png"
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all text-base" 
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Favicon (Tab Icon) URL</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Favicon (Tab Icon) URL</Label>
               <Input 
                 value={formData.faviconUrl} 
                 onChange={e => setFormData({...formData, faviconUrl: e.target.value})}
                 placeholder="https://example.com/favicon.ico"
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-indigo-600/20 transition-all text-base" 
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm rounded-3xl bg-white">
-          <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
-            <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <ImageIcon className="h-5 w-5 text-indigo-600" />
+        {/* Campus Address Box */}
+        <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
+          <CardHeader className="flex flex-row items-center gap-4 border-b pb-6 p-8">
+            <div className="h-12 w-12 bg-emerald-50 rounded-2xl flex items-center justify-center">
+              <MapIcon className="h-6 w-6 text-emerald-600" />
             </div>
-            <CardTitle className="text-xl">Campus Address</CardTitle>
+            <CardTitle className="text-2xl font-bold text-slate-900">Campus Address</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 pt-6">
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Address</Label>
+          <CardContent className="space-y-8 p-8">
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Physical Address</Label>
               <Input 
                 value={formData.address} 
                 onChange={e => setFormData({...formData, address: e.target.value})}
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-emerald-600/20 transition-all text-base" 
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Primary Email</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Primary Email</Label>
                 <Input 
                   value={formData.mainEmail} 
                   onChange={e => setFormData({...formData, mainEmail: e.target.value})}
-                  className="rounded-xl h-12 bg-slate-50 border-none" 
+                  className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-emerald-600/20 transition-all text-base" 
               />
               </div>
-              <div className="space-y-2">
-                <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Phone Number</Label>
+              <div className="space-y-3">
+                <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Phone Number</Label>
                 <Input 
                   value={formData.mainPhone} 
                   onChange={e => setFormData({...formData, mainPhone: e.target.value})}
-                  className="rounded-xl h-12 bg-slate-50 border-none" 
+                  className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-emerald-600/20 transition-all text-base" 
                 />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm rounded-3xl bg-white">
-          <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
-            <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <MessageSquare className="h-5 w-5 text-indigo-600" />
+        {/* Contact Page Content Box */}
+        <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
+          <CardHeader className="flex flex-row items-center gap-4 border-b pb-6 p-8">
+            <div className="h-12 w-12 bg-amber-50 rounded-2xl flex items-center justify-center">
+              <MessageSquare className="h-6 w-6 text-amber-600" />
             </div>
-            <CardTitle className="text-xl">Contact Page Content</CardTitle>
+            <CardTitle className="text-2xl font-bold text-slate-900">Contact Page Content</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 pt-6">
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Contact Headline</Label>
+          <CardContent className="space-y-8 p-8">
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Contact Headline</Label>
               <Input 
                 value={formData.contactHeadline} 
                 onChange={e => setFormData({...formData, contactHeadline: e.target.value})}
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-amber-600/20 transition-all text-base" 
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Contact Description</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Contact Description</Label>
               <Textarea 
                 value={formData.contactDescription} 
                 onChange={e => setFormData({...formData, contactDescription: e.target.value})}
-                className="rounded-xl bg-slate-50 border-none min-h-[80px]" 
+                className="rounded-[2rem] bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-amber-600/20 transition-all min-h-[100px] p-6 text-base" 
               />
             </div>
-            <div className="space-y-3 p-4 bg-amber-50 rounded-2xl border border-amber-100">
-              <Label className="text-xs font-bold uppercase tracking-widest text-amber-700 flex items-center gap-2">
+            <div className="space-y-4 p-6 bg-slate-900 rounded-[2rem] text-white">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 flex items-center gap-2">
                 <MapIcon className="h-3 w-3" /> Google Map Embed URL
               </Label>
               <Input 
                 value={formData.googleMapEmbedUrl} 
                 onChange={e => setFormData({...formData, googleMapEmbedUrl: e.target.value})}
                 placeholder="https://www.google.com/maps/embed?pb=..."
-                className="rounded-xl h-12 bg-white border-amber-200" 
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Office Hours</Label>
-              <Textarea 
-                value={formData.officeHours} 
-                onChange={e => setFormData({...formData, officeHours: e.target.value})}
-                placeholder="e.g. Monday - Friday: 9am - 5pm"
-                className="rounded-xl bg-slate-50 border-none min-h-[100px]" 
+                className="rounded-xl h-12 bg-white/10 border-white/20 text-white placeholder:text-white/30" 
               />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-none shadow-sm rounded-3xl bg-white">
-          <CardHeader className="flex flex-row items-center gap-3 border-b pb-6">
-            <div className="h-10 w-10 bg-indigo-50 rounded-xl flex items-center justify-center">
-              <Globe className="h-5 w-5 text-indigo-600" />
+        {/* Social Media Links Box */}
+        <Card className="border-none shadow-sm rounded-[2rem] bg-white overflow-hidden">
+          <CardHeader className="flex flex-row items-center gap-4 border-b pb-6 p-8">
+            <div className="h-12 w-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+              <Globe className="h-6 w-6 text-blue-600" />
             </div>
-            <CardTitle className="text-xl">Social Media Links</CardTitle>
+            <CardTitle className="text-2xl font-bold text-slate-900">Social Media Links</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6 pt-6">
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Facebook URL</Label>
+          <CardContent className="space-y-8 p-8">
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Facebook URL</Label>
               <Input 
                 value={formData.facebookUrl}
                 onChange={e => setFormData({...formData, facebookUrl: e.target.value})}
                 placeholder="https://facebook.com/..." 
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-blue-600/20 transition-all text-base" 
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">Instagram URL</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Instagram URL</Label>
               <Input 
                 value={formData.instagramUrl}
                 onChange={e => setFormData({...formData, instagramUrl: e.target.value})}
                 placeholder="https://instagram.com/..." 
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-blue-600/20 transition-all text-base" 
               />
             </div>
-            <div className="space-y-2">
-              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">LinkedIn URL</Label>
+            <div className="space-y-3">
+              <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">LinkedIn URL</Label>
               <Input 
                 value={formData.linkedinUrl}
                 onChange={e => setFormData({...formData, linkedinUrl: e.target.value})}
                 placeholder="https://linkedin.com/in/..." 
-                className="rounded-xl h-12 bg-slate-50 border-none" 
+                className="rounded-2xl h-14 bg-slate-50 border-none focus:bg-white focus:ring-2 focus:ring-blue-600/20 transition-all text-base" 
               />
             </div>
           </CardContent>
