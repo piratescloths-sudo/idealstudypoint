@@ -89,7 +89,6 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [isPreloading, setIsPreloading] = useState(true);
 
   // Contact form state
   const [formData, setFormData] = useState({
@@ -114,19 +113,13 @@ export default function Home() {
     }
   }, [user, auth]);
 
-  // Handle Preloader
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsPreloading(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+
 
   const logoUrl = settings?.logoUrl || FALLBACK_LOGO_URL;
 
   const heroImages = (settings?.heroImages?.filter((url: string) => url && url.trim() !== "")?.length > 0)
     ? settings.heroImages.filter((url: string) => url && url.trim() !== "")
-    : [PlaceHolderImages.find(img => img.id === "hero-bg")?.imageUrl || ""];
+    : [];
 
   useEffect(() => {
     if (heroImages.length <= 1) return;
@@ -199,44 +192,36 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden bg-white">
-      {/* Splash Screen Preloader */}
-      {isPreloading && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white transition-opacity duration-700">
-          <div className="relative h-32 w-32 animate-pulse mb-4">
-            <Image src={logoUrl} alt="Loading..." fill className="object-contain" priority />
-          </div>
-          <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
-            <div className="h-full bg-blue-600 animate-[loading_1.5s_ease-in-out_infinite]" />
-          </div>
-        </div>
-      )}
-
       <Navbar />
       
-      <main className={cn("flex-grow transition-opacity duration-1000", isPreloading ? "opacity-0" : "opacity-100")}>
+      <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-[95vh] flex flex-col items-center justify-center pt-20 pb-20 overflow-hidden">
+        <section className={cn("relative h-[95vh] flex flex-col items-center justify-center pt-20 pb-20 overflow-hidden", heroImages.length === 0 && "bg-gradient-to-br from-blue-600 to-blue-800")}>
           <div className="absolute inset-0 z-0">
-            {heroImages.map((imgUrl, index) => (
-              <div 
-                key={index} 
-                className={cn(
-                  "absolute inset-0 transition-opacity duration-2000 ease-in-out",
-                  index === currentImageIndex ? "opacity-100 scale-105" : "opacity-0 scale-100"
-                )}
-                style={{ transitionProperty: 'opacity, transform', transitionDuration: '2.5s' }}
-              >
-                <Image
-                  src={imgUrl}
-                  alt={`Ideal Study Point Campus ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  priority={index === 0}
-                  data-ai-hint="university campus"
-                />
-              </div>
-            ))}
-            <div className="absolute inset-0 bg-[#000]/40 backdrop-blur-[1px]" />
+            {heroImages.length > 0 && (
+              <>
+                {heroImages.map((imgUrl, index) => (
+                  <div 
+                    key={index} 
+                    className={cn(
+                      "absolute inset-0 transition-opacity duration-2000 ease-in-out",
+                      index === currentImageIndex ? "opacity-100 scale-105" : "opacity-0 scale-100"
+                    )}
+                    style={{ transitionProperty: 'opacity, transform', transitionDuration: '2.5s' }}
+                  >
+                    <Image
+                      src={imgUrl}
+                      alt={`Ideal Study Point Campus ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                      data-ai-hint="university campus"
+                    />
+                  </div>
+                ))}
+                <div className="absolute inset-0 bg-[#000]/40 backdrop-blur-[1px]" />
+              </>
+            )}
           </div>
 
           <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
